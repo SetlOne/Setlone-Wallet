@@ -6,7 +6,7 @@ buildscript {
         // don't add anything here until you read to the bottom of this bracket
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { url = 'https://jitpack.io' }
         // WARNING WARNING WARNING
         // you are about to add here a repository which provides some library for the Android app
         // don't do that. add that repository to app/build.gradle

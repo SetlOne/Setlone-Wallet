@@ -6,10 +6,9 @@ mainClassName = 'com.alphawallet.scripttool.ScriptTool'
 
 repositories {
     google()
-    jcenter()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://plugins.gradle.org/m2/' }
+    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://plugins.gradle.org/m2/' }
 }
 
 version = '0.1' // current tool for demonstration only
