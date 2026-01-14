@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ErrorEnvelope;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.SignAuthenticationCallback;
@@ -36,7 +36,7 @@ import com.setlone.app.service.TransactionSendHandlerInterface;
 import com.setlone.app.util.BalanceUtils;
 import com.setlone.app.util.Utils;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthTransaction;

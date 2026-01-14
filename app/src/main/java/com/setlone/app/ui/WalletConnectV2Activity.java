@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.StandardFunctionInterface;
 import com.setlone.app.entity.Wallet;

@@ -1,6 +1,6 @@
 package com.setlone.app.service;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.repository.AWRealmMigration;
 

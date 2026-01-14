@@ -40,7 +40,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.BackupOperationType;
 import com.setlone.app.entity.ContractLocator;

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 
 public class AddWalletView extends FrameLayout implements View.OnClickListener {

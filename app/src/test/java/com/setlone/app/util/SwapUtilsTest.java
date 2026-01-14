@@ -78,7 +78,7 @@ public class SwapUtilsTest
         action.toToken.symbol = "USDC";
         action.toToken.decimals = 6;
 
-        String expected = "1 ETH ≈ 2000 USDC";
+        String expected = "1 ETH ??2000 USDC";
         assertThat(SwapUtils.getFormattedCurrentPrice(action), equalTo(expected));
     }
 }

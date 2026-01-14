@@ -9,7 +9,7 @@ import static com.setlone.app.util.Helper.waitUntil;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.not;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class Should
 {

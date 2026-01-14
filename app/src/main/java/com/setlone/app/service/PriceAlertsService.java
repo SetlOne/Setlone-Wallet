@@ -7,7 +7,7 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.CurrencyItem;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.tokendata.TokenTicker;

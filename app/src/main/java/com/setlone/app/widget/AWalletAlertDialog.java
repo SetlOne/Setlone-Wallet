@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class AWalletAlertDialog extends Dialog {
     public static final int NONE = 0;

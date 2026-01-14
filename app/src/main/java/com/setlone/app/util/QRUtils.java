@@ -9,7 +9,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class QRUtils {
     public static Bitmap createQRImage(Context context, String address, int imageSize) {

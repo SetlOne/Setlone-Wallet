@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.entity.tokens.TokenPortfolio;
 import com.setlone.app.service.TickerService;

@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.DApp;
 import com.setlone.app.ui.widget.adapter.DappBrowserSuggestionsAdapter;
 import com.setlone.app.ui.widget.entity.ItemClickListener;

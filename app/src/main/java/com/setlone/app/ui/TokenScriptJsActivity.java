@@ -29,7 +29,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.GasEstimate;
@@ -66,7 +66,7 @@ import com.setlone.app.widget.ActionSheet;
 import com.setlone.app.widget.ActionSheetDialog;
 import com.setlone.app.widget.ActionSheetSignDialog;
 import com.setlone.app.widget.CertifiedToolbarView;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.EthereumMessage;
 import com.setlone.token.entity.EthereumTypedMessage;
 import com.setlone.token.entity.SignMessageType;
@@ -502,7 +502,7 @@ public class TokenScriptJsActivity extends BaseActivity implements StandardFunct
             tokenScriptView.setOnWalletActionListener(this);
 
             tokenScriptView.resetView();
-            tokenScriptView.loadUrl(VIEWER_URL + "/?viewType=alphawallet&chain=" + chainId + "&contract=" + token.tokenInfo.address + "&tokenId=" + tokenId);
+            tokenScriptView.loadUrl(VIEWER_URL + "/?viewType=setlone&chain=" + chainId + "&contract=" + token.tokenInfo.address + "&tokenId=" + tokenId);
         }
         catch (Exception e)
         {

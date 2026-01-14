@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class SystemView extends FrameLayout implements View.OnClickListener {
 	private ProgressBar progress;

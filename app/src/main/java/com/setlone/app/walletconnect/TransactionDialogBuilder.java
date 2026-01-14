@@ -30,7 +30,7 @@ import com.setlone.app.walletconnect.entity.WCEthereumTransaction;
 import com.setlone.app.walletconnect.util.WalletConnectHelper;
 import com.setlone.app.web3.entity.Web3Transaction;
 import com.setlone.app.widget.ActionSheetDialog;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

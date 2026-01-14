@@ -18,7 +18,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.DApp;
 import com.setlone.app.entity.GasEstimate;
@@ -48,7 +48,7 @@ import com.setlone.app.ui.WalletConnectV2Activity;
 import com.setlone.app.util.DappBrowserUtils;
 import com.setlone.app.web3.entity.WalletAddEthereumChainObject;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 import org.web3j.utils.Numeric;
 

@@ -15,7 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.GasEstimate;
@@ -56,7 +56,7 @@ import com.setlone.app.util.JsonUtils;
 import com.setlone.app.util.Utils;
 import com.setlone.app.web3.entity.Address;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.Attribute;
 import com.setlone.token.entity.ContractAddress;
 import com.setlone.token.entity.FunctionDefinition;

@@ -18,9 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.CryptoFunctions;
@@ -46,7 +46,7 @@ import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.router.ExternalBrowserRouter;
 import com.setlone.app.router.ImportTokenRouter;
 import com.setlone.app.router.MyAddressRouter;
-import com.setlone.app.service.AlphaWalletNotificationService;
+import com.setlone.app.service.SetlOneNotificationService;
 import com.setlone.app.service.AnalyticsServiceType;
 import com.setlone.app.service.AssetDefinitionService;
 import com.setlone.app.service.GasService;
@@ -99,7 +99,7 @@ import wallet.core.jni.Hash;
 @HiltViewModel
 public class HomeViewModel extends BaseViewModel
 {
-    public static final String ALPHAWALLET_DIR = "AlphaWallet";
+    public static final String SETLONE_DIR = "SetlOne";
     private static final long ECHO_MAX_MILLIS = 250; //if second QRCODE read comes before 250 millis, reject
     private final MutableLiveData<Transaction[]> transactions = new MutableLiveData<>();
     private final MutableLiveData<String> backUpMessage = new MutableLiveData<>();
@@ -119,7 +119,7 @@ public class HomeViewModel extends BaseViewModel
     private final RealmManager realmManager;
     private final TokensService tokensService;
     private final GasService gasService;
-    private final AlphaWalletNotificationService alphaWalletNotificationService;
+    private final SetlOneNotificationService setlOneNotificationService;
     private final MutableLiveData<String> walletName = new MutableLiveData<>();
     private final MutableLiveData<Wallet> defaultWallet = new MutableLiveData<>();
     private final MutableLiveData<Boolean> splashActivity = new MutableLiveData<>();
@@ -147,7 +147,7 @@ public class HomeViewModel extends BaseViewModel
             OkHttpClient httpClient,
             RealmManager realmManager,
             TokensService tokensService,
-            AlphaWalletNotificationService alphaWalletNotificationService,
+            SetlOneNotificationService setlOneNotificationService,
             GasService gasService)
     {
         this.preferenceRepository = preferenceRepository;
@@ -163,7 +163,7 @@ public class HomeViewModel extends BaseViewModel
         this.externalBrowserRouter = externalBrowserRouter;
         this.httpClient = httpClient;
         this.realmManager = realmManager;
-        this.alphaWalletNotificationService = alphaWalletNotificationService;
+        this.setlOneNotificationService = setlOneNotificationService;
         setAnalyticsService(analyticsService);
         this.preferenceRepository.incrementLaunchCount();
         this.tokensService = tokensService;
@@ -671,7 +671,7 @@ public class HomeViewModel extends BaseViewModel
     {
         return new Request.Builder()
             .header("Accept", "application/vnd.github.v3+json")
-            .url("https://api.github.com/repos/alphawallet/alpha-wallet-android/releases")
+            .url("https://api.github.com/repos/SetlOne/Setlone-Wallet/releases")
             .get()
             .build();
     }
@@ -823,12 +823,12 @@ public class HomeViewModel extends BaseViewModel
 
     public void subscribeToNotifications()
     {
-        alphaWalletNotificationService.subscribe(com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID);
+        setlOneNotificationService.subscribe(com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID);
     }
 
     public void unsubscribeToNotifications()
     {
-        alphaWalletNotificationService.unsubscribeToTopic(com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID);
+        setlOneNotificationService.unsubscribeToTopic(com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID);
     }
 
     public void setPostNotificationsPermissionRequested(String address)

@@ -1,6 +1,6 @@
 package com.setlone.app.repository;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.CurrencyItem;
 
 import java.util.ArrayList;

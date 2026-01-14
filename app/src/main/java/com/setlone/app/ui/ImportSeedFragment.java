@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.OnImportSeedListener;
 import com.setlone.app.ui.widget.OnSuggestionClickListener;
 import com.setlone.app.ui.widget.adapter.SuggestionsAdapter;

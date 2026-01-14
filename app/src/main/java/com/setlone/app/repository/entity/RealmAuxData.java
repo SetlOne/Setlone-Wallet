@@ -3,7 +3,7 @@ package com.setlone.app.repository.entity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Transaction;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.repository.EventResult;

@@ -32,9 +32,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
 import androidx.fragment.app.FragmentActivity;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.EasAttestation;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.util.pattern.Patterns;
@@ -93,10 +93,10 @@ public class Utils
     private static final String ICON_REPO_ADDRESS_TOKEN = "[TOKEN]";
     private static final String CHAIN_REPO_ADDRESS_TOKEN = "[CHAIN]";
     private static final String TOKEN_LOGO = "/logo.png";
-    public static final String ALPHAWALLET_REPO_NAME = "https://raw.githubusercontent.com/alphawallet/iconassets/master/";
+    public static final String SETLONE_REPO_NAME = "https://raw.githubusercontent.com/setlone/iconassets/master/";
     public static final String TRUST_ICON_REPO_BASE = "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/";
     private static final String TRUST_ICON_REPO = TRUST_ICON_REPO_BASE + CHAIN_REPO_ADDRESS_TOKEN + "/assets/" + ICON_REPO_ADDRESS_TOKEN + TOKEN_LOGO;
-    private static final String ALPHAWALLET_ICON_REPO = ALPHAWALLET_REPO_NAME + ICON_REPO_ADDRESS_TOKEN + TOKEN_LOGO;
+    private static final String SETLONE_ICON_REPO = SETLONE_REPO_NAME + ICON_REPO_ADDRESS_TOKEN + TOKEN_LOGO;
     private static final String ATTESTATION_PREFIX = "#attestation=";
     private static final String SMART_PASS_PREFIX = "ticket=";
     private static final String TOKEN_ID_CODE = "{id}";
@@ -134,7 +134,7 @@ public class Utils
     {
         return url.startsWith(C.DAPP_PREFIX_TELEPHONE) ||
                 url.startsWith(C.DAPP_PREFIX_MAILTO) ||
-                url.startsWith(C.DAPP_PREFIX_ALPHAWALLET) ||
+                url.startsWith(C.DAPP_PREFIX_SETLONE) ||
                 url.startsWith(C.DAPP_PREFIX_MAPS) ||
                 url.startsWith(C.DAPP_PREFIX_WALLETCONNECT) ||
                 url.startsWith(C.DAPP_PREFIX_AWALLET);
@@ -929,9 +929,9 @@ public class Utils
     @NotNull
     public static String getTokenAddrFromAWUrl(String url)
     {
-        if (!TextUtils.isEmpty(url) && url.startsWith(ALPHAWALLET_REPO_NAME))
+        if (!TextUtils.isEmpty(url) && url.startsWith(SETLONE_REPO_NAME))
         {
-            int start = ALPHAWALLET_REPO_NAME.length();
+            int start = SETLONE_REPO_NAME.length();
             int end = url.lastIndexOf(TOKEN_LOGO);
             if (end > 0 && end > start)
             {
@@ -968,7 +968,7 @@ public class Utils
     @NotNull
     public static String getTokenImageUrl(String address)
     {
-        return ALPHAWALLET_ICON_REPO.replace(ICON_REPO_ADDRESS_TOKEN, address.toLowerCase());
+        return SETLONE_ICON_REPO.replace(ICON_REPO_ADDRESS_TOKEN, address.toLowerCase());
     }
 
     public static boolean isContractCall(Context context, String operationName)
@@ -978,7 +978,7 @@ public class Utils
 
     private static final String IPFS_PREFIX = "ipfs://";
     private static final String IPFS_DESIGNATOR = "/ipfs/";
-    public static final String IPFS_INFURA_RESOLVER = "https://alphawallet.infura-ipfs.io";
+    public static final String IPFS_INFURA_RESOLVER = "https://setlone.infura-ipfs.io";
     public static final String IPFS_MATCHER = "^Qm[1-9A-Za-z]{44}(\\/.*)?$";
 
     public static boolean isIPFS(String url)
@@ -1232,7 +1232,7 @@ public class Utils
         return string != null ? string.replace("\"", "") : null;
     }
 
-    public static boolean isAlphaWallet(Context context)
+    public static boolean isSetlOne(Context context)
     {
         return context.getPackageName().equals("io.stormbird.wallet");
     }

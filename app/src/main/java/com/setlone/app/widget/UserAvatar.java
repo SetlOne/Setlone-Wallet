@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.ui.widget.entity.AvatarWriteCallback;

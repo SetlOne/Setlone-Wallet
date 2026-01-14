@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 /**
  * Created by James on 20/07/2019.

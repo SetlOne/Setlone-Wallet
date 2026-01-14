@@ -27,7 +27,7 @@ import com.setlone.app.service.TokensService;
 import com.setlone.app.service.TransactionSendHandlerInterface;
 import com.setlone.app.ui.ImportTokenActivity;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

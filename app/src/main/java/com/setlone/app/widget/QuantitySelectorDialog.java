@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.entity.OnQuantityChangedListener;
 import com.setlone.app.ui.widget.entity.QuantitySelectorDialogInterface;
 import com.google.android.material.bottomsheet.BottomSheetDialog;

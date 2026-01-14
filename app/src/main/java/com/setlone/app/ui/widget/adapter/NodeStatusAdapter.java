@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.EthereumNetworkBase;
 import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.widget.TokenIcon;

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Transaction;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.util.BalanceUtils;

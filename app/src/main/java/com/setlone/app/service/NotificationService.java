@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.HomeActivity;
 
 /**
@@ -28,7 +28,7 @@ import com.setlone.app.ui.HomeActivity;
 public class NotificationService
 {
     private final Context context;
-    private final String CHANNEL_ID = "ALPHAWALLET CHANNEL";
+    private final String CHANNEL_ID = "SETLONE CHANNEL";
     private final int NOTIFICATION_ID = 314151024;
     public static final String AWSTARTUP = "AW://";
 

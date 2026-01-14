@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.EthereumNetworkRepository;
 import com.setlone.app.web3.entity.Address;
 
@@ -73,7 +73,7 @@ public class JsInjectorClient {
 
     public String providerJs(Context context)
     {
-        return loadFile(context, R.raw.alphawallet_min);
+        return loadFile(context, R.raw.setlone_min);
     }
 
     String injectWeb3TokenInit(Context ctx, String view, String tokenContent, BigInteger tokenId)

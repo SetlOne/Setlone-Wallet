@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import org.w3c.dom.Text;
 

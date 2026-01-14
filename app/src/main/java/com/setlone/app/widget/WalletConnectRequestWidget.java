@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.EthereumNetworkBase;
 import com.setlone.app.ui.widget.entity.WalletConnectWidgetCallback;
 import com.setlone.app.walletconnect.entity.WCPeerMeta;

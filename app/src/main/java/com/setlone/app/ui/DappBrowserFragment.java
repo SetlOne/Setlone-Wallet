@@ -1,6 +1,6 @@
 package com.setlone.app.ui;
 
-import static com.setlone.app.C.ALPHAWALLET_WEB;
+import static com.setlone.app.C.SETLONE_WEB;
 import static com.setlone.app.C.ETHER_DECIMALS;
 import static com.setlone.app.C.RESET_TOOLBAR;
 import static com.setlone.app.entity.tokens.Token.TOKEN_BALANCE_PRECISION;
@@ -61,7 +61,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.CryptoFunctions;
@@ -115,7 +115,7 @@ import com.setlone.app.widget.ActionSheetSignDialog;
 import com.setlone.app.widget.AddressBar;
 import com.setlone.app.widget.AddressBarListener;
 import com.setlone.app.widget.TestNetDialog;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.EthereumMessage;
 import com.setlone.token.entity.EthereumTypedMessage;
 import com.setlone.token.entity.SalesOrderMalformed;
@@ -941,7 +941,7 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
                     intent.setData(Uri.parse(url));
                     startActivity(Intent.createChooser(intent, "Email: " + prefixCheck[1]));
                     return true;
-                case C.DAPP_PREFIX_ALPHAWALLET:
+                case C.DAPP_PREFIX_SETLONE:
                     if (prefixCheck[1].equals(C.DAPP_SUFFIX_RECEIVE))
                     {
                         viewModel.showMyAddress(getContext());
@@ -1494,8 +1494,8 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
         // ensure the URL is whitelisted, that is it is featured in the dapp list, and check if the app is in developer override mode
         if (!viewModel.getDeveloperOverrideState(getContext()) && !DappBrowserUtils.isInDappsList(this.getContext(), urlText))
         {
-            //reset url string back to AlphaWallet
-            setUrlText(ALPHAWALLET_WEB);
+            //reset url string back to SetlOne
+            setUrlText(SETLONE_WEB);
 
             //display a warning dialog
             displayError(R.string.title_dialog_error, R.string.not_recommended_to_visit);

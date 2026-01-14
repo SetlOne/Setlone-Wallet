@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.CryptoFunctions;
@@ -55,7 +55,7 @@ import com.setlone.app.widget.FunctionButtonBar;
 import com.setlone.app.widget.InputAddress;
 import com.setlone.app.widget.InputAmount;
 import com.setlone.app.widget.SignTransactionDialog;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.SalesOrderMalformed;
 import com.setlone.token.tools.Convert;
 import com.setlone.token.tools.ParseMagicLink;

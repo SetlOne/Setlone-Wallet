@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Pair;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractInteract;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.EventSync;

@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Transaction;
 import com.setlone.app.entity.TransactionMeta;
 import com.setlone.app.entity.tokens.Token;
@@ -140,7 +140,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
     {
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) supplemental.getLayoutParams();
         layoutParams.setMarginStart(10);
-        String failure = getString(R.string.failed) + " ☹";
+        String failure = getString(R.string.failed) + " ?";
         supplemental.setText(failure);
         supplemental.setTextColor(ContextCompat.getColor(getContext(), R.color.error));
     }

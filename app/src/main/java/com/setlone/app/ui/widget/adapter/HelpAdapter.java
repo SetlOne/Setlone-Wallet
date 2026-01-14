@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.HelpItem;
 import com.setlone.app.ui.widget.entity.HelpSortedItem;
 import com.setlone.app.ui.widget.entity.SortedItem;

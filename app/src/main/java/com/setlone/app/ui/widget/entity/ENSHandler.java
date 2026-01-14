@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.ui.widget.adapter.AutoCompleteAddressAdapter;
 import com.setlone.app.util.ens.AWEnsResolver;

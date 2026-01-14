@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.token.entity.SigReturnType;
 import com.setlone.token.entity.XMLDsigDescriptor;
 import com.google.android.material.appbar.MaterialToolbar;

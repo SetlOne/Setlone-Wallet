@@ -8,7 +8,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.CryptoFunctions;
 import com.setlone.app.util.Hex;
 import com.setlone.app.util.Utils;

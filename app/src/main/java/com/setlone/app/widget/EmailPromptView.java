@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.LayoutRes;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.StandardFunctionInterface;
 import com.setlone.app.repository.KeyProviderFactory;
 import com.setlone.app.util.KeyboardUtils;

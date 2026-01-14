@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractLocator;
 import com.setlone.app.entity.CryptoFunctions;
 import com.setlone.app.entity.ErrorEnvelope;

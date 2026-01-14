@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import static android.view.animation.Animation.INFINITE;
 

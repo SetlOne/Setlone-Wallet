@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.walletconnect.SignType;
 import com.setlone.app.entity.walletconnect.WalletConnectV2SessionItem;
 import com.setlone.app.repository.EthereumNetworkBase;

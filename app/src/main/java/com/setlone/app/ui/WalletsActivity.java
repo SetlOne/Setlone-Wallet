@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.CreateWalletCallbackInterface;
 import com.setlone.app.entity.CustomViewSettings;
 import com.setlone.app.entity.ErrorEnvelope;
@@ -40,9 +40,9 @@ import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.AddWalletView;
 import com.setlone.app.widget.SignTransactionDialog;
 import com.setlone.app.widget.SystemView;
-import com.alphawallet.hardware.HardwareCallback;
-import com.alphawallet.hardware.HardwareDevice;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.HardwareCallback;
+import com.setlone.hardware.HardwareDevice;
+import com.setlone.hardware.SignatureFromKey;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 

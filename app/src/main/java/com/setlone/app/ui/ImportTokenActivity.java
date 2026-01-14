@@ -23,7 +23,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ErrorEnvelope;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.SignAuthenticationCallback;
@@ -38,7 +38,7 @@ import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.AWalletConfirmationDialog;
 import com.setlone.app.widget.CertifiedToolbarView;
 import com.setlone.app.widget.SignTransactionDialog;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.MagicLinkData;
 import com.setlone.token.entity.TicketRange;
 import com.setlone.token.tools.Convert;

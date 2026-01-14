@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class TabUtils {
     public static void setSelectedTabFont(TabLayout tabLayout, TabLayout.Tab tab, Typeface typeface) {

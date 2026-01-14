@@ -1,6 +1,6 @@
 package com.setlone.app.entity;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import java.util.HashMap;
 import java.util.Map;

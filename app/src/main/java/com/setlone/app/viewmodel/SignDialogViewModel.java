@@ -7,7 +7,7 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.interact.GenericWalletInteract;
@@ -15,7 +15,7 @@ import com.setlone.app.repository.PreferenceRepositoryType;
 import com.setlone.app.repository.TransactionRepositoryType;
 import com.setlone.app.service.KeyService;
 import com.setlone.app.ui.widget.entity.ActionSheetCallback;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.Signable;
 
 import javax.inject.Inject;

@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.StandardFunctionInterface;
 import com.setlone.app.entity.TransactionReturn;
@@ -40,7 +40,7 @@ import com.setlone.app.widget.ActionSheetDialog;
 import com.setlone.app.widget.FunctionButtonBar;
 import com.setlone.app.widget.NFTImageView;
 import com.setlone.ethereum.EthereumNetworkBase;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.TSAction;
 
 import java.math.BigInteger;

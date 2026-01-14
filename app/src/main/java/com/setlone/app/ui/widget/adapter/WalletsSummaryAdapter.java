@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.WalletType;
 import com.setlone.app.entity.tokens.Token;

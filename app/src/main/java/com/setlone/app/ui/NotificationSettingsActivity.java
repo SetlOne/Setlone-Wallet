@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.viewmodel.NotificationSettingsViewModel;
 import com.setlone.app.widget.SettingsItemView;

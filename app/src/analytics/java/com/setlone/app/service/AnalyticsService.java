@@ -3,7 +3,7 @@ package com.setlone.app.service;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.ServiceErrorException;
@@ -119,7 +119,9 @@ public class AnalyticsService<T> implements AnalyticsServiceType<T>
                         if (task.isSuccessful())
                         {
                             String token = task.getResult();
-                            mixpanelAPI.getPeople().setPushRegistrationId(token);
+                            // setPushRegistrationId is deprecated/removed in newer Mixpanel versions
+                            // mixpanelAPI.getPeople().setPushRegistrationId(token);
+                            mixpanelAPI.getPeople().set("$push_token", token);
                         }
                     });
         }

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractLocator;
 import com.setlone.app.entity.CustomViewSettings;
 import com.setlone.app.entity.TokenFilter;

@@ -24,7 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.BackupOperationType;
 import com.setlone.app.entity.BackupState;
 import com.setlone.app.entity.CreateWalletCallbackInterface;
@@ -33,7 +33,7 @@ import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.StandardFunctionInterface;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.WalletType;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.app.service.KeyService;
 import com.setlone.app.ui.QRScanning.DisplayUtils;
 import com.setlone.app.viewmodel.BackupKeyViewModel;

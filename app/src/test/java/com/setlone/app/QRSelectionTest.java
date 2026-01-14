@@ -15,8 +15,8 @@ import com.setlone.app.interact.SignatureGenerateInteract;
 import com.setlone.app.repository.TransactionRepositoryType;
 import com.setlone.app.repository.entity.RealmAuxData;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
-import com.alphawallet.hardware.SignatureReturnType;
+import com.setlone.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureReturnType;
 import com.setlone.token.entity.SalesOrderMalformed;
 import com.setlone.token.entity.Signable;
 

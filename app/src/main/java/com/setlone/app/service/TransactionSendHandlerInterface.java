@@ -2,7 +2,7 @@ package com.setlone.app.service;
 
 import com.setlone.app.entity.TransactionReturn;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 /**
  * Created by JB on 2/02/2023.

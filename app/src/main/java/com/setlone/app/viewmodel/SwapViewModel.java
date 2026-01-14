@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ErrorEnvelope;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.TransactionReturn;
@@ -35,7 +35,7 @@ import com.setlone.app.util.BalanceUtils;
 import com.setlone.app.util.Hex;
 import com.setlone.app.web3.entity.Address;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

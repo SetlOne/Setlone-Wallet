@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.BackupTokenCallback;
 import com.setlone.app.entity.ContractLocator;
 import com.setlone.app.entity.FragmentMessenger;

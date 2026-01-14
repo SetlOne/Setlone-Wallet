@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -17,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.TransactionReturn;
 import com.setlone.app.entity.URLLoadInterface;
 import com.setlone.app.web3.entity.Address;
@@ -177,20 +178,60 @@ public class Web3View extends WebView {
     @SuppressLint("SetJavaScriptEnabled")
     public void init()
     {
-        getSettings().setJavaScriptEnabled(true);
-        getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-        getSettings().setBuiltInZoomControls(true);
-        getSettings().setDisplayZoomControls(false);
-        getSettings().setUseWideViewPort(true);
-        getSettings().setLoadWithOverviewMode(true);
-        getSettings().setDomStorageEnabled(true);
-        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        getSettings().setUserAgentString(getSettings().getUserAgentString()
+        WebSettings settings = getSettings();
+        
+        // 기본 JavaScript 및 DOM 설정
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        
+        // 뷰포트 및 렌더링 최적화
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        
+        // 캐시 및 네트워크 최적화
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // AppCache는 Android API 33+에서 완전히 제거됨 - 더 이상 사용 불가
+        
+        // 줌 컨트롤
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setSupportZoom(true);
+        
+        // Mixed Content 허용 (DApp에서 필요할 수 있음)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+        {
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        
+        // 미디어 재생 최적화
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        
+        // 파일 접근 설정
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        
+        // User Agent 설정
+        settings.setUserAgentString(settings.getUserAgentString()
                 + "SetlOne(Platform=Android&AppVersion=" + BuildConfig.VERSION_NAME + ")");
-        WebView.setWebContentsDebuggingEnabled(true); //so devs can debug their scripts/pages
+        
+        // 디버깅 (개발용)
+        WebView.setWebContentsDebuggingEnabled(true);
+        
         setInitialScale(0);
-        getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-        getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        
+        // 하드웨어 가속 레이어 타입 설정 - 성능 향상의 핵심
+        // LAYER_TYPE_HARDWARE는 GPU 가속을 사용하여 애니메이션과 렌더링이 훨씬 부드러워집니다
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
+        {
+            setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        else
+        {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         addJavascriptInterface(new SignCallbackJSInterface(
                 this,
@@ -202,9 +243,25 @@ public class Web3View extends WebView {
                 innerAddChainListener,
                 innerOnWalletActionListener), "alpha");
 
+        // 다크 모드 지원
         if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
         {
-            WebSettingsCompat.setAlgorithmicDarkeningAllowed(getSettings(), true);
+            WebSettingsCompat.setAlgorithmicDarkeningAllowed(settings, true);
+        }
+        
+        // 추가 성능 최적화: 렌더링 우선순위 설정 (deprecated이지만 구형 기기 호환성)
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O)
+        {
+            try
+            {
+                // 구형 API에서만 사용 가능한 메서드
+                java.lang.reflect.Method method = settings.getClass().getMethod("setRenderPriority", WebSettings.RenderPriority.class);
+                method.invoke(settings, WebSettings.RenderPriority.HIGH);
+            }
+            catch (Exception e)
+            {
+                Timber.tag("WEB_VIEW").d("setRenderPriority not available: " + e.getMessage());
+            }
         }
     }
 

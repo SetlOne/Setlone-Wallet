@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.opensea.OpenSeaAsset;
 import com.setlone.app.entity.tokens.Token;

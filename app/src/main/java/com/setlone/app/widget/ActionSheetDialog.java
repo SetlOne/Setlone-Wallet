@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ActionSheetInterface;
 import com.setlone.app.entity.ActionSheetStatus;
 import com.setlone.app.entity.ContractType;
@@ -41,8 +41,8 @@ import com.setlone.app.ui.widget.entity.GasWidgetInterface;
 import com.setlone.app.util.Utils;
 import com.setlone.app.walletconnect.entity.WCPeerMeta;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
-import com.alphawallet.hardware.SignatureReturnType;
+import com.setlone.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureReturnType;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.math.BigDecimal;

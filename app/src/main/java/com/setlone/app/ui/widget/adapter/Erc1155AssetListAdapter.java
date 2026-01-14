@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokens.ERC1155Token;
 import com.setlone.app.ui.widget.OnAssetClickListener;

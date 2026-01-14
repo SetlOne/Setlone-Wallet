@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.interact.GenericWalletInteract;
 import com.setlone.app.repository.PreferenceRepositoryType;
-import com.setlone.app.service.AlphaWalletNotificationService;
+import com.setlone.app.service.SetlOneNotificationService;
 
 import javax.inject.Inject;
 
@@ -20,7 +20,7 @@ import timber.log.Timber;
 public class NotificationSettingsViewModel extends BaseViewModel
 {
     private final GenericWalletInteract genericWalletInteract;
-    private final AlphaWalletNotificationService alphaWalletNotificationService;
+    private final SetlOneNotificationService setlOneNotificationService;
     private final PreferenceRepositoryType preferenceRepository;
 
     private final MutableLiveData<Wallet> wallet = new MutableLiveData<>();
@@ -32,11 +32,11 @@ public class NotificationSettingsViewModel extends BaseViewModel
     @Inject
     NotificationSettingsViewModel(
         GenericWalletInteract genericWalletInteract,
-        AlphaWalletNotificationService alphaWalletNotificationService,
+        SetlOneNotificationService setlOneNotificationService,
         PreferenceRepositoryType preferenceRepository)
     {
         this.genericWalletInteract = genericWalletInteract;
-        this.alphaWalletNotificationService = alphaWalletNotificationService;
+        this.setlOneNotificationService = setlOneNotificationService;
         this.preferenceRepository = preferenceRepository;
 
         prepare();
@@ -56,7 +56,7 @@ public class NotificationSettingsViewModel extends BaseViewModel
 
     public void subscribe(long chainId)
     {
-        disposable = alphaWalletNotificationService.subscribe(chainId)
+        disposable = setlOneNotificationService.subscribe(chainId)
             .observeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
             .subscribe(result -> Timber.d("subscribe result => %s", result), Timber::e);
@@ -64,7 +64,7 @@ public class NotificationSettingsViewModel extends BaseViewModel
 
     public void unsubscribe(long chainId)
     {
-        disposable = alphaWalletNotificationService.unsubscribe(chainId)
+        disposable = setlOneNotificationService.unsubscribe(chainId)
             .observeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
             .subscribe(result -> Timber.d("unsubscribe result => %s", result), Timber::e);
@@ -73,7 +73,7 @@ public class NotificationSettingsViewModel extends BaseViewModel
     // TODO: [Notifications] Delete when unsubscribe is implemented
     public void unsubscribeToTopic(long chainId)
     {
-        alphaWalletNotificationService.unsubscribeToTopic(chainId);
+        setlOneNotificationService.unsubscribeToTopic(chainId);
     }
 
     public boolean isTransactionNotificationsEnabled(String address)

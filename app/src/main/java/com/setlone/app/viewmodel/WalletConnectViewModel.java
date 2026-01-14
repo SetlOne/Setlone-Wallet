@@ -39,7 +39,7 @@ import com.setlone.app.walletconnect.WCSession;
 import com.setlone.app.walletconnect.entity.WCPeerMeta;
 import com.setlone.app.web3.entity.WalletAddEthereumChainObject;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.EthereumTypedMessage;
 import com.setlone.token.entity.Signable;
 

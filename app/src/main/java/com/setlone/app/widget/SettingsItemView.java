@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.util.Utils;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 

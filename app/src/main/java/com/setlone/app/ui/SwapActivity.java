@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.ErrorEnvelope;
@@ -49,7 +49,7 @@ import com.setlone.app.widget.SwapSettingsDialog;
 import com.setlone.app.widget.TokenInfoView;
 import com.setlone.app.widget.TokenSelector;
 import com.setlone.ethereum.EthereumNetworkBase;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.google.android.material.button.MaterialButton;
 
 import org.web3j.utils.Numeric;

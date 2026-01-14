@@ -192,8 +192,12 @@ public class GasService implements ContractGasProvider
         String gasOracleAPI = EthereumNetworkRepository.getEtherscanGasOracle(currentChainId);
         if (!TextUtils.isEmpty(gasOracleAPI))
         {
-            if (!keyFail && gasOracleAPI.contains("etherscan")) gasOracleAPI += ETHERSCAN_API_KEY;
-            if (!keyFail && gasOracleAPI.contains("polygonscan")) gasOracleAPI += POLYGONSCAN_API_KEY;
+            // Etherscan V2 API uses a single endpoint for all chains (Ethereum, Polygon, Base, Arbitrum, etc.)
+            // All Etherscan-family chains now use the same Etherscan API key
+            if (!keyFail && (gasOracleAPI.contains("etherscan") || gasOracleAPI.contains("api.etherscan.io/v2/api")))
+            {
+                gasOracleAPI += ETHERSCAN_API_KEY;
+            }
             return updateEtherscanGasPrices(gasOracleAPI);
         }
         else

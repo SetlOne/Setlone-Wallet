@@ -6,7 +6,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class EmptyTransactionsView extends FrameLayout {
 

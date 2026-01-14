@@ -17,7 +17,7 @@ import android.widget.SeekBar;
 import androidx.appcompat.widget.AppCompatSeekBar;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.EIP1559FeeOracleResult;
 import com.setlone.app.ui.widget.entity.GasSettingsCallback;
 import com.setlone.app.ui.widget.entity.GasSpeed;

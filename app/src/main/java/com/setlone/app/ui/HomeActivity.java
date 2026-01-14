@@ -18,11 +18,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -32,6 +35,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -45,7 +50,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.ContractLocator;
 import com.setlone.app.entity.CustomViewSettings;
@@ -78,10 +83,10 @@ import com.setlone.app.walletconnect.AWWalletConnectClient;
 import com.setlone.app.web3.entity.Web3Transaction;
 import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.AWalletConfirmationDialog;
+import com.setlone.app.widget.BackupWalletShowcaseDialog;
 import com.setlone.app.widget.SignTransactionDialog;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.Signable;
-import com.github.florent37.tutoshowcase.TutoShowcase;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -122,7 +127,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     private ImageView successImage;
     private HomeReceiver homeReceiver;
     private String walletTitle;
-    private TutoShowcase backupWalletDialog;
+    private BackupWalletShowcaseDialog backupWalletDialog;
     private boolean isForeground;
     private volatile boolean tokenClicked = false;
     private String openLink = null;
@@ -162,7 +167,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case ON_CREATE:
                 break;
             case ON_START:
-                Timber.tag("LIFE").d("AlphaWallet into foreground");
+                Timber.tag("LIFE").d("SetlOne into foreground");
                 handler.postDelayed(() -> {
                     if (viewModel != null)
                     {
@@ -175,7 +180,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case ON_PAUSE:
                 break;
             case ON_STOP:
-                Timber.tag("LIFE").d("AlphaWallet into background");
+                Timber.tag("LIFE").d("SetlOne into background");
                 if (viewModel != null && !tokenClicked) viewModel.stopTransactionUpdate();
                 if (viewModel != null) viewModel.outOfFocus();
                 isForeground = false;
@@ -232,6 +237,9 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
         viewModel.setCurrencyAndLocale(this);
         viewModel.tryToShowWhatsNewDialog(this);
         setContentView(R.layout.activity_home);
+
+        // HomeActivity는 특별한 레이아웃 구조를 가지므로 자체 setupWindowInsets() 사용
+        setupHomeWindowInsets();
 
         initViews();
         toolbar();
@@ -521,31 +529,27 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             //check if wallet was imported - in which case no need to display
             if (!walletImported)
             {
-                int background = ContextCompat.getColor(getApplicationContext(), R.color.translucent_dark);
-                int statusBarColor = getWindow().getStatusBarColor();
-                backupWalletDialog = TutoShowcase.from(this);
-                backupWalletDialog.setContentView(R.layout.showcase_backup_wallet)
-                        .setBackgroundColor(background)
-                        .onClickContentView(R.id.btn_close, view ->
-                        {
-                            getWindow().setStatusBarColor(statusBarColor);
-                            backupWalletDialog.dismiss();
-                        })
-                        .onClickContentView(R.id.showcase_layout, view ->
-                        {
-                            getWindow().setStatusBarColor(statusBarColor);
-                            backupWalletDialog.dismiss();
-                        })
-                        .on(R.id.settings_tab)
-                        .addCircle()
-                        .onClick(v ->
-                        {
-                            getWindow().setStatusBarColor(statusBarColor);
-                            backupWalletDialog.dismiss();
-                            showPage(SETTINGS);
-                        });
-                backupWalletDialog.show();
-                getWindow().setStatusBarColor(background);
+                int originalStatusBarColor = getWindow().getStatusBarColor();
+                
+                // DialogFragment로 TutoShowcase 대체
+                backupWalletDialog = BackupWalletShowcaseDialog.newInstance();
+                backupWalletDialog.setOnShowcaseDismissedListener(new BackupWalletShowcaseDialog.OnShowcaseDismissedListener()
+                {
+                    @Override
+                    public void onShowcaseDismissed()
+                    {
+                        getWindow().setStatusBarColor(originalStatusBarColor);
+                    }
+
+                    @Override
+                    public void onSettingsClicked()
+                    {
+                        getWindow().setStatusBarColor(originalStatusBarColor);
+                        showPage(SETTINGS);
+                    }
+                });
+                
+                backupWalletDialog.show(getSupportFragmentManager(), "BackupWalletShowcase");
             }
             viewModel.setFindWalletAddressDialogShown(true);
         }
@@ -758,9 +762,9 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             if (warns < 3)
             {
                 AWalletConfirmationDialog cDialog = new AWalletConfirmationDialog(this);
-                cDialog.setTitle(R.string.alphawallet_update);
+                cDialog.setTitle(R.string.setlone_update);
                 cDialog.setCancelable(true);
-                cDialog.setSmallText("Using an old version of Alphawallet. Please update from the Play Store or Alphawallet website.");
+                cDialog.setSmallText("Using an old version of Setlone. Please update from the Play Store or Setlone website.");
                 cDialog.setPrimaryButtonText(R.string.ok);
                 cDialog.setPrimaryButtonListener(v ->
                 {
@@ -1091,9 +1095,58 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
 
     private void showSystemUI()
     {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         WindowInsetsControllerCompat inset = new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
         inset.show(WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.navigationBars());
+    }
+
+    /**
+     * Edge-to-edge 디스플레이: WindowInsets를 적용하여 시스템 바 공간 확보
+     * HomeActivity는 특별한 레이아웃 구조(CoordinatorLayout, 하단 네비게이션)를 가지므로 별도 처리
+     */
+    private void setupHomeWindowInsets()
+    {
+        View rootView = findViewById(android.R.id.content);
+        if (rootView != null)
+        {
+            ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, windowInsets) -> {
+                Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+                
+                // 상단 상태바 공간 확보
+                int statusBarHeight = insets.top;
+                // 하단 네비게이션 바 공간 확보
+                int navigationBarHeight = insets.bottom;
+                
+                // CoordinatorLayout에 패딩 적용
+                View coordinatorLayout = findViewById(R.id.coordinator_layout);
+                if (coordinatorLayout == null)
+                {
+                    // CoordinatorLayout이 없으면 rootView에 직접 적용
+                    coordinatorLayout = rootView.getRootView();
+                }
+                
+                if (coordinatorLayout != null)
+                {
+                    coordinatorLayout.setPadding(
+                        coordinatorLayout.getPaddingLeft(),
+                        statusBarHeight,
+                        coordinatorLayout.getPaddingRight(),
+                        navigationBarHeight
+                    );
+                }
+                
+                // 하단 네비게이션 뷰에도 마진 적용
+                View navView = findViewById(R.id.nav);
+                if (navView != null && navView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)
+                {
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) navView.getLayoutParams();
+                    params.bottomMargin = navigationBarHeight;
+                    navView.setLayoutParams(params);
+                }
+                
+                return windowInsets;
+            });
+        }
     }
 
     private void handleDeeplink(String importData, Intent startIntent)

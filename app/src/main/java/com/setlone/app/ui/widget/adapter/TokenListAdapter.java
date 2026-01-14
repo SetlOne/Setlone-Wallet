@@ -19,7 +19,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.KnownContract;
 import com.setlone.app.entity.TokenManageType;
 import com.setlone.app.entity.UnknownToken;

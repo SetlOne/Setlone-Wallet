@@ -2,7 +2,7 @@ package com.setlone.app.viewmodel;
 
 import android.view.View;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.WalletPage;
 import com.setlone.app.ui.BaseActivity;
 import com.setlone.app.widget.AWalletBottomNavigationView;

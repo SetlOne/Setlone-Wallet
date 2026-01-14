@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

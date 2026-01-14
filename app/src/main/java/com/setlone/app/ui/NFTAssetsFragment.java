@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokens.Token;

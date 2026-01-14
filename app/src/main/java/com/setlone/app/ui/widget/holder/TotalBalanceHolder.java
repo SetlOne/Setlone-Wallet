@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

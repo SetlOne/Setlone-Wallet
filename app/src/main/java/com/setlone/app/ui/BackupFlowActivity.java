@@ -15,7 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.BackupOperationType;
 import com.setlone.app.entity.BackupState;
 import com.setlone.app.entity.StandardFunctionInterface;

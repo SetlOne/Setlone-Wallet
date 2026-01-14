@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.api.v1.entity.ApiV1;
 import com.setlone.app.api.v1.entity.Method;
 import com.setlone.app.api.v1.entity.request.ApiV1Request;
@@ -19,7 +19,7 @@ import com.setlone.app.api.v1.entity.request.SignPersonalMessageRequest;
 import com.setlone.app.entity.ErrorEnvelope;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.Wallet;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.app.util.Utils;
 import com.setlone.app.viewmodel.ApiV1ViewModel;
 import com.setlone.app.widget.AWalletAlertDialog;

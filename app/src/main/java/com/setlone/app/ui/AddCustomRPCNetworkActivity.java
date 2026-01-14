@@ -11,7 +11,7 @@ import android.webkit.URLUtil;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.StandardFunctionInterface;

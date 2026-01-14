@@ -6,7 +6,7 @@ import static com.setlone.app.repository.TokensRealmSource.attestationDatabaseKe
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.EasAttestation;
 import com.setlone.app.entity.nftassets.NFTAsset;

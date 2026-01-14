@@ -32,7 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokens.Attestation;

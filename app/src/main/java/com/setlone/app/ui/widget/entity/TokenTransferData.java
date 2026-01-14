@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ActivityMeta;
 import com.setlone.app.entity.Transaction;
 import com.setlone.app.entity.tokens.Token;

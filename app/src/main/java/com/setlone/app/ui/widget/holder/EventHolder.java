@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.AdapterCallback;
 import com.setlone.app.entity.EventMeta;
 import com.setlone.app.entity.Transaction;

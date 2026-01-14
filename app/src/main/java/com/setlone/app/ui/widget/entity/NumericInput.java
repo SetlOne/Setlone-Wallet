@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
-import com.alphawallet.app.BuildConfig;
-import com.alphawallet.app.R;
+import com.setlone.app.BuildConfig;
+import com.setlone.app.R;
 
 import java.math.BigDecimal;
 import java.util.regex.Matcher;

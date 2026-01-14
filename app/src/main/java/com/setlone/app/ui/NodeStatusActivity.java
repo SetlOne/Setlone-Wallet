@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.EthereumNetworkRepository;
 import com.setlone.app.ui.widget.adapter.NodeStatusAdapter;
 import com.setlone.app.viewmodel.NodeStatusViewModel;

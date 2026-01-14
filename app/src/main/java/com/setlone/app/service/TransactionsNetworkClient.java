@@ -15,7 +15,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.CovalentTransaction;
 import com.setlone.app.entity.EtherscanEvent;
@@ -262,6 +262,30 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
             return new EtherscanTransaction[0];
         }
 
+        // Check for V2 API error messages
+        if (stateData.has("message") && stateData.has("result"))
+        {
+            String message = stateData.optString("message", "");
+            if (message.contains("deprecated") || message.contains("V1") || message.contains("V2"))
+            {
+                Timber.w("Etherscan API V1 deprecation warning: " + message);
+                // Try to parse result anyway, might still be valid
+            }
+        }
+
+        // Handle V2 API response format
+        Object resultObj = stateData.opt("result");
+        if (resultObj instanceof String)
+        {
+            String resultStr = (String) resultObj;
+            // If result is an error message string, return empty array
+            if (resultStr.contains("deprecated") || resultStr.contains("V1") || resultStr.contains("V2"))
+            {
+                Timber.w("Etherscan API error: " + resultStr);
+                return new EtherscanTransaction[0];
+            }
+        }
+
         JSONArray orders = stateData.getJSONArray("result");
         return gson.fromJson(orders.toString(), EtherscanTransaction[].class);
     }
@@ -299,6 +323,31 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
     private EtherscanEvent[] getEtherscanEvents(String response) throws JSONException
     {
         JSONObject stateData = new JSONObject(response);
+        
+        // Check for V2 API error messages
+        if (stateData.has("message") && stateData.has("result"))
+        {
+            String message = stateData.optString("message", "");
+            if (message.contains("deprecated") || message.contains("V1") || message.contains("V2"))
+            {
+                Timber.w("Etherscan API V1 deprecation warning: " + message);
+                // Try to parse result anyway, might still be valid
+            }
+        }
+        
+        // Handle V2 API response format
+        Object resultObj = stateData.opt("result");
+        if (resultObj instanceof String)
+        {
+            String resultStr = (String) resultObj;
+            // If result is an error message string, return empty array
+            if (resultStr.contains("deprecated") || resultStr.contains("V1") || resultStr.contains("V2"))
+            {
+                Timber.w("Etherscan API error: " + resultStr);
+                return new EtherscanEvent[0];
+            }
+        }
+        
         JSONArray orders = stateData.getJSONArray("result");
         return gson.fromJson(orders.toString(), EtherscanEvent[].class);
     }
@@ -356,6 +405,13 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
         {
             StringBuilder sb = new StringBuilder();
             sb.append(networkInfo.etherscanAPI);
+            // Etherscan V2 API requires chainid parameter
+            if (networkInfo.etherscanAPI.contains("api.etherscan.io/v2/api"))
+            {
+                sb.append("chainid=");
+                sb.append(networkInfo.chainId);
+                sb.append("&");
+            }
             sb.append("module=account&action=txlist&address=");
             sb.append(tokenAddress);
             if (ascending)
@@ -684,11 +740,28 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
         String result = JSON_EMPTY_RESULT;
         if (lowerBlock == 0) lowerBlock = 1;
 
-        String fullUrl = networkInfo.etherscanAPI + "module=account&action=" + queryType +
-            "&startblock=" + lowerBlock + "&endblock=" + upperBlock +
-            "&address=" + walletAddress +
-            "&page=1&offset=" + TRANSFER_RESULT_MAX +
-            "&sort=desc" + getNetworkAPIToken(networkInfo);
+        StringBuilder sb = new StringBuilder();
+        sb.append(networkInfo.etherscanAPI);
+        // Etherscan V2 API requires chainid parameter
+        if (networkInfo.etherscanAPI.contains("api.etherscan.io/v2/api"))
+        {
+            sb.append("chainid=");
+            sb.append(networkInfo.chainId);
+            sb.append("&");
+        }
+        sb.append("module=account&action=");
+        sb.append(queryType);
+        sb.append("&startblock=");
+        sb.append(lowerBlock);
+        sb.append("&endblock=");
+        sb.append(upperBlock);
+        sb.append("&address=");
+        sb.append(walletAddress);
+        sb.append("&page=1&offset=");
+        sb.append(TRANSFER_RESULT_MAX);
+        sb.append("&sort=desc");
+        sb.append(getNetworkAPIToken(networkInfo));
+        String fullUrl = sb.toString();
 
         if (networkInfo.isCustom && !Utils.isValidUrl(networkInfo.etherscanAPI))
         {
@@ -723,17 +796,19 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
 
     private String getNetworkAPIToken(NetworkInfo networkInfo)
     {
-        if (networkInfo.etherscanAPI.contains("etherscan") /*|| networkInfo.etherscanAPI.contains("basescan.org")*/)
+        // Etherscan V2 API uses a single endpoint for all chains (Ethereum, Polygon, Base, Arbitrum, etc.)
+        // All Etherscan-family chains now use the same Etherscan API key
+        if (networkInfo.etherscanAPI.contains("api.etherscan.io/v2/api"))
+        {
+            return ETHERSCAN_API_KEY;
+        }
+        else if (networkInfo.etherscanAPI.contains("etherscan"))
         {
             return ETHERSCAN_API_KEY;
         }
         else if (networkInfo.chainId == BINANCE_MAIN_ID)
         {
             return BSC_EXPLORER_API_KEY;
-        }
-        else if (networkInfo.chainId == POLYGON_ID || networkInfo.chainId == POLYGON_TEST_ID || networkInfo.chainId == POLYGON_AMOY_ID)
-        {
-            return POLYGONSCAN_API_KEY;
         }
         else if (networkInfo.chainId == AURORA_MAINNET_ID || networkInfo.chainId == AURORA_TESTNET_ID)
         {

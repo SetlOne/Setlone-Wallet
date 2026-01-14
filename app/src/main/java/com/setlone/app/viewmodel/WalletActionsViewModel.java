@@ -16,7 +16,7 @@ import com.setlone.app.interact.ExportWalletInteract;
 import com.setlone.app.interact.FetchWalletsInteract;
 import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.router.HomeRouter;
-import com.setlone.app.service.AlphaWalletNotificationService;
+import com.setlone.app.service.SetlOneNotificationService;
 import com.setlone.app.util.ens.AWEnsResolver;
 import com.setlone.ethereum.EthereumNetworkBase;
 
@@ -37,7 +37,7 @@ public class WalletActionsViewModel extends BaseViewModel
     private final DeleteWalletInteract deleteWalletInteract;
     private final ExportWalletInteract exportWalletInteract;
     private final FetchWalletsInteract fetchWalletsInteract;
-    private final AlphaWalletNotificationService alphaWalletNotificationService;
+    private final SetlOneNotificationService setlOneNotificationService;
     private final MutableLiveData<Integer> saved = new MutableLiveData<>();
     private final MutableLiveData<Integer> walletCount = new MutableLiveData<>();
     private final MutableLiveData<Boolean> deleted = new MutableLiveData<>();
@@ -53,13 +53,13 @@ public class WalletActionsViewModel extends BaseViewModel
         DeleteWalletInteract deleteWalletInteract,
         ExportWalletInteract exportWalletInteract,
         FetchWalletsInteract fetchWalletsInteract,
-        AlphaWalletNotificationService alphaWalletNotificationService
+        SetlOneNotificationService setlOneNotificationService
     )
     {
         this.deleteWalletInteract = deleteWalletInteract;
         this.exportWalletInteract = exportWalletInteract;
         this.fetchWalletsInteract = fetchWalletsInteract;
-        this.alphaWalletNotificationService = alphaWalletNotificationService;
+        this.setlOneNotificationService = setlOneNotificationService;
         this.homeRouter = homeRouter;
     }
 
@@ -100,13 +100,13 @@ public class WalletActionsViewModel extends BaseViewModel
     {
         // TODO: [Notifications] Reactivate this when unsubscribe is implemented
 //        notificationDisposable =
-//            alphaWalletNotificationService.unsubscribe(EthereumNetworkBase.MAINNET_ID)
+//            setlOneNotificationService.unsubscribe(EthereumNetworkBase.MAINNET_ID)
 //                .observeOn(Schedulers.io())
 //                .subscribeOn(Schedulers.io())
 //                .subscribe(result -> Timber.d("unsubscribe result => " + result), Timber::e);
 
         // For now, unsubscribe to firebase topic
-        alphaWalletNotificationService.unsubscribeToTopic(EthereumNetworkBase.MAINNET_ID);
+        setlOneNotificationService.unsubscribeToTopic(EthereumNetworkBase.MAINNET_ID);
     }
 
     public void fetchWalletCount()

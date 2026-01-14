@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alphawallet.token.entity.*;
+import com.setlone.token.entity.*;
 import com.setlone.token.entity.ChainSpec;
 import com.setlone.token.entity.CryptoFunctionsInterface;
 import com.setlone.token.entity.EthereumReadBuffer;

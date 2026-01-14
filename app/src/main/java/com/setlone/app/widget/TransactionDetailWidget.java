@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ActionSheetInterface;
 import com.setlone.app.service.SignatureLookupService;
 import com.setlone.app.web3.entity.Web3Transaction;

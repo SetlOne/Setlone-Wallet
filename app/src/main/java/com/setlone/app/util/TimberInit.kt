@@ -1,6 +1,6 @@
 package com.setlone.app.util
 
-import com.alphawallet.app.BuildConfig
+import com.setlone.app.BuildConfig
 import timber.log.Timber
 
 object TimberInit

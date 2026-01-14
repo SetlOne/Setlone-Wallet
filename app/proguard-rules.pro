@@ -66,11 +66,11 @@
 -keep class wallet.core.jni.proto.** { *; }
 
 #entities, jsInterface & listeners
--keep class com.alphawallet.token.** { *; }
--keep class com.alphawallet.app.walletconnect.** { *; }
--keep class com.alphawallet.app.web3.** { *; }
--keep class com.alphawallet.app.web3j.** { *; }
--keep class com.alphawallet.app.entity.** { *; }
+-keep class com.setlone.token.** { *; }
+-keep class com.setlone.app.walletconnect.** { *; }
+-keep class com.setlone.app.web3.** { *; }
+-keep class com.setlone.app.web3j.** { *; }
+-keep class com.setlone.app.entity.** { *; }
 -keep class io.stormbird.wallet.model.api.** { *; }
 
 -keep public class java.beans.* { *; }

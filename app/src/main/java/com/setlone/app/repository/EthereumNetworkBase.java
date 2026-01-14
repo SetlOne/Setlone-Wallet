@@ -58,7 +58,7 @@ import android.text.TextUtils;
 import android.util.LongSparseArray;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractLocator;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.CustomViewSettings;
@@ -98,7 +98,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 
     public static final String DEFAULT_INFURA_KEY = "da3717f25f824cc1baa32d812386d93f";
     /* constructing URLs from BuildConfig. In the below area you will see hardcoded key like da3717...
-       These hardcoded keys are fallbacks used by AlphaWallet forks.
+       These hardcoded keys are fallbacks used by SetlOne forks.
 
        Also note: If you are running your own node and wish to use that; currently it must be hardcoded here
        If you wish your node to be the primary node that AW checks then replace the relevant ..._RPC_URL below
@@ -167,7 +167,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     public static final String BASE_TEST_RPC = usesProductionKey ? "https://base-sepolia.infura.io/v3/" + keyProvider.getInfuraKey() : BASE_FREE_TESTNET_RPC;
     public static final String BASE_TEST_FALLBACK_RPC = usesProductionKey ? BASE_FREE_TESTNET_RPC : "https://sepolia.base.org";
 
-    //Note that AlphaWallet now uses a double node configuration. See class AWHttpService comment 'try primary node'.
+    //Note that SetlOne now uses a double node configuration. See class AWHttpService comment 'try primary node'.
     //If you supply a main RPC and secondary it will try the secondary if the primary node times out after 10 seconds.
     //See the declaration of NetworkInfo - it has a member backupNodeUrl. Put your secondary node here.
 
@@ -469,7 +469,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(MAINNET_ID, new NetworkInfo(C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
                     CHAIN_CONFIG_RPC.get(MAINNET_ID),
                     "https://cn.etherscan.com/tx/", MAINNET_ID,
-                    "https://api-cn.etherscan.com/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(CLASSIC_ID, new NetworkInfo(C.CLASSIC_NETWORK_NAME, C.ETC_SYMBOL,
                     CHAIN_CONFIG_RPC.get(CLASSIC_ID),
                     "https://blockscout.com/etc/mainnet/tx/", CLASSIC_ID,
@@ -480,7 +480,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(GOERLI_ID, new NetworkInfo(C.GOERLI_NETWORK_NAME, C.GOERLI_SYMBOL,
                     new String[] {GOERLI_RPC_URL, GOERLI_FALLBACK_RPC_URL},
                     "https://goerli.etherscan.io/tx/", GOERLI_ID,
-                    "https://api-goerli.etherscan.io/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(BINANCE_TEST_ID, new NetworkInfo(C.BINANCE_TEST_NETWORK, C.BINANCE_SYMBOL,
                     CHAIN_CONFIG_RPC.get(BINANCE_TEST_ID),
                     "https://testnet.bscscan.com/tx/", BINANCE_TEST_ID,
@@ -508,19 +508,19 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(POLYGON_ID, new NetworkInfo(C.POLYGON_NETWORK, C.POLYGON_SYMBOL,
                     CHAIN_CONFIG_RPC.get(POLYGON_ID),
                     "https://polygonscan.com/tx/", POLYGON_ID,
-                    "https://api.polygonscan.com/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(POLYGON_TEST_ID, new NetworkInfo(C.POLYGON_TEST_NETWORK, C.POLYGON_SYMBOL,
                     new String[] {FREE_MUMBAI_RPC_URL},
                     "https://mumbai.polygonscan.com/tx/", POLYGON_TEST_ID,
-                    "https://api-testnet.polygonscan.com/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(POLYGON_AMOY_ID, new NetworkInfo(C.AMOY_TESTNET_NAME, C.AMOY_TESTNET_SYMBOL,
                     CHAIN_CONFIG_RPC.get(POLYGON_AMOY_ID),
                     "https://amoy.polygonscan.com/tx/", POLYGON_AMOY_ID,
-                    "https://api-amoy.polygonscan.com/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(OPTIMISTIC_MAIN_ID, new NetworkInfo(C.OPTIMISTIC_NETWORK, C.ETH_SYMBOL,
                     CHAIN_CONFIG_RPC.get(OPTIMISTIC_MAIN_ID),
                     "https://optimistic.etherscan.io/tx/", OPTIMISTIC_MAIN_ID,
-                    "https://api-optimistic.etherscan.io/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(CRONOS_MAIN_ID, new NetworkInfo(C.CRONOS_MAIN_NETWORK, C.CRONOS_SYMBOL,
                     CHAIN_CONFIG_RPC.get(CRONOS_MAIN_ID),
                     "https://cronos.org/explorer/tx/", CRONOS_MAIN_ID,
@@ -532,7 +532,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(ARBITRUM_MAIN_ID, new NetworkInfo(C.ARBITRUM_ONE_NETWORK, C.ARBITRUM_SYMBOL,
                     CHAIN_CONFIG_RPC.get(ARBITRUM_MAIN_ID),
                     "https://arbiscan.io/tx/", ARBITRUM_MAIN_ID,
-                    "https://api.arbiscan.io/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(PALM_ID, new NetworkInfo(C.PALM_NAME, C.PALM_SYMBOL,
                     CHAIN_CONFIG_RPC.get(PALM_ID),
                     "https://explorer.palm.io/tx/", PALM_ID,
@@ -572,11 +572,11 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(SEPOLIA_TESTNET_ID, new NetworkInfo(C.SEPOLIA_TESTNET_NAME, C.SEPOLIA_SYMBOL,
                     CHAIN_CONFIG_RPC.get(SEPOLIA_TESTNET_ID),
                     "https://sepolia.etherscan.io/tx/", SEPOLIA_TESTNET_ID,
-                    "https://api-sepolia.etherscan.io/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(ARBITRUM_TEST_ID, new NetworkInfo(C.ARBITRUM_TESTNET_NAME, C.ARBITRUM_SYMBOL,
                     CHAIN_CONFIG_RPC.get(ARBITRUM_TEST_ID),
                     "https://testnet.arbiscan.io/tx/", ARBITRUM_TEST_ID,
-                    "https://api-goerli.arbiscan.io/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(OKX_ID, new NetworkInfo(C.OKX_NETWORK_NAME, C.OKX_SYMBOL,
                     CHAIN_CONFIG_RPC.get(OKX_ID),
                 "https://www.oklink.com/en/okc/tx/", OKX_ID,
@@ -601,15 +601,15 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(HOLESKY_ID, new NetworkInfo(C.HOLESKY_TESTNET_NAME, C.HOLESKY_TEST_SYMBOL,
                     CHAIN_CONFIG_RPC.get(HOLESKY_ID),
                     "https://holesky.etherscan.io/tx/", HOLESKY_ID,
-                    "https://api-holesky.etherscan.io/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(BASE_MAINNET_ID, new NetworkInfo(C.BASE_MAINNET_NAME, C.ETH_SYMBOL,
                     CHAIN_CONFIG_RPC.get(BASE_MAINNET_ID),
                     "https://basescan.org/tx/", BASE_MAINNET_ID,
-                    "https://api.basescan.org/api?"));
+                    "https://api.etherscan.io/v2/api?"));
             put(BASE_TESTNET_ID, new NetworkInfo(C.BASE_TESTNET_NAME, C.ETH_SYMBOL,
                     CHAIN_CONFIG_RPC.get(BASE_TESTNET_ID),
                     "https://sepolia.basescan.org/tx/", BASE_TESTNET_ID,
-                    "https://api-sepolia.basescan.org/api?"));
+                    "https://api.etherscan.io/v2/api?"));
 
             put(MANTLE_MAINNET_ID, new NetworkInfo(C.MANTLE_MAINNET_NAME, C.MANTLE_SYMBOL,
                     CHAIN_CONFIG_RPC.get(MANTLE_MAINNET_ID),
@@ -801,7 +801,16 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     {
         if (hasEtherscanGasOracleAPI.contains(chainId) && networkMap.indexOfKey(chainId) >= 0)
         {
-            return networkMap.get(chainId).etherscanAPI + GAS_API;
+            String etherscanAPI = networkMap.get(chainId).etherscanAPI;
+            // Etherscan V2 API requires chainid parameter
+            if (etherscanAPI.contains("api.etherscan.io/v2/api"))
+            {
+                return etherscanAPI + "chainid=" + chainId + "&" + GAS_API;
+            }
+            else
+            {
+                return etherscanAPI + GAS_API;
+            }
         }
         else
         {

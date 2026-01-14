@@ -7,7 +7,7 @@ import android.widget.RatingBar;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.PreferenceRepositoryType;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;

@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.lifi.Quote;
 import com.setlone.app.util.BalanceUtils;
 import com.setlone.app.util.Hex;

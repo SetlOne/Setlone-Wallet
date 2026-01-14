@@ -25,7 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.MutableLiveData;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.ContractLocator;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.EasAttestation;
@@ -152,7 +152,7 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
     private final RealmManager realmManager;
     private final TokensService tokensService;
     private final TokenLocalSource tokenLocalSource;
-    private final AlphaWalletService alphaWalletService;
+    private final SetlOneService setlOneService;
     private TokenDefinition cachedDefinition = null;
     private final ConcurrentHashMap<String, EventDefinition> eventList = new ConcurrentHashMap<>(); //List of events built during file load
     private final Semaphore assetLoadingLock;  // used to block if someone calls getAssetDefinitionASync() while loading
@@ -171,14 +171,14 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
      *  This is the design pattern of the app. See class RepositoriesModule for constructors which are called at App init only */
     public AssetDefinitionService  (IPFSServiceType ipfsSvs, Context ctx, NotificationService svs,
                                     RealmManager rm, TokensService tokensService,
-                                    TokenLocalSource trs, AlphaWalletService alphaService)
+                                    TokenLocalSource trs, SetlOneService alphaService)
     {
         context = ctx;
         ipfsService = ipfsSvs;
         assetChecked = new ConcurrentHashMap<>();
         notificationService = svs;
         realmManager = rm;
-        alphaWalletService = alphaService;
+        setlOneService = alphaService;
         this.tokensService = tokensService;
         tokenscriptUtility = new TokenscriptFunction()
         {
@@ -198,7 +198,7 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
     /**
      * Load all TokenScripts
      * <p>
-     * This order has to be observed because it's an expected developer override order. If a script is placed in the /AlphaWallet directory
+     * This order has to be observed because it's an expected developer override order. If a script is placed in the /SetlOne directory
      * it is expected to override the one fetched from the repo server.
      * If a developer clicks on a script intent this script is expected to override the one fetched from the server.
      */
@@ -226,9 +226,9 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
     {
         //1. Signed files downloaded from server.
         //2. Files placed in the Android OS external directory (Android/data/<App Package Name>/files)
-        //3. Files placed in the /AlphaWallet directory.
+        //3. Files placed in the /SetlOne directory.
         //Depending on the order placed, files can be overridden. A file downloaded from the server is
-        //overridden by a script for the same token placed in the /AlphaWallet directory.
+        //overridden by a script for the same token placed in the /SetlOne directory.
 
         //First check all the previously parsed scripts to check for any changes
         List<String> handledHashes = new ArrayList<>();
@@ -466,16 +466,16 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
         try
         {
             File[] files;
-            //first include the files in the AlphaWallet directory - these have the highest priority
+            //first include the files in the SetlOne directory - these have the highest priority
             if (checkReadPermission())
             {
-                File alphaWalletDir = new File(
+                File setlOneDir = new File(
                         Environment.getExternalStorageDirectory()
-                                + File.separator + HomeViewModel.ALPHAWALLET_DIR);
+                                + File.separator + HomeViewModel.SETLONE_DIR);
 
-                if (alphaWalletDir.exists())
+                if (setlOneDir.exists())
                 {
-                    files = alphaWalletDir.listFiles();
+                    files = setlOneDir.listFiles();
                     if (files != null) fileList.addAll(Arrays.asList(files));
                 }
             }
@@ -1585,7 +1585,7 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
 
         return new String[] {
                 "Accept", "text/xml; charset=UTF-8",
-                "X-Client-Name", "AlphaWallet",
+                "X-Client-Name", "SetlOne",
                 "X-Client-Version", appVersion,
                 "X-Platform-Name", "Android",
                 "X-Platform-Version", OSVersion,
@@ -1642,8 +1642,8 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
                     XMLDsigDescriptor AWSig = new XMLDsigDescriptor();
                     String hash = tsf.calcMD5();
                     AWSig.result = "pass";
-                    AWSig.issuer = "AlphaWallet";
-                    AWSig.keyName = "AlphaWallet";
+                    AWSig.issuer = "SetlOne";
+                    AWSig.keyName = "SetlOne";
                     AWSig.type = SigReturnType.SIGNATURE_PASS;
                     tsf.determineSignatureType(AWSig);
                     storeCertificateData(hash, AWSig);
@@ -2105,12 +2105,12 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
         {
             TokenScriptFile tsf = new TokenScriptFile(context, file.getAbsolutePath());
             scriptUri = getScriptUrl(info.getfirstChainId(), info.getFirstAddress());
-            sig = alphaWalletService.checkTokenScriptSignature(tsf.getInputStream(), info.getfirstChainId(), info.getFirstAddress(), scriptUri);
+            sig = setlOneService.checkTokenScriptSignature(tsf.getInputStream(), info.getfirstChainId(), info.getFirstAddress(), scriptUri);
         }
         else
         {
             //String scriptUri, long chainId, String address
-            sig = alphaWalletService.checkTokenScriptSignature(scriptUri, info.getfirstChainId(), info.getFirstAddress());
+            sig = setlOneService.checkTokenScriptSignature(scriptUri, info.getfirstChainId(), info.getFirstAddress());
         }
 
         return sig;
@@ -2574,7 +2574,7 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
                 if (sig == null || (sig.result != null && sig.result.equalsIgnoreCase("fail")) || sig.type == SigReturnType.NO_TOKENSCRIPT)
                 {
                     String scriptUrl = getScriptUrl(chainId, contractAddress);
-                    sig = alphaWalletService.checkTokenScriptSignature(tsf.getInputStream(), chainId, contractAddress, scriptUrl);
+                    sig = setlOneService.checkTokenScriptSignature(tsf.getInputStream(), chainId, contractAddress, scriptUrl);
                     tsf.determineSignatureType(sig);
                     storeCertificateData(hash, sig);
                 }

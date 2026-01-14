@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.lifi.Chain;
 import com.setlone.app.entity.lifi.SwapProvider;
 import com.setlone.app.ui.SelectSwapProvidersActivity;

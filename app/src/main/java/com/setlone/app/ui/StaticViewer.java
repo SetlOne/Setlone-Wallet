@@ -6,7 +6,7 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class StaticViewer extends BaseActivity
 {

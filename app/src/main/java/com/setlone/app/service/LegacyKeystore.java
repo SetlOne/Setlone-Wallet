@@ -6,7 +6,7 @@ import static com.setlone.app.entity.ServiceErrorException.ServiceErrorCode.KEY_
 import android.content.Context;
 import android.security.keystore.UserNotAuthenticatedException;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ServiceErrorException;
 
 import java.io.File;

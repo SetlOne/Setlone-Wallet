@@ -11,7 +11,7 @@ import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.Operation;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.Wallet;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.app.entity.tokendata.TokenTicker;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.interact.CreateTransactionInteract;

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.lifi.Token;
 import com.setlone.app.util.Utils;
 import com.google.android.material.button.MaterialButton;

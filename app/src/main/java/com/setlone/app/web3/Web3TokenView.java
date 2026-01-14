@@ -27,8 +27,8 @@ import androidx.annotation.Nullable;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.alphawallet.app.BuildConfig;
-import com.alphawallet.app.R;
+import com.setlone.app.BuildConfig;
+import com.setlone.app.R;
 import com.setlone.app.entity.UpdateType;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.entity.tokenscript.TokenScriptRenderCallback;
@@ -113,17 +113,53 @@ public class Web3TokenView extends WebView
         tokenScriptClient = new TokenScriptClient(this);
         jsInjectorClient = new JsInjectorClient(getContext());
         WebSettings webSettings = super.getSettings();
+        
+        // 기본 JavaScript 및 DOM 설정
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
-        webSettings.setDisplayZoomControls(false);
         webSettings.setDomStorageEnabled(true);
+        webSettings.setDatabaseEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        
+        // 캐시 설정 (TokenScript는 캐시 비활성화 유지)
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        
+        // 뷰포트 설정
         webSettings.setUseWideViewPort(false);
         webSettings.setLoadWithOverviewMode(true);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        
+        // 줌 컨트롤
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+        webSettings.setSupportZoom(true);
+        
+        // Mixed Content 허용
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+        {
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        
+        // 미디어 재생 최적화
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
+        
+        // 파일 접근 설정
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowContentAccess(true);
+        
+        // User Agent 설정
         webSettings.setUserAgentString(webSettings.getUserAgentString()
                                                + "SetlOne(Platform=Android&AppVersion=" + BuildConfig.VERSION_NAME + ")");
         WebView.setWebContentsDebuggingEnabled(true);
+
+        // 하드웨어 가속 레이어 타입 설정 - 성능 향상의 핵심
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
+        {
+            setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        else
+        {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
         {

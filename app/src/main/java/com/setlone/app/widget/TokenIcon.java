@@ -1,7 +1,7 @@
 package com.setlone.app.widget;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
-import static com.setlone.app.util.Utils.ALPHAWALLET_REPO_NAME;
+import static com.setlone.app.util.Utils.SETLONE_REPO_NAME;
 import static com.setlone.app.util.Utils.TRUST_ICON_REPO_BASE;
 import static com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID;
 
@@ -26,7 +26,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.tokendata.TokenGroup;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.repository.CurrencyRepository;
@@ -265,7 +265,7 @@ public class TokenIcon extends ConstraintLayout
     {
         setupDefaultIcon();
 
-        final RequestOptions optionalCircleCrop = squareToken || iconUrl.startsWith(ALPHAWALLET_REPO_NAME) ? new RequestOptions() : new RequestOptions().circleCrop();
+        final RequestOptions optionalCircleCrop = squareToken || iconUrl.startsWith(SETLONE_REPO_NAME) ? new RequestOptions() : new RequestOptions().circleCrop();
 
         currentRq = Glide.with(this)
                 .load(iconUrl)
@@ -328,7 +328,7 @@ public class TokenIcon extends ConstraintLayout
 
         boolean useContractURI;
 
-        if (checkUrl.startsWith(ALPHAWALLET_REPO_NAME))
+        if (checkUrl.startsWith(SETLONE_REPO_NAME))
         {
             useContractURI = true;
         }

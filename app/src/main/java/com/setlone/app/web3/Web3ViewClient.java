@@ -12,7 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.widget.AWalletAlertDialog;
 
 public class Web3ViewClient extends WebViewClient {

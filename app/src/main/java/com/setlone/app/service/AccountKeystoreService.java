@@ -1,7 +1,7 @@
 package com.setlone.app.service;
 
 import com.setlone.app.entity.Wallet;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.Signable;
 
 import org.web3j.crypto.RawTransaction;

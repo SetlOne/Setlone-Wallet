@@ -11,7 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.entity.SearchToolbarCallback;
 import com.setlone.app.util.KeyboardUtils;
 

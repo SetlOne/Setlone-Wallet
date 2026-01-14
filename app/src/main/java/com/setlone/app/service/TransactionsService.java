@@ -7,7 +7,7 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.Transaction;
 import com.setlone.app.entity.TransactionMeta;
@@ -396,13 +396,34 @@ public class TransactionsService
     private static Single<BigInteger> fetchCurrentBlock(final long chainId)
     {
         return Single.fromCallable(() -> {
-            Web3j web3j = TokenRepository.getWeb3jService(chainId);
-            EthBlock ethBlock =
-                    web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
-            String blockValStr = ethBlock.getBlock().getNumberRaw();
-            if (!TextUtils.isEmpty(blockValStr) && blockValStr.length() > 2)
-                return Numeric.toBigInt(blockValStr);
-            else return currentBlocks.get(chainId, new CurrentBlockTime(BigInteger.ZERO)).blockNumber;
+            try {
+                Web3j web3j = TokenRepository.getWeb3jService(chainId);
+                EthBlock ethBlock =
+                        web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+                
+                // Check if block is null (can happen due to network issues or RPC node problems)
+                if (ethBlock == null || ethBlock.getBlock() == null)
+                {
+                    Timber.w("EthBlock or Block is null for chainId: %d, using cached value", chainId);
+                    return currentBlocks.get(chainId, new CurrentBlockTime(BigInteger.ZERO)).blockNumber;
+                }
+                
+                String blockValStr = ethBlock.getBlock().getNumberRaw();
+                if (!TextUtils.isEmpty(blockValStr) && blockValStr.length() > 2)
+                {
+                    return Numeric.toBigInt(blockValStr);
+                }
+                else
+                {
+                    return currentBlocks.get(chainId, new CurrentBlockTime(BigInteger.ZERO)).blockNumber;
+                }
+            }
+            catch (Exception e)
+            {
+                Timber.e(e, "Error fetching current block for chainId: %d", chainId);
+                // Return cached value on error
+                return currentBlocks.get(chainId, new CurrentBlockTime(BigInteger.ZERO)).blockNumber;
+            }
         });
     }
 

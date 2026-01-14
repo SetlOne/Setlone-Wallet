@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.SignAuthenticationCallback;
@@ -48,7 +48,7 @@ import com.setlone.app.widget.CopyTextView;
 import com.setlone.app.widget.FunctionButtonBar;
 import com.setlone.app.widget.SignTransactionDialog;
 import com.setlone.app.widget.TokenIcon;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;

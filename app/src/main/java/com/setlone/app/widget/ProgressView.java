@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 public class ProgressView extends RelativeLayout {
     private ProgressBar progress;

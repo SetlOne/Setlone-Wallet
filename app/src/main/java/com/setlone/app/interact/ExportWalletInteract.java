@@ -1,6 +1,6 @@
 package com.setlone.app.interact;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.repository.WalletRepositoryType;
 import com.setlone.app.entity.Wallet;
 

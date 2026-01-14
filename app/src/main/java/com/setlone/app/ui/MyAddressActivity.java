@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.AddressMode;
 import com.setlone.app.entity.CustomViewSettings;
 import com.setlone.app.entity.EIP681Request;

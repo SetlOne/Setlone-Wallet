@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokendata.TokenGroup;
 import com.setlone.app.entity.tokendata.TokenTicker;

@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.viewmodel.AdvancedSettingsViewModel;
 import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.SettingsItemView;
@@ -349,13 +349,13 @@ public class AdvancedSettingsActivity extends BaseActivity
                 {
                     LinearLayout advancedSettingsLayout = findViewById(R.id.layout);
                     advancedSettingsLayout.removeView(tokenScript);
-                    showAlphaWalletDirectoryConfirmation();
+                    showSetlOneDirectoryConfirmation();
                 }
                 break;
         }
     }
 
-    private void showAlphaWalletDirectoryConfirmation()
+    private void showSetlOneDirectoryConfirmation()
     {
         AWalletAlertDialog cDialog = new AWalletAlertDialog(this);
         cDialog.setIcon(AWalletAlertDialog.SUCCESS);

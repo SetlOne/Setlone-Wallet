@@ -1,7 +1,7 @@
 package com.setlone.app.entity;
 
-import com.alphawallet.hardware.SignatureFromKey;
-import com.alphawallet.hardware.SignatureReturnType;
+import com.setlone.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureReturnType;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by James on 30/01/2018. Signature Pair refers to the
  * following data structure [selection of tokens][signature]. The word
  * "Signature Pair" has nothing to do with the pair of numbers that
- * makes up signature (𝑟, 𝑠), nor does it has anything to do with
+ * makes up signature (r, s), nor does it has anything to do with
  * Elliptic-Curve pairing. The "Pair" word is here refer to a Java
  * concept where you combine data to pass to the observer. And the
  * Pairing is actually not done in this class, because other data not

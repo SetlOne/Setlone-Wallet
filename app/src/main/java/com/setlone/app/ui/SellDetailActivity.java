@@ -33,12 +33,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.FinishReceiver;
 import com.setlone.app.entity.PinAuthenticationCallbackInterface;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.Wallet;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.service.TickerService;
 import com.setlone.app.ui.widget.TokensAdapterCallback;

@@ -606,7 +606,9 @@ public class EnsResolver implements Resolvable
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(node)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
 
-        return getContractData(address, function, "");
+        String result = getContractData(address, function, "");
+        // Return empty string if no ENS name found (instead of throwing exception)
+        return result != null ? result : "";
     }
 
     public <T> T getContractData(String address, Function function, T type) throws Exception
@@ -615,7 +617,13 @@ public class EnsResolver implements Resolvable
 
         if (TextUtils.isEmpty(responseValue))
         {
-            throw new Exception("Bad contract value");
+            // Return null for empty response instead of throwing exception
+            // This is a normal case when ENS name doesn't exist for an address
+            if (type instanceof String)
+            {
+                return (T) "";
+            }
+            return null;
         }
         else if (responseValue.equals("0x"))
         {

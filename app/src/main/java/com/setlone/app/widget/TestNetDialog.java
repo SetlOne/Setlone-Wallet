@@ -5,7 +5,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class TestNetDialog extends BottomSheetDialog

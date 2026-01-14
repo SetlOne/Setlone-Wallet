@@ -34,7 +34,7 @@ import com.setlone.app.interact.GenericWalletInteract;
 import com.setlone.app.repository.EthereumNetworkRepository;
 import com.setlone.app.repository.EthereumNetworkRepositoryType;
 import com.setlone.app.repository.TokenRepository;
-import com.setlone.app.service.AlphaWalletService;
+import com.setlone.app.service.SetlOneService;
 import com.setlone.app.service.AssetDefinitionService;
 import com.setlone.app.service.GasService;
 import com.setlone.app.service.KeyService;
@@ -77,7 +77,7 @@ public class ImportTokenViewModel extends BaseViewModel implements TransactionSe
     private final CreateTransactionInteract createTransactionInteract;
     private final FetchTokensInteract fetchTokensInteract;
     private final TokensService tokensService;
-    private final AlphaWalletService alphaWalletService;
+    private final SetlOneService setlOneService;
     private final EthereumNetworkRepositoryType ethereumNetworkRepository;
     private final AssetDefinitionService assetDefinitionService;
     private final FetchTransactionsInteract fetchTransactionsInteract;
@@ -116,7 +116,7 @@ public class ImportTokenViewModel extends BaseViewModel implements TransactionSe
                          CreateTransactionInteract createTransactionInteract,
                          FetchTokensInteract fetchTokensInteract,
                          TokensService tokensService,
-                         AlphaWalletService alphaWalletService,
+                         SetlOneService setlOneService,
                          EthereumNetworkRepositoryType ethereumNetworkRepository,
                          AssetDefinitionService assetDefinitionService,
                          FetchTransactionsInteract fetchTransactionsInteract,
@@ -126,7 +126,7 @@ public class ImportTokenViewModel extends BaseViewModel implements TransactionSe
         this.createTransactionInteract = createTransactionInteract;
         this.fetchTokensInteract = fetchTokensInteract;
         this.tokensService = tokensService;
-        this.alphaWalletService = alphaWalletService;
+        this.setlOneService = setlOneService;
         this.ethereumNetworkRepository = ethereumNetworkRepository;
         this.assetDefinitionService = assetDefinitionService;
         this.fetchTransactionsInteract = fetchTransactionsInteract;
@@ -501,7 +501,7 @@ public class ImportTokenViewModel extends BaseViewModel implements TransactionSe
         {
             initParser();
             MagicLinkData order = parser.parseUniversalLink(universalImportLink);
-            disposable = alphaWalletService.handleFeemasterImport(url, wallet.getValue(), network.getValue().chainId, order)
+            disposable = setlOneService.handleFeemasterImport(url, wallet.getValue(), network.getValue().chainId, order)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::processFeemasterResult, this::onTransactionError);
@@ -570,7 +570,7 @@ public class ImportTokenViewModel extends BaseViewModel implements TransactionSe
 
     public void checkFeemaster(String feemasterServer)
     {
-        disposable = alphaWalletService.checkFeemasterService(feemasterServer, network.getValue().chainId, importOrder.contractAddress)
+        disposable = setlOneService.checkFeemasterService(feemasterServer, network.getValue().chainId, importOrder.contractAddress)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleFeemasterAvailability, this::onFeeMasterError);

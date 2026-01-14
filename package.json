@@ -1,5 +1,5 @@
 {
-  "name": "alpha-wallet-android",
+  "name": "Setlone-Wallet",
   "version": "1.0.0",
   "description": "Open source Ethereum wallet",
   "main": "gulpfile.js",
@@ -7,18 +7,18 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlphaWallet/alpha-wallet-android.git"
+    "url": "git+https://github.com/SetlOne/Setlone-Wallet.git"
   },
   "author": "Smart Token Labs",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/AlphaWallet/alpha-wallet-android/issues"
+    "url": "https://github.com/SetlOne/Setlone-Wallet/issues"
   },
-  "homepage": "https://github.com/AlphaWallet/alpha-wallet-android#readme",
+  "homepage": "https://github.com/SetlOne/Setlone-Wallet#readme",
   "dependencies": {
     "normalize.css": "^8.0.0"
   }

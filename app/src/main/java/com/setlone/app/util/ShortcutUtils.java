@@ -9,7 +9,7 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.StandardFunctionInterface;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokens.Token;

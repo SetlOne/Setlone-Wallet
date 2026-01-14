@@ -17,8 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.BuildConfig;
-import com.alphawallet.app.R;
+import com.setlone.app.BuildConfig;
+import com.setlone.app.R;
 import com.setlone.app.entity.AuthenticationCallback;
 import com.setlone.app.entity.AuthenticationFailType;
 import com.setlone.app.entity.Operation;

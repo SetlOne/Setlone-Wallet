@@ -17,7 +17,7 @@ import com.setlone.app.service.AnalyticsServiceType;
 import com.setlone.app.service.KeystoreAccountService;
 import com.setlone.app.service.TransactionSendHandlerInterface;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.Signable;
 
 import org.web3j.crypto.RawTransaction;

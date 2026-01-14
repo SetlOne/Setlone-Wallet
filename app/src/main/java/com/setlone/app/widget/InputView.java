@@ -23,7 +23,7 @@ import com.setlone.app.ui.QRScanning.QRScannerActivity;
 import com.setlone.app.ui.widget.entity.BoxStatus;
 import com.setlone.app.util.Utils;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 

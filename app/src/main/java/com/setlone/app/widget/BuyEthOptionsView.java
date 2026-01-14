@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.LayoutRes;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.DialogDismissInterface;
 
 

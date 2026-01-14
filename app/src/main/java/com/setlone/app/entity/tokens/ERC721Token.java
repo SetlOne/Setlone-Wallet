@@ -10,7 +10,7 @@ import static org.web3j.tx.Contract.staticExtractEventParameters;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.LogOverflowException;
 import com.setlone.app.entity.SyncDef;

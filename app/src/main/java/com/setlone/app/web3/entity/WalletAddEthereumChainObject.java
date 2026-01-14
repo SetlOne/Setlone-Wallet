@@ -3,7 +3,7 @@ package com.setlone.app.web3.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 
 import org.web3j.utils.Numeric;
 

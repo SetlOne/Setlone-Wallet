@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.BuildConfig;
-import com.alphawallet.app.R;
+import com.setlone.app.BuildConfig;
+import com.setlone.app.R;
 import com.setlone.app.entity.DApp;
 import com.setlone.app.ui.widget.OnDappClickListener;
 import com.setlone.app.ui.widget.adapter.DiscoverDappsListAdapter;

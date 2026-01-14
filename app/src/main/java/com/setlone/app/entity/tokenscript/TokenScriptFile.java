@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.token.entity.XMLDsigDescriptor;
 
 import java.io.File;

@@ -28,8 +28,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
-import com.alphawallet.app.BuildConfig;
-import com.alphawallet.app.R;
+import com.setlone.app.BuildConfig;
+import com.setlone.app.R;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.AuthenticationCallback;
 import com.setlone.app.entity.AuthenticationFailType;
@@ -45,10 +45,10 @@ import com.setlone.app.entity.cryptokeys.KeyServiceException;
 import com.setlone.app.util.Utils;
 import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.SignTransactionDialog;
-import com.alphawallet.hardware.HardwareCallback;
-import com.alphawallet.hardware.HardwareDevice;
-import com.alphawallet.hardware.SignatureFromKey;
-import com.alphawallet.hardware.SignatureReturnType;
+import com.setlone.hardware.HardwareCallback;
+import com.setlone.hardware.HardwareDevice;
+import com.setlone.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureReturnType;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Sign;

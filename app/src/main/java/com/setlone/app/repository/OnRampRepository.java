@@ -72,8 +72,8 @@ public class OnRampRepository implements OnRampRepositoryType
         builder.scheme("https")
                 .authority("buy.ramp.network")
                 .appendQueryParameter("hostApiKey", keyProvider.getRampKey())
-                .appendQueryParameter("hostLogoUrl", C.ALPHAWALLET_LOGO_URI)
-                .appendQueryParameter("hostAppName", "AlphaWallet")
+                .appendQueryParameter("hostLogoUrl", C.SETLONE_LOGO_URI)
+                .appendQueryParameter("hostAppName", "SetlOne")
                 .appendQueryParameter("userAddress", address);
 
         if (!symbol.isEmpty())

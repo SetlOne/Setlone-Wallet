@@ -22,7 +22,7 @@ import java.util.Set;
 public class SigningTest
 {
     private static String jsonMessageString;
-    private static final String filePath = "src/test/java/com/alphawallet/app/crypto/resources/";
+    private static final String filePath = "src/test/java/com/setlone/app/crypto/resources/";
 
     public SigningTest()
     {

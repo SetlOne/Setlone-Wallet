@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;

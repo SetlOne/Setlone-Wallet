@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 
 public class WalletFragmentActionsView extends FrameLayout implements View.OnClickListener {

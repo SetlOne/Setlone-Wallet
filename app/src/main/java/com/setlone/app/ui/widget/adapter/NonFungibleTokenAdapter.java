@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.recyclerview.widget.SortedList;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.TicketRangeElement;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokendata.TokenGroup;

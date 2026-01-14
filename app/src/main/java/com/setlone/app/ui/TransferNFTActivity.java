@@ -21,9 +21,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.EnsNodeNotSyncCallback;
@@ -56,7 +56,7 @@ import com.setlone.app.widget.InputAddress;
 import com.setlone.app.widget.ProgressView;
 import com.setlone.app.widget.SignTransactionDialog;
 import com.setlone.app.widget.SystemView;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 import org.jetbrains.annotations.NotNull;
 import org.web3j.utils.Numeric;

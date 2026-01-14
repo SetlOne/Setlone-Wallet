@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;

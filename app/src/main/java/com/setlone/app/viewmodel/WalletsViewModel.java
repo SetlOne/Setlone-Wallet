@@ -35,13 +35,13 @@ import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.repository.TokenRepositoryType;
 import com.setlone.app.router.HomeRouter;
 import com.setlone.app.router.ImportWalletRouter;
-import com.setlone.app.service.AlphaWalletNotificationService;
+import com.setlone.app.service.SetlOneNotificationService;
 import com.setlone.app.service.AssetDefinitionService;
 import com.setlone.app.service.KeyService;
 import com.setlone.app.service.TickerService;
 import com.setlone.app.service.TokensService;
 import com.setlone.app.util.ens.AWEnsResolver;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
@@ -84,7 +84,7 @@ public class WalletsViewModel extends BaseViewModel implements ServiceSyncCallba
     private final AssetDefinitionService assetService;
     private final PreferenceRepositoryType preferenceRepository;
     private final EthereumNetworkRepositoryType ethereumNetworkRepository;
-    private final AlphaWalletNotificationService alphaWalletNotificationService;
+    private final SetlOneNotificationService setlOneNotificationService;
     private final TokenRepositoryType tokenRepository;
     private final TickerService tickerService;
     private final MutableLiveData<Wallet[]> wallets = new MutableLiveData<>();
@@ -119,7 +119,7 @@ public class WalletsViewModel extends BaseViewModel implements ServiceSyncCallba
 
     @Inject
     WalletsViewModel(
-        AlphaWalletNotificationService alphaWalletNotificationService,
+        SetlOneNotificationService setlOneNotificationService,
         SetDefaultWalletInteract setDefaultWalletInteract,
         FetchWalletsInteract fetchWalletsInteract,
         GenericWalletInteract genericWalletInteract,
@@ -135,7 +135,7 @@ public class WalletsViewModel extends BaseViewModel implements ServiceSyncCallba
         PreferenceRepositoryType preferenceRepository,
         @ApplicationContext Context context)
     {
-        this.alphaWalletNotificationService = alphaWalletNotificationService;
+        this.setlOneNotificationService = setlOneNotificationService;
         this.setDefaultWalletInteract = setDefaultWalletInteract;
         this.fetchWalletsInteract = fetchWalletsInteract;
         this.genericWalletInteract = genericWalletInteract;
@@ -219,7 +219,7 @@ public class WalletsViewModel extends BaseViewModel implements ServiceSyncCallba
 
     public void subscribeToNotifications()
     {
-        disposable = alphaWalletNotificationService.subscribe(MAINNET_ID)
+        disposable = setlOneNotificationService.subscribe(MAINNET_ID)
             .observeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
             .subscribe(result -> Timber.d("subscribe result => %s", result), Timber::e);

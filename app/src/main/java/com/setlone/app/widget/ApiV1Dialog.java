@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.api.v1.entity.ApiV1;
 import com.setlone.app.api.v1.entity.Metadata;
 import com.setlone.app.api.v1.entity.Method;

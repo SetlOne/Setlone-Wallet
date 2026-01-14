@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.entity.NetworkItem;
 import com.setlone.app.widget.TokenIcon;
 import com.google.android.material.radiobutton.MaterialRadioButton;

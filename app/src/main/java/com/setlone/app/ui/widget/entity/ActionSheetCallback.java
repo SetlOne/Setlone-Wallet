@@ -9,7 +9,7 @@ import com.setlone.app.entity.WalletType;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.service.GasService;
 import com.setlone.app.web3.entity.Web3Transaction;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.Signable;
 
 import java.math.BigInteger;

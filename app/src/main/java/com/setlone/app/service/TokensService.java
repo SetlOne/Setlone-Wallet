@@ -9,7 +9,7 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.AnalyticsProperties;
 import com.setlone.app.entity.ContractLocator;

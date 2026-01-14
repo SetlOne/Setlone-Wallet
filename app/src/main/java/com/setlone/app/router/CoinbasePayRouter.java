@@ -3,7 +3,7 @@ package com.setlone.app.router;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.CoinbasePayActivity;
 
 public class CoinbasePayRouter

@@ -1,17 +1,25 @@
 package com.setlone.app.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.AuthenticationCallback;
 import com.setlone.app.entity.AuthenticationFailType;
 import com.setlone.app.entity.Operation;
@@ -24,6 +32,69 @@ public abstract class BaseActivity extends AppCompatActivity
     public static AuthenticationCallback authCallback;  // Note: This static is only for signing callbacks
                                                         // which won't occur between wallet sessions - do not repeat this pattern
                                                         // for other code
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        
+        // Edge-to-edge 디스플레이: 시스템 바는 표시하되 콘텐츠가 가려지지 않도록 처리
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    }
+
+    @Override
+    public void setContentView(int layoutResID)
+    {
+        super.setContentView(layoutResID);
+        setupWindowInsets();
+    }
+
+    @Override
+    public void setContentView(View view)
+    {
+        super.setContentView(view);
+        setupWindowInsets();
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params)
+    {
+        super.setContentView(view, params);
+        setupWindowInsets();
+    }
+
+    /**
+     * Edge-to-edge 디스플레이: WindowInsets를 적용하여 시스템 바 공간 확보
+     */
+    protected void setupWindowInsets()
+    {
+        View rootView = findViewById(android.R.id.content);
+        if (rootView != null)
+        {
+            ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, windowInsets) -> {
+                Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+                
+                // 상단 상태바 공간 확보
+                int statusBarHeight = insets.top;
+                // 하단 네비게이션 바 공간 확보
+                int navigationBarHeight = insets.bottom;
+                
+                // 루트 뷰에 패딩 적용
+                if (rootView != null && rootView.getParent() instanceof ViewGroup)
+                {
+                    ViewGroup parent = (ViewGroup) rootView.getParent();
+                    parent.setPadding(
+                        parent.getPaddingLeft(),
+                        statusBarHeight,
+                        parent.getPaddingRight(),
+                        navigationBarHeight
+                    );
+                }
+                
+                return windowInsets;
+            });
+        }
+    }
 
     protected Toolbar toolbar()
     {

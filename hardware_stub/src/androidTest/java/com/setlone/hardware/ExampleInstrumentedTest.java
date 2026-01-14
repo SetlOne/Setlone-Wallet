@@ -23,6 +23,6 @@ public class ExampleInstrumentedTest
     {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.alphawallet.hardware_stub.test", appContext.getPackageName());
+        assertEquals("com.setlone.hardware_stub.test", appContext.getPackageName());
     }
 }

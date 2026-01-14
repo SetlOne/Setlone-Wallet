@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.analytics.ActionSheetMode;
 import com.setlone.app.entity.walletconnect.SignType;
 import com.setlone.app.repository.EthereumNetworkBase;

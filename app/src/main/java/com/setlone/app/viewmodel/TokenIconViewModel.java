@@ -1,7 +1,7 @@
 package com.setlone.app.viewmodel;
 
 import static com.setlone.app.repository.TokensRealmSource.IMAGES_DB;
-import static com.setlone.app.util.Utils.ALPHAWALLET_REPO_NAME;
+import static com.setlone.app.util.Utils.SETLONE_REPO_NAME;
 import static com.setlone.app.util.Utils.isValidUrl;
 
 import android.text.TextUtils;
@@ -91,7 +91,7 @@ public class TokenIconViewModel extends BaseViewModel
     //Only store if it's not the AW iconassets url
     public void storeImageUrl(long chainId, String address, String imageUrl)
     {
-        if (!TextUtils.isEmpty(imageUrl) && isValidUrl(imageUrl) && !imageUrl.startsWith(ALPHAWALLET_REPO_NAME) && TextUtils.isEmpty(getTokenImageUrl(chainId, address)))
+        if (!TextUtils.isEmpty(imageUrl) && isValidUrl(imageUrl) && !imageUrl.startsWith(SETLONE_REPO_NAME) && TextUtils.isEmpty(getTokenImageUrl(chainId, address)))
         {
             tokensService.addTokenImageUrl(chainId, address, imageUrl);
         }

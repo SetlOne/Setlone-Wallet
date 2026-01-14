@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.StandardFunctionInterface;
 import com.setlone.app.web3.entity.WalletAddEthereumChainObject;
 import com.setlone.app.widget.FunctionButtonBar;

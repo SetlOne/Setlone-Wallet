@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.SendActivity;
 import com.setlone.app.ui.widget.entity.AddressReadyCallback;
 import com.setlone.shadows.ShadowApp;

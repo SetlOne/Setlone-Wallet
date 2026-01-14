@@ -8,7 +8,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.repository.EthereumNetworkRepository;
 import com.setlone.app.service.TokensService;

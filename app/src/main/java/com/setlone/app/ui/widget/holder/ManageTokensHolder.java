@@ -7,7 +7,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.TokensAdapterCallback;
 import com.setlone.app.ui.widget.entity.ManageTokensData;
 

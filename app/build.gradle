@@ -37,13 +37,13 @@ android_lint_reporter {
     lintFilePath = "./build/reports/lint-results-analyticsDebug.xml"
     detektFilePath = "./build/reports/detekt/detekt.xml"
     githubOwner = "SetlOne"
-    githubRepositoryName = "alpha-wallet-android"
+    githubRepositoryName = "Setlone-Wallet"
     showLog = true // optional - default to false, show extra information, will slow things down
 }
 
 android {
     namespace = 'com.setlone.app'
-    compileSdk 34
+    compileSdk 35
 
     sourceSets {
         main {
@@ -54,7 +54,7 @@ android {
     defaultConfig {
         applicationId "com.setlone.wallet"
         minSdk 24
-        targetSdk 34
+        targetSdk 35  // Android 15 (API 35) - 16KB 페이지 크기 지원 필수 (2025년 11월 1일부터)
         versionCode 273
         versionName "3.88"
 
@@ -153,7 +153,7 @@ android {
     packagingOptions {
         jniLibs {
             excludes += ['solidity/*']
-            useLegacyPackaging = true
+            useLegacyPackaging = false  // 16KB 페이지 크기 지원을 위해 false로 변경
         }
         resources {
             excludes += ['META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
@@ -191,6 +191,7 @@ android {
     ndkVersion = '25.1.8937393'
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_21
+        freeCompilerArgs += ["-Xskip-metadata-version-check"]
     }
 }
 
@@ -224,16 +225,26 @@ tasks.register("jacocoAndroidUnitTestReport", org.gradle.testing.jacoco.tasks.Ja
     executionData.setFrom(fileTree(dir: "${buildDir}", includes: ['**/*.exec', '**/*.ec']))
 }
 
+// Beagle 전역 제외 - WalletConnect와 충돌 방지
+// 구형 Android Support Library 전역 제외 - AndroidX와 충돌 방지
+configurations.all {
+    exclude group: 'io.github.pandulapeter.beagle', module: '*'
+    exclude group: 'com.pandulapeter.beagle', module: '*'
+    exclude group: 'io.github.pandulapeter', module: 'beagle*'
+    exclude group: 'com.android.support', module: '*'
+}
+
 dependencies {
     implementation project(':lib')
+    implementation project(':hardware_stub')
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
 
     //noinspection BomWithoutPlatform,GradleDependency
     implementation platform('com.fasterxml.jackson:jackson-bom:2.20.1') //Do not upgrade! 2.13.5 is latest library with Android API24 compatibility,
-    implementation 'com.fasterxml.jackson.core:jackson-core'            //The XML code will be removed to use the online engine, so no need to touch
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.20.1'            //The XML code will be removed to use the online engine, so no need to touch
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
 
     implementation libs.slf4j.api
     implementation libs.core.splashscreen
@@ -246,6 +257,8 @@ dependencies {
     implementation libs.material //'com.google.android.material:material:1.9.0'
     implementation libs.vectordrawable
     implementation libs.recyclerview
+    implementation libs.swiperefreshlayout
+    implementation libs.localbroadcastmanager
     implementation libs.biometric
     implementation libs.gridlayout
 
@@ -283,8 +296,7 @@ dependencies {
     annotationProcessor libs.compiler
     implementation libs.guava
     implementation libs.wallet.core
-    //noinspection UseTomlInstead
-    implementation 'com.github.florent37:TutoShowcase:d8b91be8a2'
+    // TutoShowcase 제거됨 - Dialog로 대체됨 (AndroidX 호환성 문제로 인해)
     implementation libs.flexbox.layout
     implementation libs.kotson
     implementation libs.mailchimp.sdk.android
@@ -294,13 +306,15 @@ dependencies {
     implementation libs.timber
 
     implementation platform(libs.walletConnect.bom)
-    implementation("com.walletconnect:android-core", {
+    implementation('com.walletconnect:android-core:1.35.2', {
         exclude group: 'org.web3j', module: '*'
         exclude group: 'org.bouncycastle', module: '*'
+        exclude group: 'io.github.pandulapeter.beagle', module: '*'  // Beagle 제외 - WalletConnect와 충돌 방지
     })
-    implementation("com.walletconnect:web3wallet", {
+    implementation('com.walletconnect:web3wallet:1.35.2', {
         exclude group: 'org.web3j', module: '*'
         exclude group: 'org.bouncycastle', module: '*'
+        exclude group: 'io.github.pandulapeter.beagle', module: '*'  // Beagle 제외 - WalletConnect와 충돌 방지
     })
 
     implementation libs.review
@@ -352,11 +366,14 @@ dependencies {
     androidTestUtil 'androidx.test:orchestrator:1.6.1'
     testImplementation 'org.hamcrest:hamcrest:3.0'
 
+    // 구형 support library 제거 - AndroidX와 충돌 방지
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
-        exclude group: "com.android.support", module: "support-annotations"
+        exclude group: "com.android.support", module: "*"
+        exclude group: "androidx", module: "*"
     })
     androidTestImplementation('tools.fastlane:screengrab:2.1.1', {
-        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: '*'
+        exclude group: "androidx", module: "*"
     })
 
 }

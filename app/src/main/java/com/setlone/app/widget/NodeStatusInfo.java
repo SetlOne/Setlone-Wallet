@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import timber.log.Timber;
 

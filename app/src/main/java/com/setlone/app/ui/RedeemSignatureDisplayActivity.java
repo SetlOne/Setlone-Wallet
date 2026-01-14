@@ -23,12 +23,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.FinishReceiver;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.SignaturePair;
 import com.setlone.app.entity.Wallet;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.ui.widget.entity.TicketRangeParcel;
 import com.setlone.app.viewmodel.RedeemSignatureDisplayModel;

@@ -81,7 +81,7 @@ public abstract class C {
     public static final String BINANCE_SYMBOL = "BNB";
     public static final String FANTOM_SYMBOL = "FTM";
     public static final String AVALANCHE_SYMBOL = "AVAX";
-    public static final String POLYGON_SYMBOL = "MATIC";
+    public static final String POLYGON_SYMBOL = "POL";
     public static final String CRONOS_SYMBOL = "CRO";
     public static final String CRONOS_TEST_SYMBOL = "tCRO";
     public static final String ARBITRUM_SYMBOL = "AETH";
@@ -104,7 +104,7 @@ public abstract class C {
     public static final String DAI_TOKEN = "0x6b175474e89094c44da98b954eedeac495271d0f";
     public static final String SAI_TOKEN = "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359";
 
-    public static final String ALPHAWALLET_WEB = "https://www.alphawallet.com";
+    public static final String SETLONE_WEB = "https://www.setlone.com";
 
     public static final String XDAI_BRIDGE_DAPP = "https://bridge.xdaichain.com/";
 
@@ -215,12 +215,12 @@ public abstract class C {
     public static final String FROM_HOME_ROUTER = "HomeRouter";
     public static final String TOKEN_CLICK = "com.stormbird.wallet.TOKEN_CLICK";
     public static final String SETTINGS_INSTANTIATED = "com.stormbird.wallet.SETTINGS_INSTANTIATED";
-    public static final String APP_FOREGROUND_STATE = "com.alphawallet.APP_FOREGROUND_STATE";
-    public static final String EXTRA_APP_FOREGROUND = "com.alphawallet.IS_FOREGORUND";
-    public static final String QRCODE_SCAN = "com.alphawallet.QRSCAN";
-    public static final String AWALLET_CODE = "com.alphawallet.AWALLET";
-    public static final String SIGNAL_NFT_SYNC = "com.alphawallet.SYNC_NFT";
-    public static final String SYNC_STATUS = "com.alphawallet.SYNC_STATUS";
+    public static final String APP_FOREGROUND_STATE = "com.setlone.APP_FOREGROUND_STATE";
+    public static final String EXTRA_APP_FOREGROUND = "com.setlone.IS_FOREGORUND";
+    public static final String QRCODE_SCAN = "com.setlone.QRSCAN";
+    public static final String AWALLET_CODE = "com.setlone.AWALLET";
+    public static final String SIGNAL_NFT_SYNC = "com.setlone.SYNC_NFT";
+    public static final String SYNC_STATUS = "com.setlone.SYNC_STATUS";
 
     public static final String DEFAULT_GAS_PRICE =     "10000000000";
     public static final String DEFAULT_XDAI_GAS_PRICE = "1000000000";
@@ -281,7 +281,7 @@ public abstract class C {
     public static final String DAPP_DEFAULT_URL = "https://www.stateofthedapps.com/";
     public static final String DAPP_PREFIX_TELEPHONE = "tel";
     public static final String DAPP_PREFIX_MAILTO = "mailto";
-    public static final String DAPP_PREFIX_ALPHAWALLET = "alphawallet";
+    public static final String DAPP_PREFIX_SETLONE = "setlone";
     public static final String DAPP_SUFFIX_RECEIVE = "receive";
     public static final String DAPP_PREFIX_MAPS = "maps.google.com/maps?daddr=";
     public static final String DAPP_PREFIX_WALLETCONNECT = "wc";
@@ -309,8 +309,8 @@ public abstract class C {
     //Analytics
     public static final String PREF_UNIQUE_ID = "unique_id";
 
-    public static final String ALPHAWALLET_LOGO_URI = "https://alphawallet.com/wp-content/themes/alphawallet/img/logo-horizontal-new.svg";
-    public static final String ALPHAWALLET_WEBSITE = "https://alphawallet.com";
+    public static final String SETLONE_LOGO_URI = "https://setlone.com/wp-content/themes/setlone/img/logo-horizontal-new.svg";
+    public static final String SETLONE_WEBSITE = "https://setlone.com";
     public static final String WALLET_CONNECT_REACT_APP_RELAY_URL = "wss://relay.walletconnect.com";
     public static final String ALPHA_WALLET_LOGO_URL = "https://user-images.githubusercontent.com/51817359/158344418-c0f2bd19-38bb-4e64-a1d5-25ceb099688a.png";
 
@@ -331,7 +331,7 @@ public abstract class C {
     public static long PING_INTERVAL = 10;
     public static final long LONG_WRITE_TIMEOUT = 30;
 
-    public static final String EXTERNAL_APP_DOWNLOAD_LINK = "https://alphawallet.com/download/AlphaWallet-release-build.apk";
+    public static final String EXTERNAL_APP_DOWNLOAD_LINK = "https://setlone.com/download/SetlOne-release-build.apk";
 
     // shortcuts
     public static final String ACTION_TOKEN_SHORTCUT = "token_shortcut";

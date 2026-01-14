@@ -1,7 +1,7 @@
 package com.setlone.app.walletconnect;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.alphawallet.hardware.SignatureReturnType.SIGNATURE_GENERATED;
+import static com.setlone.hardware.SignatureReturnType.SIGNATURE_GENERATED;
 import static com.walletconnect.web3.wallet.client.Wallet.Model;
 import static com.walletconnect.web3.wallet.client.Wallet.Params;
 
@@ -33,7 +33,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.setlone.app.App;
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.SignAuthenticationCallback;
 import com.setlone.app.entity.WalletType;
 import com.setlone.app.entity.walletconnect.WalletConnectSessionItem;
@@ -52,7 +52,7 @@ import com.setlone.app.walletconnect.util.WCMethodChecker;
 import com.setlone.app.web3.entity.Web3Transaction;
 import com.setlone.app.widget.ActionSheet;
 import com.setlone.app.widget.ActionSheetSignDialog;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.EthereumMessage;
 import com.setlone.token.entity.SignMessageType;
 import com.setlone.token.entity.Signable;
@@ -463,7 +463,7 @@ public class AWWalletConnectClient implements Web3Wallet.WalletDelegate
     public Core.Model.AppMetaData getAppMetaData(Application application)
     {
         String name = application.getString(R.string.app_name);
-        String url = C.ALPHAWALLET_WEBSITE;
+        String url = C.SETLONE_WEBSITE;
         String[] icons = {C.ALPHA_WALLET_LOGO_URL};
         String description = "The ultimate Web3 Wallet to power your tokens.";
         String redirect = "kotlin-responder-wc:/request";

@@ -25,7 +25,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.DApp;
 import com.setlone.app.entity.GasEstimate;
 import com.setlone.app.entity.SignAuthenticationCallback;
@@ -57,7 +57,7 @@ import com.setlone.app.widget.ActionSheetSignDialog;
 import com.setlone.app.widget.FunctionButtonBar;
 import com.setlone.app.widget.SignTransactionDialog;
 import com.setlone.ethereum.EthereumNetworkBase;
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 import com.setlone.token.entity.ActionModifier;
 import com.setlone.token.entity.Attribute;
 import com.setlone.token.entity.EthereumMessage;

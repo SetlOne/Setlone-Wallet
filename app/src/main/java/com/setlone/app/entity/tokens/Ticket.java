@@ -1,6 +1,6 @@
 package com.setlone.app.entity.tokens;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.TicketRangeElement;
 import com.setlone.app.entity.Transaction;

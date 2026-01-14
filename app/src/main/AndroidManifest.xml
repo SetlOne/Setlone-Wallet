@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <!-- Note: this permission is used to display the active WalletConnect Notification. This is a courtesy to the user to inform them a WalletConnect channel is active -->
-    <!-- This is pegged to class WalletConnectV2Service which has no data connection, the data connection is only active when the AlphaWallet app is open -->
+    <!-- This is pegged to class WalletConnectV2Service which has no data connection, the data connection is only active when the SetlOne app is open -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 
@@ -26,7 +26,7 @@
     <application
             android:name=".App"
             android:allowBackup="false"
-            android:hardwareAccelerated="false"
+            android:hardwareAccelerated="true"
             android:largeHeap="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -138,14 +138,14 @@
                 android:theme="@style/AppTheme.NoActionBar.Splash" />
 
         <service
-                android:name=".service.AlphaWalletFirebaseMessagingService"
+                android:name=".service.SetlOneFirebaseMessagingService"
                 android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
             <meta-data
                     android:name="com.google.firebase.messaging.default_notification_channel_id"
-                    android:value="alphawallet" />
+                    android:value="setlone" />
         </service>
 
         <activity

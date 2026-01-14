@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.repository.EthereumNetworkBase;
 import com.setlone.app.repository.EthereumNetworkRepository;

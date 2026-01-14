@@ -21,7 +21,7 @@ import com.setlone.app.util.Utils;
 
 import java.util.List;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.DApp;
 import com.setlone.app.ui.widget.OnDappAddedListener;
 import com.setlone.app.ui.widget.OnDappClickListener;

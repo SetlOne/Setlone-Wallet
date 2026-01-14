@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.repository.CurrencyRepository;
 import com.setlone.app.service.TickerService;
 import com.setlone.app.ui.widget.entity.InputFiatCallback;

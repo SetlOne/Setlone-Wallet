@@ -28,8 +28,8 @@ import com.setlone.app.repository.WalletDataRealmSource;
 import com.setlone.app.repository.WalletRepository;
 import com.setlone.app.repository.WalletRepositoryType;
 import com.setlone.app.service.AccountKeystoreService;
-import com.setlone.app.service.AlphaWalletNotificationService;
-import com.setlone.app.service.AlphaWalletService;
+import com.setlone.app.service.SetlOneNotificationService;
+import com.setlone.app.service.SetlOneService;
 import com.setlone.app.service.AnalyticsService;
 import com.setlone.app.service.AnalyticsServiceType;
 import com.setlone.app.service.AssetDefinitionService;
@@ -245,9 +245,9 @@ public class RepositoriesModule
 
     @Singleton
     @Provides
-    AlphaWalletService provideFeemasterService(OkHttpClient okHttpClient, Gson gson)
+    SetlOneService provideFeemasterService(OkHttpClient okHttpClient, Gson gson)
     {
-        return new AlphaWalletService(okHttpClient, gson);
+        return new SetlOneService(okHttpClient, gson);
     }
 
     @Singleton
@@ -261,7 +261,7 @@ public class RepositoriesModule
     @Provides
     AssetDefinitionService providingAssetDefinitionServices(IPFSServiceType ipfsService, @ApplicationContext Context ctx, NotificationService notificationService, RealmManager realmManager,
                                                             TokensService tokensService, TokenLocalSource tls,
-                                                            AlphaWalletService alphaService)
+                                                            SetlOneService alphaService)
     {
         return new AssetDefinitionService(ipfsService, ctx, notificationService, realmManager, tokensService, tls, alphaService);
     }
@@ -297,8 +297,8 @@ public class RepositoriesModule
 
     @Singleton
     @Provides
-    AlphaWalletNotificationService provideAlphaWalletNotificationService(WalletRepositoryType walletRepository)
+    SetlOneNotificationService provideSetlOneNotificationService(WalletRepositoryType walletRepository)
     {
-        return new AlphaWalletNotificationService(walletRepository);
+        return new SetlOneNotificationService(walletRepository);
     }
 }

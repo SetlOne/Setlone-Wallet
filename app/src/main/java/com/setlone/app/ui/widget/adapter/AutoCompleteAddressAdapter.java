@@ -17,7 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.entity.ItemClickListener;
 import com.setlone.app.ui.widget.entity.UrlFilter;
 

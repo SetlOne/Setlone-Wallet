@@ -29,7 +29,7 @@ public class AdvancedSettingsViewModel extends BaseViewModel {
         //create XML repository directory
         File directory = new File(
                 Environment.getExternalStorageDirectory()
-                        + File.separator + HomeViewModel.ALPHAWALLET_DIR);
+                        + File.separator + HomeViewModel.SETLONE_DIR);
 
         if (!directory.exists()) {
             return directory.mkdir();

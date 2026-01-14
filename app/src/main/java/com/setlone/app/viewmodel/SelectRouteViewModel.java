@@ -3,7 +3,7 @@ package com.setlone.app.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.lifi.Route;
 import com.setlone.app.repository.PreferenceRepositoryType;
 import com.setlone.app.service.SwapService;

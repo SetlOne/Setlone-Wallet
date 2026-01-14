@@ -3,7 +3,7 @@ package com.setlone.app.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.service.KeyService;
 import com.setlone.app.util.BalanceUtils;

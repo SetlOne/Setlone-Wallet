@@ -18,7 +18,7 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.AuthenticationCallback;
 import com.setlone.app.entity.AuthenticationFailType;
 import com.setlone.app.entity.Operation;

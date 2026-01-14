@@ -1,6 +1,6 @@
 package com.setlone.app.entity;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 
 import org.junit.Test;
 

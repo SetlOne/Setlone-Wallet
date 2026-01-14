@@ -10,8 +10,8 @@ public abstract class TestScript
             " http://tokenscript.org/2020/06/tokenscript.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"" +
             " xmlns:ethereum=\"urn:ethereum:constantinople\" custodian=\"false\"> <ts:label> <ts:plurals xml:lang=\"en\"> <ts:string quantity=\"one\">STL Office Token</ts:string>" +
             " <ts:string quantity=\"other\">STL Office Tokens</ts:string> </ts:plurals> <ts:plurals xml:lang=\"es\"> <ts:string quantity=\"one\">Boleto de admisión</ts:string>" +
-            " <ts:string quantity=\"other\">Boleto de admisiónes</ts:string> </ts:plurals> <ts:plurals xml:lang=\"zh\"> <ts:string quantity=\"one\">入場券</ts:string>" +
-            " <ts:string quantity=\"other\">入場券</ts:string> </ts:plurals> </ts:label> <ts:contract interface=\"erc721\" name=\"MessageToken\">" +
+            " <ts:string quantity=\"other\">Boleto de admisiónes</ts:string> </ts:plurals> <ts:plurals xml:lang=\"zh\"> <ts:string quantity=\"one\">入场券</ts:string>" +
+            " <ts:string quantity=\"other\">入场券</ts:string> </ts:plurals> </ts:label> <ts:contract interface=\"erc721\" name=\"MessageToken\">" +
             " <ts:address network=\"2\">0xC3eeCa3Feb9Dbc06c6e749702AcB8d56A07BFb05</ts:address> </ts:contract> <ts:origins> <ts:ethereum contract=\"MessageToken\"> </ts:ethereum>" +
             " </ts:origins> <ts:cards> <ts:card type=\"action\"> <ts:label> <ts:string xml:lang=\"en\">Unlock</ts:string> <ts:string xml:lang=\"zh\">开锁</ts:string>" +
             " <ts:string xml:lang=\"es\">Abrir</ts:string> </ts:label> <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">" +
@@ -32,7 +32,7 @@ public abstract class TestScript
             " { document.getElementById('status').innerHTML = response.statusText; throw Error(response.statusText); } else { return response.text() } }) .then(function (response)" +
             " { if (response == \"pass\") { document.getElementById('status').innerHTML = 'Entrance granted!' window.close() } else { document.getElementById('status').innerHTML = 'Failed with: '" +
             " + response } }).catch(function() { console.log(\"error blah\"); }); } }); window.challenge = ''; document.getElementById('msg').innerHTML = ''; } }) </script> </ts:view> </ts:card>" +
-            " <ts:card type=\"action\"> <ts:label> <ts:string xml:lang=\"en\">Lock</ts:string> <ts:string xml:lang=\"zh\">关锁</ts:string>" +
+            " <ts:card type=\"action\"> <ts:label> <ts:string xml:lang=\"en\">Lock</ts:string> <ts:string xml:lang=\"zh\">锁</ts:string>" +
             " <ts:string xml:lang=\"es\">Cerrar</ts:string> </ts:label> <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\"> <style type=\"text/css\"> html { } body" +
             " { padding: 0px; margin: 0px; } div { margin: 0px; padding: 0px; } .data-icon { height:16px; vertical-align: middle } </style> <script type=\"text/javascript\"> class Token" +
             " { constructor(tokenInstance) { this.props = tokenInstance } render() { return` &lt;h3&gt;Sign the challenge to lock ...&lt;/h3&gt;" +

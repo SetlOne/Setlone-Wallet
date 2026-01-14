@@ -17,7 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.DApp;
 import com.setlone.app.ui.widget.entity.ItemClickListener;
 import com.setlone.app.ui.widget.entity.SuggestionsFilter;

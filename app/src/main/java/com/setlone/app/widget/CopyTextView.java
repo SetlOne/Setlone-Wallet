@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.util.Utils;
 import com.google.android.material.button.MaterialButton;
 

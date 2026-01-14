@@ -1,6 +1,6 @@
 package com.setlone.app.entity;
 
-import com.alphawallet.hardware.SignatureFromKey;
+import com.setlone.hardware.SignatureFromKey;
 
 /**
  * Created by James on 21/07/2019.

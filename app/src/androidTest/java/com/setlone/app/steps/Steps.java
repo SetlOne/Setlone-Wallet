@@ -36,7 +36,7 @@ import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.assertions.Should;
 import com.setlone.app.util.GetTextAction;
 import com.setlone.app.util.Helper;

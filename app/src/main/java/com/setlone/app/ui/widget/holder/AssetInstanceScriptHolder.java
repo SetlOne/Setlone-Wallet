@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.service.AssetDefinitionService;
 import com.setlone.app.ui.TokenFunctionActivity;

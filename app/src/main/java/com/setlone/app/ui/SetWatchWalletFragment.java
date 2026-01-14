@@ -10,7 +10,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.ui.widget.OnSetWatchWalletListener;
 import com.setlone.app.ui.widget.entity.AddressReadyCallback;
 import com.setlone.app.util.KeyboardUtils;

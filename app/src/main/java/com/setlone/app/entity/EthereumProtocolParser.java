@@ -2,7 +2,7 @@ package com.setlone.app.entity;
 
 import android.text.TextUtils;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

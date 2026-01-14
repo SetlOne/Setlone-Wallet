@@ -22,8 +22,8 @@ public class I18nTest extends BaseE2ETest
         click(withText("Chinese"));
         pressBack();
 
-        selectMenu("更换语言");
-        click(withText("西班牙语"));
+        selectMenu("?�换�??");
+        click(withText("西班?��?"));
         pressBack();
 
         selectMenu("Cambiar idioma");
@@ -34,12 +34,12 @@ public class I18nTest extends BaseE2ETest
         click(withText("Vietnamien"));
         pressBack();
 
-        selectMenu("Thay đổi ngôn ngữ");
+        selectMenu("Thay đổi ngôn ng�?);
         click(withText("Tiếng Miến Điện"));
         pressBack();
 
-        selectMenu("ဘာသာစကားပြောင်းမည်");
-        click(withText("အင်ဒိုနီးရှား"));
+        selectMenu("?�ာသာစက?�းပြောင်းမည�?);
+        click(withText("?�င်ဒ�?�?���?��ရှာ�?));
         pressBack();
     }
 }

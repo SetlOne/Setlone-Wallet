@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.walletconnect.WalletConnectSessionItem;
 import com.setlone.app.ui.WalletConnectNotificationActivity;
 

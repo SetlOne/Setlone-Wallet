@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.shadows.ShadowApp;
 import com.setlone.shadows.ShadowRealm;
 

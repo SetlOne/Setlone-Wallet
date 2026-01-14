@@ -1,6 +1,6 @@
 package com.setlone.app.entity.tokenscript;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.token.entity.Attribute;
 import com.setlone.token.entity.AttributeInterface;

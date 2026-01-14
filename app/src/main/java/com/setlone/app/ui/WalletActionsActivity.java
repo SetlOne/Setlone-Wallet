@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.BackupOperationType;
 import com.setlone.app.entity.ErrorEnvelope;
 import com.setlone.app.entity.StandardFunctionInterface;

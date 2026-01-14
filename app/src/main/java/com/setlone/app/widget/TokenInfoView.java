@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.service.TickerService;
 import com.setlone.app.util.Utils;
 

@@ -31,9 +31,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.alphawallet.app.BuildConfig;
+import com.setlone.app.BuildConfig;
 import com.setlone.app.C;
-import com.alphawallet.app.R;
+import com.setlone.app.R;
 import com.setlone.app.entity.BuyCryptoInterface;
 import com.setlone.app.entity.ContractType;
 import com.setlone.app.entity.ItemClick;
