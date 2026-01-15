@@ -54,7 +54,12 @@ public class NetworkToggleViewModel extends BaseViewModel
         int index = 0;
         for (Long selectedId : selectedItems)
         {
-            if (EthereumNetworkRepository.hasRealValue(selectedId) && activeNetworkId == selectedId)
+            // TRON 네트워크는 항상 활성화 상태 유지
+            if (EthereumNetworkRepository.isTronNetwork(selectedId))
+            {
+                // TRON은 항상 활성화
+            }
+            else if (EthereumNetworkRepository.hasRealValue(selectedId) && activeNetworkId == selectedId)
             {
                 deselected = false;
             }
@@ -82,9 +87,44 @@ public class NetworkToggleViewModel extends BaseViewModel
 
         for (NetworkInfo info : getNetworkList())
         {
-            if (info != null && EthereumNetworkRepository.hasRealValue(info.chainId) == isMainNet)
+            if (info != null)
             {
-                networkList.add(new NetworkItem(info.name, info.chainId, filterIds.contains(info.chainId)));
+                // TRON 네트워크는 제외 (별도 리스트로 관리)
+                if (EthereumNetworkRepository.isTronNetwork(info.chainId))
+                {
+                    continue;
+                }
+                // EVM 메인넷 또는 테스트넷 분류
+                if (EthereumNetworkRepository.hasRealValue(info.chainId) == isMainNet)
+                {
+                    networkList.add(new NetworkItem(info.name, info.chainId, filterIds.contains(info.chainId)));
+                }
+            }
+        }
+
+        return networkList;
+    }
+    
+    /**
+     * TRON 네트워크 리스트 가져오기
+     */
+    public List<NetworkItem> getTronNetworkList()
+    {
+        List<NetworkItem> networkList = new ArrayList<>();
+        List<Long> filterIds = networkRepository.getSelectedFilters();
+
+        for (NetworkInfo info : getNetworkList())
+        {
+            if (info != null && EthereumNetworkRepository.isTronNetwork(info.chainId))
+            {
+                // TRON 네트워크는 기본적으로 체크되어 있음
+                boolean isSelected = filterIds.contains(info.chainId);
+                // 필터 리스트가 비어있으면 자동으로 체크 (기본 활성화)
+                if (filterIds.isEmpty())
+                {
+                    isSelected = true;
+                }
+                networkList.add(new NetworkItem(info.name, info.chainId, isSelected));
             }
         }
 

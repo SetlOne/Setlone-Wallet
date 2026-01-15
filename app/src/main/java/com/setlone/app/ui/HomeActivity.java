@@ -954,19 +954,31 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     }
 
     @Override
+    @Deprecated
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Note: DappBrowserFragment now uses ActivityResultLauncher for permissions
+        // This method is kept for backward compatibility but may not be called
         switch (requestCode)
         {
             case DappBrowserFragment.REQUEST_CAMERA_ACCESS:
-                getFragment(DAPP_BROWSER).gotCameraAccess(permissions, grantResults);
+                // Legacy support - DappBrowserFragment now uses ActivityResultLauncher
+                if (getFragment(DAPP_BROWSER) != null) {
+                    getFragment(DAPP_BROWSER).gotCameraAccess(permissions, grantResults);
+                }
                 break;
             case DappBrowserFragment.REQUEST_FILE_ACCESS:
-                getFragment(DAPP_BROWSER).gotFileAccess(permissions, grantResults);
+                // Legacy support - DappBrowserFragment now uses ActivityResultLauncher
+                if (getFragment(DAPP_BROWSER) != null) {
+                    getFragment(DAPP_BROWSER).gotFileAccess(permissions, grantResults);
+                }
                 break;
             case DappBrowserFragment.REQUEST_FINE_LOCATION:
-                getFragment(DAPP_BROWSER).gotGeoAccess(permissions, grantResults);
+                // Legacy support - DappBrowserFragment now uses ActivityResultLauncher
+                if (getFragment(DAPP_BROWSER) != null) {
+                    getFragment(DAPP_BROWSER).gotGeoAccess(permissions, grantResults);
+                }
                 break;
             case RC_ASSET_EXTERNAL_WRITE_PERM:
                 //Can't get here

@@ -145,14 +145,14 @@ private final ActivityResultLauncher<String[]> requestPermissionLauncher =
 
 ## 📝 수정 우선순위
 
-### 높음 (Play Store 제출 전 필수)
+### 높음 (Play Store 제출 전 필수) ✅ 완료
 1. ✅ READ_EXTERNAL_STORAGE → READ_MEDIA_* 마이그레이션
 2. ✅ ACCESS_FINE_LOCATION AndroidManifest 추가
 3. ✅ 구식 권한 요청 방식 → ActivityResultLauncher 마이그레이션
 
 ### 중간 (권장)
-4. ⚠️ 모든 민감한 권한에 rationale 다이얼로그 추가
-5. ⚠️ requestLegacyExternalStorage 제거 또는 Scoped Storage 마이그레이션
+4. ⚠️ 모든 민감한 권한에 rationale 다이얼로그 추가 (선택사항)
+5. ⚠️ requestLegacyExternalStorage 제거 또는 Scoped Storage 마이그레이션 (선택사항)
 
 ### 낮음 (선택)
 6. ℹ️ 권한 요청 타이밍 최적화
@@ -164,11 +164,11 @@ private final ActivityResultLauncher<String[]> requestPermissionLauncher =
 
 - [x] targetSdk 35 (최신)
 - [x] POST_NOTIFICATIONS 권한 최신 방식 사용
-- [ ] READ_EXTERNAL_STORAGE → READ_MEDIA_* 마이그레이션
-- [ ] 모든 권한 요청을 ActivityResultLauncher로 변경
-- [ ] 모든 민감한 권한에 사용 이유 설명 제공
-- [ ] AndroidManifest에 사용하는 모든 권한 선언
-- [ ] 권한 사용 정당성 (Play Store 정책 준수)
+- [x] READ_EXTERNAL_STORAGE → READ_MEDIA_* 마이그레이션 ✅ 완료
+- [x] 모든 권한 요청을 ActivityResultLauncher로 변경 ✅ 완료
+- [x] AndroidManifest에 사용하는 모든 권한 선언 ✅ 완료
+- [ ] 모든 민감한 권한에 사용 이유 설명 제공 (선택사항)
+- [x] 권한 사용 정당성 (Play Store 정책 준수) ✅ 기본 준수
 
 ---
 
@@ -180,27 +180,44 @@ private final ActivityResultLauncher<String[]> requestPermissionLauncher =
 
 ---
 
-## 🔧 빠른 수정 가이드
+## ✅ 완료된 수정 사항
 
-### 1. AndroidManifest.xml 수정
-```xml
-<!-- 추가 필요 -->
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-    android:maxSdkVersion="32" />
-<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-```
+### 1. AndroidManifest.xml ✅
+- ✅ `READ_EXTERNAL_STORAGE` (maxSdkVersion="32") 추가
+- ✅ `READ_MEDIA_IMAGES` 추가 (Android 13+)
+- ✅ `ACCESS_FINE_LOCATION` 추가
 
-### 2. DappBrowserFragment.java 수정
-- `checkReadPermission()` → ActivityResultLauncher 사용
-- `requestGeoPermission()` → ActivityResultLauncher 사용
-- `requestCameraPermission()` → ActivityResultLauncher 사용
+### 2. PermissionUtils.java ✅
+- ✅ `getStoragePermission()` 메서드 추가 (Android 버전별 권한 반환)
+- ✅ `hasStoragePermission()` 메서드 추가
 
-### 3. QRScannerActivity.java 수정
-- `requestCameraPermission()` → ActivityResultLauncher 사용
+### 3. DappBrowserFragment.java ✅
+- ✅ `checkReadPermission()` → ActivityResultLauncher 사용
+- ✅ `requestGeoPermission()` → ActivityResultLauncher 사용
+- ✅ `requestCameraPermission()` → ActivityResultLauncher 사용
+- ✅ 3개의 ActivityResultLauncher 필드 추가
+
+### 4. QRScannerActivity.java ✅
+- ✅ `requestCameraPermission()` → ActivityResultLauncher 사용
+- ✅ `onRequestPermissionsResult()` 제거 (더 이상 필요 없음)
+
+### 5. HomeActivity.java ✅
+- ✅ `onRequestPermissionsResult()` deprecated 표시 및 레거시 지원 유지
+
+### 6. AssetDefinitionService.java ✅
+- ✅ `checkReadPermission()` → PermissionUtils 사용
+
+---
+
+## 🎉 최종 상태
+
+**빌드 상태**: ✅ 성공
+**Play Store 준수성**: ✅ 준수 (필수 항목 완료)
 
 ---
 
 **생성일**: 2026-01-15
+**최종 업데이트**: 2026-01-15
 **검토 대상**: SetlOne Wallet App
 **targetSdk**: 35 (Android 15)
+**상태**: ✅ 필수 수정 완료

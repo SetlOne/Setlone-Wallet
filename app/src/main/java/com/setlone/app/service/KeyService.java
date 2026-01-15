@@ -684,6 +684,29 @@ public class KeyService implements AuthenticationCallback, PinAuthenticationCall
         return storeEncryptedBytes(newWallet.mnemonic().getBytes(), keyRequiresAuthentication, currentWallet.address);
     }
 
+    /**
+     * TRON 주소 생성 (wallet-core 지원 여부 확인 필요)
+     * @param mnemonic 니모닉 문구
+     * @return TRON 주소 (Base58 형식)
+     */
+    public String generateTronAddress(String mnemonic) throws Exception
+    {
+        HDWallet wallet = new HDWallet(mnemonic, "");
+        // wallet-core가 TRON을 지원하는지 확인
+        try
+        {
+            PrivateKey pk = wallet.getKeyForCoin(CoinType.TRON);
+            return CoinType.TRON.deriveAddress(pk);
+        }
+        catch (Exception e)
+        {
+            // wallet-core가 TRON을 지원하지 않는 경우
+            throw new UnsupportedOperationException(
+                    "wallet-core does not support TRON. Trident SDK integration required. " +
+                    "Error: " + e.getMessage());
+        }
+    }
+
     private synchronized boolean storeEncryptedBytes(byte[] data, boolean createAuthLocked, String fileName)
     {
         KeyStore keyStore = null;

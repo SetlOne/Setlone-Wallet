@@ -368,7 +368,9 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                 String ethAmount = Convert.getConvertedValue(new BigDecimal(result.weiValue), Convert.Unit.ETHER.getFactor());
                 sendText.setVisibility(View.VISIBLE);
                 sendText.setText(R.string.transfer_request);
-                token = viewModel.getToken(result.chainId, wallet.address);
+                // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
+                String networkAddress = viewModel.getAddressForNetwork(wallet.address, result.chainId);
+                token = viewModel.getToken(result.chainId, networkAddress);
                 addressInput.setAddress(result.getAddress());
                 amountInput.setupToken(token, viewModel.getTokenService(), this);
                 amountInput.setAmount(ethAmount);
@@ -381,7 +383,9 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                 {
                     currentResult = result;
                     showTokenFetch();
-                    viewModel.fetchToken(result.chainId, result.getAddress(), wallet.address);
+                    // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
+                    String transferNetworkAddress = viewModel.getAddressForNetwork(wallet.address, result.chainId);
+                    viewModel.fetchToken(result.chainId, result.getAddress(), transferNetworkAddress);
                 }
                 else if (resultToken.isERC20())
                 {
@@ -577,10 +581,12 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     {
         BigInteger ethValue = token.isEthereum() ? sendAmount.toBigInteger() : BigInteger.ZERO;
         long leafCode = amountInput.isSendAll() ? -2 : -1;
+        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
+        String networkAddress = viewModel.getAddressForNetwork(wallet.address, token.tokenInfo.chainId);
         Web3Transaction w3tx = new Web3Transaction(
                 new Address(txSendAddress),
                 token.isEthereum() ? null : new Address(token.getAddress()),
-                new Address(wallet.address),
+                new Address(networkAddress),
                 ethValue,
                 sendGasPrice.toBigInteger(),
                 estimate.getValue(),

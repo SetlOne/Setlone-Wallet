@@ -21,6 +21,7 @@ import static com.setlone.ethereum.EthereumNetworkBase.OKX_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.OPTIMISTIC_MAIN_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.POLYGON_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.ROOTSTOCK_MAINNET_ID;
+import static com.setlone.ethereum.EthereumNetworkBase.TRON_ID;
 import static org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction;
 
 import android.text.TextUtils;
@@ -743,6 +744,7 @@ public class TickerService
         put(LINEA_ID, "linea");
         put(BASE_MAINNET_ID, "base");
         put(MANTLE_MAINNET_ID, "mantle");
+        put(TRON_ID, "tron"); // TRON 네트워크 지원 (TRC-20 토큰용)
     }};
 
     // For now, don't use Dexguru unless we obtain API key
@@ -785,6 +787,7 @@ public class TickerService
         put(LINEA_ID, "ethereum");
         put(BASE_MAINNET_ID, "base");
         put(MANTLE_MAINNET_ID, "mantle");
+        put(TRON_ID, "tron"); // TRON 네이티브 토큰 (TRX)용
     }};
 
     public static boolean validateCoinGeckoAPI(Token token)

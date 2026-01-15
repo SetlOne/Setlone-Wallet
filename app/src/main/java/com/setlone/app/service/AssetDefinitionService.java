@@ -47,6 +47,7 @@ import com.setlone.app.repository.entity.RealmAuxData;
 import com.setlone.app.repository.entity.RealmCertificateData;
 import com.setlone.app.repository.entity.RealmTokenScriptData;
 import com.setlone.app.ui.HomeActivity;
+import com.setlone.app.util.PermissionUtils;
 import com.setlone.app.util.Utils;
 import com.setlone.app.viewmodel.HomeViewModel;
 import com.setlone.token.entity.ActionModifier;
@@ -793,8 +794,9 @@ public class AssetDefinitionService implements ParseResult, AttributeInterface
 
     private boolean checkReadPermission()
     {
-        return context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED;
+        // Use PermissionUtils to get the correct permission based on Android version
+        String permission = PermissionUtils.getStoragePermission();
+        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     public TokenDefinition getDefinition(String tsKey)

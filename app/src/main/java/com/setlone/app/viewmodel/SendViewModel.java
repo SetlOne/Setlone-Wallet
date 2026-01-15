@@ -21,10 +21,13 @@ import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.router.MyAddressRouter;
 import com.setlone.app.service.AnalyticsServiceType;
 import com.setlone.app.service.AssetDefinitionService;
+import com.setlone.app.repository.EthereumNetworkBase;
+import com.setlone.app.repository.EthereumNetworkBase;
 import com.setlone.app.service.GasService;
 import com.setlone.app.service.KeyService;
 import com.setlone.app.service.TokensService;
 import com.setlone.app.service.TransactionSendHandlerInterface;
+import com.setlone.app.service.WalletAddressService;
 import com.setlone.app.ui.ImportTokenActivity;
 import com.setlone.app.web3.entity.Web3Transaction;
 import com.setlone.hardware.SignatureFromKey;
@@ -53,6 +56,7 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
     private final AssetDefinitionService assetDefinitionService;
     private final KeyService keyService;
     private final CreateTransactionInteract createTransactionInteract;
+    private final WalletAddressService walletAddressService;
 
     @Inject
     public SendViewModel(MyAddressRouter myAddressRouter,
@@ -62,6 +66,7 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
                          GasService gasService,
                          AssetDefinitionService assetDefinitionService,
                          KeyService keyService,
+                         WalletAddressService walletAddressService,
                          AnalyticsServiceType analyticsService)
     {
         this.myAddressRouter = myAddressRouter;
@@ -71,6 +76,7 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
         this.assetDefinitionService = assetDefinitionService;
         this.keyService = keyService;
         this.createTransactionInteract = createTransactionInteract;
+        this.walletAddressService = walletAddressService;
         setAnalyticsService(analyticsService);
     }
 
@@ -97,6 +103,17 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
     public Token getToken(long chainId, String tokenAddress)
     {
         return tokensService.getToken(chainId, tokenAddress);
+    }
+    
+    /**
+     * 네트워크에 맞는 지갑 주소 가져오기
+     * TRON 네트워크일 경우 TRON 주소를 반환
+     */
+    public String getAddressForNetwork(String walletAddress, long chainId) {
+        if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId)) {
+            return walletAddressService.getNetworkAddress(walletAddress, chainId);
+        }
+        return walletAddress;
     }
 
     public void showImportLink(Context context, String importTxt)

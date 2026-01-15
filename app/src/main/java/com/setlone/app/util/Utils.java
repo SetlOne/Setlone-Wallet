@@ -38,6 +38,7 @@ import com.setlone.app.R;
 import com.setlone.app.entity.EasAttestation;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.util.pattern.Patterns;
+import com.setlone.app.util.TronUtils;
 import com.setlone.token.entity.ProviderTypedData;
 import com.setlone.token.entity.Signable;
 import com.google.gson.Gson;
@@ -400,7 +401,17 @@ public class Utils
 
     public static boolean isAddressValid(String address)
     {
-        return address != null && address.length() > 0 && WalletUtils.isValidAddress(address);
+        if (address == null || address.length() == 0)
+        {
+            return false;
+        }
+        // TRON 주소 검증 (T로 시작하는 Base58 주소)
+        if (TronUtils.isValidTronAddress(address))
+        {
+            return true;
+        }
+        // EVM 주소 검증 (0x로 시작하는 주소)
+        return WalletUtils.isValidAddress(address);
     }
 
     public static String longArrayToString(Long[] values)
@@ -598,6 +609,14 @@ public class Utils
     {
         if (isAddressValid(address))
         {
+            // TRON 주소 포맷팅 (T로 시작하는 Base58 주소)
+            if (TronUtils.isValidTronAddress(address))
+            {
+                String firstSix = address.substring(0, 6);
+                String lastFour = address.substring(address.length() - 4);
+                return firstSix + "..." + lastFour;
+            }
+            // EVM 주소 포맷팅 (0x로 시작하는 주소)
             address = Keys.toChecksumAddress(address);
             String result = "";
             String firstSix = address.substring(0, 6);
@@ -614,6 +633,14 @@ public class Utils
     {
         if (isAddressValid(address))
         {
+            // TRON 주소 포맷팅 (T로 시작하는 Base58 주소)
+            if (TronUtils.isValidTronAddress(address))
+            {
+                String front = address.substring(0, frontCharCount);
+                String back = address.substring(address.length() - 4);
+                return front + "..." + back;
+            }
+            // EVM 주소 포맷팅 (0x로 시작하는 주소)
             address = Keys.toChecksumAddress(address);
             String result = "";
             String front = address.substring(0, frontCharCount + 2);
@@ -628,6 +655,12 @@ public class Utils
 
     public static String splitAddress(String address, int lines)
     {
+        // TRON 주소는 Base58이므로 hex 변환 불가, 그대로 반환
+        if (TronUtils.isValidTronAddress(address))
+        {
+            return address;
+        }
+        // EVM 주소만 hex 변환
         address = Keys.toChecksumAddress(address);
         return splitHex(address, lines);
     }

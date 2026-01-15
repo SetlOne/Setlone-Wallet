@@ -4,6 +4,7 @@ import com.setlone.app.entity.EIP681Type;
 import com.setlone.app.entity.EthereumProtocolParser;
 import com.setlone.app.entity.QRResult;
 import com.setlone.app.ui.widget.entity.ENSHandler;
+import com.setlone.app.util.TronUtils;
 import com.setlone.token.entity.ChainSpec;
 import com.setlone.token.entity.MagicLinkInfo;
 import org.web3j.utils.Numeric;
@@ -250,7 +251,17 @@ public class QRParser {
 
     public static boolean validAddress(String address)
     {
-        return address != null && ((address.startsWith("0x") && address.length() > 10)
-                || (address.contains(".") && address.indexOf(".") <= address.length() - 2));
+        if (address == null)
+        {
+            return false;
+        }
+        // TRON 주소 검증 (T로 시작하는 Base58 주소)
+        if (TronUtils.isValidTronAddress(address))
+        {
+            return true;
+        }
+        // EVM 주소 또는 ENS 검증
+        return (address.startsWith("0x") && address.length() > 10)
+                || (address.contains(".") && address.indexOf(".") <= address.length() - 2);
     }
 }

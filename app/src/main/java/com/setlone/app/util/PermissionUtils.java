@@ -49,4 +49,30 @@ public class PermissionUtils
             return true;
         }
     }
+
+    /**
+     * Get the appropriate storage permission based on Android version
+     * Android 13+ (API 33+): READ_MEDIA_IMAGES
+     * Android 12 and below: READ_EXTERNAL_STORAGE
+     */
+    public static String getStoragePermission()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        {
+            return Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        else
+        {
+            return Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
+    }
+
+    /**
+     * Check if storage permission is granted
+     */
+    public static boolean hasStoragePermission(Activity activity)
+    {
+        String permission = getStoragePermission();
+        return ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED;
+    }
 }

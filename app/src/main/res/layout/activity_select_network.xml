@@ -52,6 +52,18 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
+            <com.setlone.app.widget.StandardHeader
+                android:id="@+id/tron_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:headerText="@string/tron_network"
+                app:showSwitch="false" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tron_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

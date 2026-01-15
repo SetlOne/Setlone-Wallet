@@ -42,6 +42,7 @@ import static com.setlone.ethereum.EthereumNetworkBase.MILKOMEDA_C1_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.MINT_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.MINT_SEPOLIA_TESTNET_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.OKX_ID;
+import static com.setlone.ethereum.EthereumNetworkBase.TRON_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.OPTIMISTIC_MAIN_FALLBACK_URL;
 import static com.setlone.ethereum.EthereumNetworkBase.OPTIMISTIC_MAIN_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.PALM_ID;
@@ -178,9 +179,13 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     //Note: This list also determines the order of display for main net chains in the wallet.
     //If your wallet prioritises xDai for example, you may want to move the XDAI_ID to the front of this list,
     //Then xDai would appear as the first token at the top of the wallet
+    //주의: TRON은 EVM 호환이 아니므로 별도 리스트로 관리
     private static final List<Long> hasValue = new ArrayList<>(Arrays.asList(
             MAINNET_ID, GNOSIS_ID, POLYGON_ID, ROOTSTOCK_MAINNET_ID, CLASSIC_ID, LINEA_ID, BASE_MAINNET_ID, MANTLE_MAINNET_ID, MINT_ID, BINANCE_MAIN_ID, AVALANCHE_ID,
             FANTOM_ID, OPTIMISTIC_MAIN_ID, CRONOS_MAIN_ID, ARBITRUM_MAIN_ID, PALM_ID, KLAYTN_ID, IOTEX_MAINNET_ID, AURORA_MAINNET_ID, MILKOMEDA_C1_ID, OKX_ID));
+    
+    // TRON 네트워크는 EVM 호환이 아니므로 별도 리스트로 관리
+    private static final List<Long> tronNetworkList = new ArrayList<>(Arrays.asList(TRON_ID));
 
     private static final List<Long> testnetList = new ArrayList<>(Arrays.asList(
             SEPOLIA_TESTNET_ID, POLYGON_AMOY_ID, HOLESKY_ID, BASE_TESTNET_ID, MINT_SEPOLIA_TESTNET_ID, GOERLI_ID, BINANCE_TEST_ID,
@@ -448,6 +453,16 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
                 "https://arbitrum-sepolia.gateway.tenderly.co",
                 "https://endpoints.omniatech.io/v1/arbitrum/sepolia/public"
         });
+        // TRON 네트워크 설정
+        // 주의: TRON은 EVM 호환 네트워크가 아니므로 JSON-RPC를 사용하지 않습니다.
+        // 아래 URL은 HTTP API 엔드포인트이며, Web3j를 통한 접근은 불가능합니다.
+        // TRON 작업은 TronService를 통해 HTTP API로 직접 처리해야 합니다.
+        // CoinType: TRON (195), Derivation Path: m/44'/195'/0'/0/0
+        CHAIN_CONFIG_RPC.put(TRON_ID, new String[]{
+                "https://api.trongrid.io",           // TronGrid 공식 API
+                "https://tron.drpc.org",            // dRPC 엔드포인트
+                "https://tron-rpc.publicnode.com"   // PublicNode 엔드포인트
+        });
     };
 
     private static final String INFURA_ENDPOINT = ".infura.io/v3/";
@@ -631,6 +646,18 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
                     CHAIN_CONFIG_RPC.get(MINT_SEPOLIA_TESTNET_ID),
                     "https://sepolia-testnet-explorer.mintchain.io/tx/", MINT_SEPOLIA_TESTNET_ID,
                     "https://sepolia-testnet-explorer.mintchain.io/api/v2/")); //https://sepolia-testnet-explorer.mintchain.io/api/v2/addresses/0x76626Fc07d050d59c9fc1Ac5b853a9952B5E9Afe/transactions?filter=to%20%7C%20from
+
+            // TRON 네트워크 설정
+            // 주의: TRON은 EVM 호환 네트워크가 아니므로:
+            // 1. Chain ID 728126428은 메타데이터용이며, 실제로는 CoinType.TRON (195) 사용
+            // 2. RPC URL은 HTTP API 엔드포인트 (JSON-RPC 아님)
+            // 3. 트랜잭션 서명은 Protobuf 형식 사용 (EVM의 RLP 아님)
+            // 4. 주소는 Base58 형식 (T로 시작, 34자리)
+            // 5. Web3j를 사용할 수 없으며, TronService를 통해 HTTP API 직접 호출 필요
+            put(TRON_ID, new NetworkInfo(C.TRON_NETWORK_NAME, C.TRON_SYMBOL,
+                    CHAIN_CONFIG_RPC.get(TRON_ID),
+                    "https://tronscan.org/#/transaction/", TRON_ID,
+                    null)); // TRON은 EVM 호환이 아니므로 Etherscan API 없음
         }
     };
 
@@ -681,6 +708,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(MANTLE_TESTNET_ID, R.drawable.ic_mantle_test_logo);
             put(MINT_ID, R.drawable.ic_mint_logo);
             put(MINT_SEPOLIA_TESTNET_ID, R.drawable.ic_mint_test_logo);
+            put(TRON_ID, R.drawable.ic_tron_logo);
         }
     };
 
@@ -727,6 +755,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(MANTLE_TESTNET_ID, R.drawable.ic_mantle_test_logo);
             put(MINT_ID, R.drawable.ic_mint_logo);
             put(MINT_SEPOLIA_TESTNET_ID, R.drawable.ic_mint_test_logo);
+            put(TRON_ID, R.drawable.ic_tron_logo);
         }
     };
 
@@ -773,6 +802,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             put(MANTLE_TESTNET_ID, R.color.rootstock);
             put(MINT_ID, R.color.mint_chain);
             put(MINT_SEPOLIA_TESTNET_ID, R.color.mint_chain);
+            put(TRON_ID, R.color.tron_main);
         }
     };
 
@@ -1204,6 +1234,22 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
             }
         }
     }
+    
+    /**
+     * TRON 네트워크 리스트 추가
+     * TRON은 EVM 호환이 아니므로 별도 섹션으로 관리
+     */
+    private void addTronNetworks(List<NetworkInfo> result)
+    {
+        for (long networkId : tronNetworkList)
+        {
+            NetworkInfo network = networkMap.get(networkId);
+            if (network != null && !result.contains(network))
+            {
+                result.add(network);
+            }
+        }
+    }
 
     public static String getChainOverrideAddress(long chainId)
     {
@@ -1271,12 +1317,29 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
         for (Long networkId : storedIds)
         {
             NetworkInfo check = networkMap.get(networkId);
-            if (check != null) selectedIds.add(networkId);
+            if (check != null && !selectedIds.contains(networkId))
+            {
+                selectedIds.add(networkId);
+            }
+        }
+        
+        // TRON 네트워크는 항상 자동으로 포함 (기본 활성화)
+        for (long tronNetworkId : tronNetworkList)
+        {
+            if (!selectedIds.contains(tronNetworkId))
+            {
+                selectedIds.add(tronNetworkId);
+            }
         }
 
         if (selectedIds.isEmpty())
         {
             selectedIds.add(getDefaultNetwork());
+            // TRON도 기본 네트워크가 없을 때 추가
+            if (!selectedIds.contains(TRON_ID))
+            {
+                selectedIds.add(TRON_ID);
+            }
         }
 
         return selectedIds;
@@ -1327,6 +1390,10 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
          */
         addNetworks(additionalNetworks, networks, false);
         if (useTestNets) addNetworks(networks, false);
+        
+        // TRON 네트워크는 별도 섹션으로 추가 (EVM 호환이 아니므로)
+        addTronNetworks(networks);
+        
         return networks.toArray(new NetworkInfo[0]);
     }
 
@@ -1336,6 +1403,8 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
         NetworkInfo[] allNetworks = getAvailableNetworkList();
         List<NetworkInfo> networks = new ArrayList<>();
         addNetworks(allNetworks, networks, true);
+        // TRON 네트워크도 활성 네트워크에 포함
+        addTronNetworks(networks);
         return networks.toArray(new NetworkInfo[0]);
     }
 
@@ -1349,10 +1418,30 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     {
         return hasValue.contains(chainId);
     }
-
+    
+    /**
+     * TRON 네트워크인지 확인
+     * TRON은 EVM 호환이 아니므로 별도 관리
+     */
+    public static boolean isTronNetwork(long chainId)
+    {
+        return tronNetworkList.contains(chainId);
+    }
+    
+    /**
+     * EVM 호환 메인넷 네트워크 리스트
+     */
     public static List<Long> getAllMainNetworks()
     {
         return hasValue;
+    }
+    
+    /**
+     * TRON 네트워크 리스트
+     */
+    public static List<Long> getTronNetworks()
+    {
+        return tronNetworkList;
     }
 
     public static String getSecondaryNodeURL(long networkId)

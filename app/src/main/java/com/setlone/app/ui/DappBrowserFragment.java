@@ -93,6 +93,7 @@ import com.setlone.app.ui.widget.entity.ItemClickListener;
 import com.setlone.app.util.BalanceUtils;
 import com.setlone.app.util.DappBrowserUtils;
 import com.setlone.app.util.LocaleUtils;
+import com.setlone.app.util.PermissionUtils;
 import com.setlone.app.util.QRParser;
 import com.setlone.app.util.Utils;
 import com.setlone.app.viewmodel.DappBrowserViewModel;
@@ -257,6 +258,56 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
     private String walletConnectSession;
     private String currentWebpageTitle;
     private String currentFragment;
+    
+    // Permission launchers using ActivityResultLauncher (modern approach)
+    private final ActivityResultLauncher<String[]> requestStoragePermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            boolean granted = false;
+            for (Boolean permissionGranted : result.values()) {
+                if (permissionGranted) {
+                    granted = true;
+                    break;
+                }
+            }
+            if (granted) {
+                requestUpload();
+            }
+        });
+    
+    private final ActivityResultLauncher<String[]> requestCameraPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            boolean cameraAccess = false;
+            for (String permission : result.keySet()) {
+                if (permission.equals(Manifest.permission.CAMERA) && result.get(permission)) {
+                    cameraAccess = true;
+                    if (requestCallback != null) {
+                        requestCallback.grant(requestCallback.getResources());
+                    }
+                    break;
+                }
+            }
+            if (!cameraAccess) {
+                Toast.makeText(getContext(), "Permission not given", Toast.LENGTH_SHORT).show();
+            }
+        });
+    
+    private final ActivityResultLauncher<String[]> requestLocationPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            boolean geoAccess = false;
+            for (String permission : result.keySet()) {
+                if (permission.equals(Manifest.permission.ACCESS_FINE_LOCATION) && result.get(permission)) {
+                    geoAccess = true;
+                    break;
+                }
+            }
+            if (!geoAccess) {
+                Toast.makeText(getContext(), "Permission not given", Toast.LENGTH_SHORT).show();
+            }
+            if (geoCallback != null && geoOrigin != null) {
+                geoCallback.invoke(geoOrigin, geoAccess, false);
+            }
+        });
+    
     ActivityResultLauncher<Intent> getNetwork = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getData() == null) return;
@@ -1708,15 +1759,14 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
 
     private boolean checkReadPermission()
     {
-        if (ContextCompat.checkSelfPermission(requireActivity().getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED)
+        if (PermissionUtils.hasStoragePermission(requireActivity()))
         {
             return true;
         }
         else
         {
-            String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-            requireActivity().requestPermissions(permissions, REQUEST_FILE_ACCESS);
+            String[] permissions = new String[]{PermissionUtils.getStoragePermission()};
+            requestStoragePermissionLauncher.launch(permissions);
             return false;
         }
     }
@@ -1731,7 +1781,7 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
             geoCallback = callback;
             geoOrigin = origin;
             String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
-            requireActivity().requestPermissions(permissions, REQUEST_FINE_LOCATION);
+            requestLocationPermissionLauncher.launch(permissions);
         }
         else
         {
@@ -1749,7 +1799,7 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
             if (r.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE))
             {
                 final String[] permissions = new String[]{Manifest.permission.CAMERA};
-                requireActivity().requestPermissions(permissions, REQUEST_CAMERA_ACCESS);
+                requestCameraPermissionLauncher.launch(permissions);
             }
         }
     }
@@ -1792,10 +1842,14 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
     @Override
     public void gotFileAccess(@NotNull String[] permissions, int[] grantResults)
     {
+        // This method is kept for backward compatibility but is no longer used
+        // Permission handling is now done via ActivityResultLauncher
         boolean fileAccess = false;
         for (int i = 0; i < permissions.length; i++)
         {
-            if (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE) && grantResults[i] != -1)
+            String permission = permissions[i];
+            if ((permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE) || 
+                 permission.equals(Manifest.permission.READ_MEDIA_IMAGES)) && grantResults[i] != -1)
             {
                 fileAccess = true;
                 break;

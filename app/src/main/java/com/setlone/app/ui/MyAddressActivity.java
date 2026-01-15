@@ -26,6 +26,7 @@ import com.setlone.app.entity.EIP681Request;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.tokens.Token;
+import com.setlone.app.repository.EthereumNetworkBase;
 import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.ui.QRScanning.DisplayUtils;
 import com.setlone.app.ui.widget.entity.AmountReadyCallback;
@@ -35,7 +36,6 @@ import com.setlone.app.util.ens.AWEnsResolver;
 import com.setlone.app.viewmodel.MyAddressViewModel;
 import com.setlone.app.widget.CopyTextView;
 import com.setlone.app.widget.InputAmount;
-import com.setlone.ethereum.EthereumNetworkBase;
 
 import org.web3j.crypto.Keys;
 
@@ -200,8 +200,18 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         initViews();
         findViewById(R.id.toolbar_title).setVisibility(View.GONE);
         setTitle("");
-        displayAddress = Keys.toChecksumAddress(wallet.address);
-        networkInfo = viewModel.getNetworkByChain(overrideNetwork);
+        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
+        long chainId = overrideNetwork != 0 ? overrideNetwork : MAINNET_ID;
+        String networkAddress = viewModel.getAddressForNetwork(wallet.address, chainId);
+        networkInfo = viewModel.getNetworkByChain(chainId);
+        
+        // TRON 주소는 Base58 형식이므로 toChecksumAddress 사용하지 않음
+        if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId)) {
+            displayAddress = networkAddress;
+        } else {
+            displayAddress = Keys.toChecksumAddress(networkAddress);
+        }
+        
         currentMode = AddressMode.MODE_POS;
         layoutInputAmount.setVisibility(View.VISIBLE);
 
@@ -211,7 +221,9 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
 
     private void setupPOSMode(NetworkInfo info)
     {
-        if (token == null) token = viewModel.getTokenService().getToken(info.chainId, wallet.address);
+        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
+        String networkAddress = viewModel.getAddressForNetwork(wallet.address, info.chainId);
+        if (token == null) token = viewModel.getTokenService().getToken(info.chainId, networkAddress);
         amountInput.setupToken(token, viewModel.getTokenService(), this);
         amountInput.setAmount("");
         updateCryptoAmount(BigDecimal.ZERO);
@@ -233,7 +245,26 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
             amountInput = null;
         }
 
-        displayAddress = Keys.toChecksumAddress(wallet.address);
+        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
+        long chainId = overrideNetwork != 0 ? overrideNetwork : 
+                       (token != null ? token.tokenInfo.chainId : MAINNET_ID);
+        String networkAddress = viewModel.getAddressForNetwork(wallet.address, chainId);
+        
+        // 디버깅용 로그 (실제 동작 확인용)
+        Timber.d("=== TRON Address Debug ===");
+        Timber.d("ChainId: %d", chainId);
+        Timber.d("Is TRON Network: %b", com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId));
+        Timber.d("Original Wallet Address: %s", wallet.address);
+        Timber.d("Network Address (returned): %s", networkAddress);
+        Timber.d("========================");
+        
+        // TRON 주소는 Base58 형식이므로 toChecksumAddress 사용하지 않음
+        if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId)) {
+            displayAddress = networkAddress;
+        } else {
+            displayAddress = Keys.toChecksumAddress(networkAddress);
+        }
+        
         setTitle(getString(R.string.my_wallet_address));
         copyAddress.setFixedText(displayAddress);
         currentMode = AddressMode.MODE_ADDRESS;
@@ -349,7 +380,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     {
         if (viewModel == null) initViewModel();
         wallet = getIntent().getParcelableExtra(C.Key.WALLET);
-        long chainId = getIntent().getLongExtra(C.EXTRA_CHAIN_ID, EthereumNetworkBase.MAINNET_ID);
+        long chainId = getIntent().getLongExtra(C.EXTRA_CHAIN_ID, MAINNET_ID);
         token = viewModel.getTokenService().getToken(chainId, getIntent().getStringExtra(C.EXTRA_ADDRESS));
         long fallBackChainId = token != null ? token.tokenInfo.chainId : MAINNET_ID;
         overrideNetwork = getIntent().getLongExtra(OVERRIDE_DEFAULT, fallBackChainId);

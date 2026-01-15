@@ -22,8 +22,10 @@ public abstract class NetworkBaseActivity extends BaseActivity implements TestNe
 {
     RecyclerView mainnetRecyclerView;
     RecyclerView testnetRecyclerView;
+    RecyclerView tronRecyclerView;
     StandardHeader mainnetHeader;
     StandardHeader testnetHeader;
+    StandardHeader tronHeader;
     SwitchMaterial testnetSwitch;
     TestNetDialog testnetDialog;
 
@@ -85,15 +87,17 @@ public abstract class NetworkBaseActivity extends BaseActivity implements TestNe
     {
         mainnetHeader = findViewById(R.id.mainnet_header);
         testnetHeader = findViewById(R.id.testnet_header);
+        tronHeader = findViewById(R.id.tron_header);
 
         testnetSwitch = testnetHeader.getSwitch();
 
         mainnetRecyclerView = findViewById(R.id.main_list);
         testnetRecyclerView = findViewById(R.id.test_list);
+        tronRecyclerView = findViewById(R.id.tron_list);
 
         mainnetRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         testnetRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tronRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         testnetSwitch.setOnClickListener(v -> {
             boolean checked = testnetSwitch.isChecked();

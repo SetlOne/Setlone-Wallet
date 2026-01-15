@@ -63,6 +63,7 @@ public abstract class C {
     public static final String MANTLE_TESTNET_NAME = "Mantle Sepolia (Test)";
     public static final String MINT_MAINNET_NAME = "Mint";
     public static final String MINT_TESTNET_NAME = "Mint Sepolia (Test)";
+    public static final String TRON_NETWORK_NAME = "TRON";
 
     public static final String ETHEREUM_TICKER_NAME = "ethereum";
     public static final String CLASSIC_TICKER_NAME = "ethereum-classic";
@@ -97,6 +98,7 @@ public abstract class C {
     public static final String HOLESKY_TEST_SYMBOL = "Hol" + ETH_SYMBOL;
 
     public static final String AMOY_TESTNET_SYMBOL = "Am" + ETH_SYMBOL;
+    public static final String TRON_SYMBOL = "TRX";
 
     public static final String BURN_ADDRESS = "0x0000000000000000000000000000000000000000";
 

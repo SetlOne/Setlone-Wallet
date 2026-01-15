@@ -75,7 +75,8 @@ android {
         buildConfigField "String", XInfuraAPI, DEFAULT_INFURA_API_KEY
         buildConfigField "String", "WALLETCONNECT_PROJECT_ID", DEFAULT_WALLETCONNECT_PROJECT_ID
 
-        buildConfigField "String", "NOTIFICATION_API_BASE_URL", NOTIFICATION_API_BASE_URL
+        def notificationApiBaseUrl = project.hasProperty('NOTIFICATION_API_BASE_URL') ? "\"" + project.findProperty('NOTIFICATION_API_BASE_URL') + "\"" : "\"baseurl.here\""
+        buildConfigField "String", "NOTIFICATION_API_BASE_URL", notificationApiBaseUrl
 
         ndk {
             abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"
@@ -157,6 +158,8 @@ android {
         }
         resources {
             excludes += ['META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
+            // Trident SDK의 Android 비호환 리소스 제외
+            excludes += ['META-INF/vertx/**', 'META-INF/services/io.vertx.**']
         }
     }
     compileOptions {
@@ -298,6 +301,28 @@ dependencies {
     implementation libs.wallet.core
     // TutoShowcase 제거됨 - Dialog로 대체됨 (AndroidX 호환성 문제로 인해)
     implementation libs.flexbox.layout
+    
+    // TRON SDK - Trident (공식 TRON Java SDK)
+    // Maven Central에서 버전 0.9.2 이상 사용 가능
+    // 참고: https://tronprotocol.github.io/trident/
+    // 공식 문서: https://developers.tron.network/
+    // 
+    // 주의: Trident SDK는 서버 사이드용으로 설계되어 Android와 호환성 문제가 있음
+    // vertx-core와 fastjson2는 Android DEX 변환에 실패함
+    // 
+    // 해결 방법:
+    // 1. Trident SDK의 필수 모듈만 사용 (trident-core, trident-utils)
+    // 2. HTTP API를 직접 사용하여 구현
+    // 3. Trident SDK를 직접 빌드하여 Android 호환 버전 생성
+    //
+    // 현재는 주석 처리하고 HTTP API 방식으로 진행
+    // TODO: Trident SDK Android 호환 버전 찾거나 직접 빌드 필요
+    // implementation(libs.tron.trident) {
+    //     exclude group: 'org.bouncycastle', module: '*'
+    //     exclude group: 'com.google.protobuf', module: 'protobuf-java'
+    //     exclude group: 'io.vertx', module: '*'
+    //     exclude group: 'com.alibaba.fastjson2', module: '*'
+    // }
     implementation libs.kotson
     implementation libs.mailchimp.sdk.android
     implementation libs.preference.ktx

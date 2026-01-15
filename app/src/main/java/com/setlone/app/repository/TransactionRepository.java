@@ -1,6 +1,7 @@
 package com.setlone.app.repository;
 
 import static com.setlone.app.repository.TokenRepository.getWeb3jService;
+import static com.setlone.app.util.TronUtils.isTronChain;
 
 import android.text.TextUtils;
 import android.util.Pair;
@@ -38,17 +39,20 @@ public class TransactionRepository implements TransactionRepositoryType
     private final AccountKeystoreService accountKeystoreService;
     private final TransactionLocalSource inDiskCache;
     private final TransactionsService transactionsService;
+    private final com.setlone.app.service.TronService tronService;
 
     public TransactionRepository(
             EthereumNetworkRepositoryType networkRepository,
             AccountKeystoreService accountKeystoreService,
             TransactionLocalSource inDiskCache,
-            TransactionsService transactionsService)
+            TransactionsService transactionsService,
+            com.setlone.app.service.TronService tronService)
     {
         this.networkRepository = networkRepository;
         this.accountKeystoreService = accountKeystoreService;
         this.inDiskCache = inDiskCache;
         this.transactionsService = transactionsService;
+        this.tronService = tronService;
     }
 
     @Override
@@ -68,6 +72,15 @@ public class TransactionRepository implements TransactionRepositoryType
     @Override
     public Single<Pair<SignatureFromKey, RawTransaction>> signTransaction(Wallet from, Web3Transaction w3Tx, long chainId)
     {
+        // TRON 체인은 EVM 호환이 아니므로 별도 처리 필요
+        // TRON 트랜잭션은 TronTransactionRepository를 통해 처리해야 함
+        if (isTronChain(chainId))
+        {
+            return Single.error(new UnsupportedOperationException(
+                    "TRON transactions must be handled through TronTransactionRepository. " +
+                    "TRON uses a different transaction format (Protobuf) than EVM chains (RLP)."));
+        }
+        
         return getNonceForTransaction(getWeb3jService(chainId), from.address, w3Tx.nonce) //Note here if the supplied nonce is zero or greater then simply pass that on
                 .map(txNonce -> formatRawTransaction(w3Tx, txNonce.longValue(), chainId))
                 .map(rtx -> new Pair<>(accountKeystoreService.signTransaction(from, chainId, rtx).blockingGet(),
@@ -93,6 +106,15 @@ public class TransactionRepository implements TransactionRepositoryType
     @Override
     public Single<String> sendTransaction(Wallet from, RawTransaction rtx, SignatureFromKey sigData, long chainId)
     {
+        // TRON 체인은 EVM 호환이 아니므로 별도 처리 필요
+        // TRON 트랜잭션은 TronTransactionRepository를 통해 처리해야 함
+        if (isTronChain(chainId))
+        {
+            return Single.error(new UnsupportedOperationException(
+                    "TRON transactions must be handled through TronTransactionRepository. " +
+                    "TRON uses HTTP API instead of JSON-RPC."));
+        }
+        
         return Single.fromCallable(() -> {
             if (sigData.sigType != SignatureReturnType.SIGNATURE_GENERATED)
             {
@@ -114,6 +136,13 @@ public class TransactionRepository implements TransactionRepositoryType
     @Override
     public Single<String> resendTransaction(Wallet from, String to, BigInteger subunitAmount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, byte[] data, long chainId)
     {
+        // TRON 체인은 EVM 호환이 아니므로 별도 처리 필요
+        if (isTronChain(chainId))
+        {
+            return Single.error(new UnsupportedOperationException(
+                    "TRON transaction resending is not yet fully implemented."));
+        }
+        
         final Web3j web3j = getWeb3jService(chainId);
         final BigInteger useGasPrice = gasPriceForNode(chainId, gasPrice);
 

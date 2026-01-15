@@ -15,6 +15,7 @@ import com.setlone.app.R;
 import com.setlone.app.analytics.Analytics;
 import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.StandardFunctionInterface;
+import com.setlone.app.util.TronUtils;
 import com.setlone.app.viewmodel.CustomNetworkViewModel;
 import com.setlone.app.widget.FunctionButtonBar;
 import com.setlone.app.widget.InputView;
@@ -166,6 +167,16 @@ public class AddCustomRPCNetworkActivity extends BaseActivity implements Standar
         }
 
         long newChainId = Long.parseLong(chainIdInputView.getText().toString());
+        
+        // TRON 네트워크는 EVM 호환이 아니므로 별도 처리 필요
+        // TRON은 RPC URL이 아닌 HTTP API를 사용하므로 경고 표시
+        if (com.setlone.app.util.TronUtils.isTronChain(newChainId))
+        {
+            // TRON은 이미 built-in 네트워크로 추가되어 있으므로
+            // 사용자가 수동으로 추가하려는 경우 경고 표시
+            // TODO: TRON 네트워크 추가 시 별도 UI 또는 안내 메시지 표시
+        }
+        
         long chainId = getIntent().getLongExtra(CHAIN_ID, -1);
         if (newChainId != chainId)
         {

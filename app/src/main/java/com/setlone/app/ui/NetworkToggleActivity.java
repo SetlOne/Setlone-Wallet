@@ -31,6 +31,7 @@ public class NetworkToggleActivity extends NetworkBaseActivity
     private NetworkToggleViewModel viewModel;
     private MultiSelectNetworkAdapter mainNetAdapter;
     private MultiSelectNetworkAdapter testNetAdapter;
+    private MultiSelectNetworkAdapter tronNetAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -54,6 +55,7 @@ public class NetworkToggleActivity extends NetworkBaseActivity
     {
         List<NetworkItem> mainNetList = viewModel.getNetworkList(true);
         List<NetworkItem> testNetList = viewModel.getNetworkList(false);
+        List<NetworkItem> tronNetList = viewModel.getTronNetworkList();
 
         MultiSelectNetworkAdapter.Callback callback = new MultiSelectNetworkAdapter.Callback()
         {
@@ -116,13 +118,16 @@ public class NetworkToggleActivity extends NetworkBaseActivity
         testNetAdapter = new MultiSelectNetworkAdapter(testNetList, callback);
         testnetRecyclerView.setAdapter(testNetAdapter);
 
+        tronNetAdapter = new MultiSelectNetworkAdapter(tronNetList, callback);
+        tronRecyclerView.setAdapter(tronNetAdapter);
+
         updateTitle();
     }
 
     @Override
     protected void updateTitle()
     {
-        if (mainNetAdapter == null || testNetAdapter == null)
+        if (mainNetAdapter == null || testNetAdapter == null || tronNetAdapter == null)
         {
             return;
         }
@@ -132,6 +137,8 @@ public class NetworkToggleActivity extends NetworkBaseActivity
         {
             count += testNetAdapter.getSelectedItemCount();
         }
+        // TRON 네트워크는 항상 포함
+        count += tronNetAdapter.getSelectedItemCount();
         setTitle(getString(R.string.title_enabled_networks, String.valueOf(count)));
     }
 
@@ -145,7 +152,10 @@ public class NetworkToggleActivity extends NetworkBaseActivity
         {
             filterList.addAll(Arrays.asList(testNetAdapter.getSelectedItems()));
         }
-        boolean hasClicked = mainNetAdapter.hasSelectedItems() || testNetAdapter.hasSelectedItems();
+        // TRON 네트워크는 항상 포함 (자동 체크)
+        filterList.addAll(Arrays.asList(tronNetAdapter.getSelectedItems()));
+        
+        boolean hasClicked = mainNetAdapter.hasSelectedItems() || testNetAdapter.hasSelectedItems() || tronNetAdapter.hasSelectedItems();
         boolean shouldBlankUserSelection = filterList.size() == 0; //This is only set when we want to automatically discover all tokens. If user sets all networks blank it auto-fills them
 
         viewModel.setFilterNetworks(filterList, hasClicked, shouldBlankUserSelection);

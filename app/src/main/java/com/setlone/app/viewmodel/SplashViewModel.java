@@ -35,6 +35,7 @@ public class SplashViewModel extends BaseViewModel
     private final FetchWalletsInteract fetchWalletsInteract;
     private final PreferenceRepositoryType preferenceRepository;
     private final KeyService keyService;
+    private final com.setlone.app.service.WalletAddressService walletAddressService;
     private final MutableLiveData<Wallet[]> wallets = new MutableLiveData<>();
     private final MutableLiveData<Wallet> createWallet = new MutableLiveData<>();
 
@@ -43,11 +44,13 @@ public class SplashViewModel extends BaseViewModel
         FetchWalletsInteract fetchWalletsInteract,
         PreferenceRepositoryType preferenceRepository,
         KeyService keyService,
+        com.setlone.app.service.WalletAddressService walletAddressService,
         AnalyticsServiceType analyticsService)
     {
         this.fetchWalletsInteract = fetchWalletsInteract;
         this.preferenceRepository = preferenceRepository;
         this.keyService = keyService;
+        this.walletAddressService = walletAddressService;
         setAnalyticsService(analyticsService);
         // increase launch count
 //        this.preferenceRepository.incrementLaunchCount();
@@ -98,6 +101,36 @@ public class SplashViewModel extends BaseViewModel
                 .map(w -> {
                     preferenceRepository.setCurrentWalletAddress(w.address);
                     return w;
+                })
+                .doOnSuccess(w -> {
+                    // 지갑 생성 후 네트워크별 주소 생성 및 저장
+                    // 니모닉을 가져와서 TRON 주소 등 생성
+                    try
+                    {
+                        // KeyService에서 니모닉 가져오기 (비동기)
+                        keyService.getMnemonic(w, null, new CreateWalletCallbackInterface()
+                        {
+                            @Override
+                            public void HDKeyCreated(String address, Context ctx, KeyService.AuthenticationLevel level) {}
+                            
+                            @Override
+                            public void keyFailure(String message) {}
+                            
+                            @Override
+                            public void cancelAuthentication() {}
+                            
+                            @Override
+                            public void fetchMnemonic(String mnemonic)
+                            {
+                                // 니모닉을 받으면 네트워크별 주소 생성
+                                walletAddressService.generateAndStoreNetworkAddresses(w.address, mnemonic);
+                            }
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        // 니모닉 가져오기 실패 시 무시 (기존 지갑일 수 있음)
+                    }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

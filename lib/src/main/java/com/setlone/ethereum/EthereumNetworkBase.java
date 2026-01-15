@@ -49,6 +49,7 @@ public abstract class EthereumNetworkBase
     public static final long MANTLE_TESTNET_ID = 5003;
     public static final long MINT_ID = 185;
     public static final long MINT_SEPOLIA_TESTNET_ID = 1687;
+    public static final long TRON_ID = 728126428;
 
 
     public static final String MAINNET_RPC_URL = "https://mainnet.infura.io/v3/da3717f25f824cc1baa32d812386d93f";
@@ -97,6 +98,8 @@ public abstract class EthereumNetworkBase
     public static final String MANTLE_TESTNET_RPC = "https://rpc.sepolia.mantle.xyz";
     public static final String MINT_MAINNET_RPC = "https://global.rpc.mintchain.io";
     public static final String MINT_SEPOLIA_RPC = "https://sepolia-testnet-rpc.mintchain.io";
+    public static final String TRON_RPC_URL = "https://api.trongrid.io";
+    public static final String TRON_RPC_DRPC = "https://tron.drpc.org";
 
 
     static Map<Long, NetworkInfo> networkMap = new LinkedHashMap<Long, NetworkInfo>()
@@ -188,6 +191,13 @@ public abstract class EthereumNetworkBase
                     MINT_ID, false));
             put(MINT_SEPOLIA_TESTNET_ID, new NetworkInfo("Mint Sepolia (Test)", "ETH", MINT_SEPOLIA_RPC, "https://sepolia-testnet-explorer.mintchain.io/tx/",
                     MINT_SEPOLIA_TESTNET_ID, false));
+            // TRON 네트워크 설정
+            // 주의: TRON은 EVM 호환 네트워크가 아니므로:
+            // - Chain ID 728126428은 메타데이터용, 실제로는 CoinType.TRON (195) 사용
+            // - RPC URL은 HTTP API 엔드포인트 (JSON-RPC 아님)
+            // - 주소는 Base58 형식 (T로 시작, 34자리)
+            put(TRON_ID, new NetworkInfo("TRON", "TRX", TRON_RPC_URL, "https://tronscan.org/#/transaction/",
+                    TRON_ID, false));
         }
     };
 

@@ -28,6 +28,7 @@ import com.setlone.app.entity.tokens.Ticket;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.entity.tokens.TokenCardMeta;
 import com.setlone.app.entity.tokens.TokenInfo;
+import com.setlone.app.util.TronUtils;
 import com.setlone.app.service.AWHttpServiceWaterfall;
 import com.setlone.app.service.AssetDefinitionService;
 import com.setlone.app.service.OkLinkService;
@@ -132,6 +133,14 @@ public class TokenRepository implements TokenRepositoryType {
 
     private void buildWeb3jClient(NetworkInfo networkInfo)
     {
+        // TRON 네트워크는 EVM 호환이 아니므로 Web3j를 사용할 수 없음
+        if (com.setlone.app.util.TronUtils.isTronChain(networkInfo.chainId))
+        {
+            // TRON은 Web3j를 사용하지 않으므로 저장하지 않음
+            // TRON 작업은 TronService를 통해 처리해야 함
+            return;
+        }
+        
         AWHttpServiceWaterfall publicNodeService = new AWHttpServiceWaterfall(networkInfo.rpcUrls, networkInfo.chainId, okClient, KeyProviderFactory.get().getInfuraKey(),
                 KeyProviderFactory.get().getInfuraSecret(), KeyProviderFactory.get().getKlaytnKey(), false);
         //AWHttpService publicNodeService = new AWHttpService(networkInfo.rpcServerUrl, networkInfo.backupNodeUrl, networkInfo.chainId, okClient, KeyProviderFactory.get().getInfuraKey(),
@@ -141,6 +150,15 @@ public class TokenRepository implements TokenRepositoryType {
 
     private Web3j getService(long chainId)
     {
+        // TRON 네트워크는 EVM 호환이 아니므로 Web3j를 사용할 수 없음
+        if (com.setlone.app.util.TronUtils.isTronChain(chainId))
+        {
+            throw new UnsupportedOperationException(
+                    "TRON network does not support Web3j. " +
+                    "TRON uses HTTP API instead of JSON-RPC. " +
+                    "Use TronService for TRON network operations.");
+        }
+        
         if (!web3jNodeServers.containsKey(chainId))
         {
             buildWeb3jClient(ethereumNetworkRepository.getNetworkByChain(chainId));
@@ -1304,6 +1322,15 @@ public class TokenRepository implements TokenRepositoryType {
 
     public static Web3j getWeb3jServiceForEvents(long chainId)
     {
+        // TRON 네트워크는 EVM 호환이 아니므로 Web3j를 사용할 수 없음
+        if (com.setlone.app.util.TronUtils.isTronChain(chainId))
+        {
+            throw new UnsupportedOperationException(
+                    "TRON network does not support Web3j. " +
+                    "TRON uses HTTP API instead of JSON-RPC. " +
+                    "Use TronService for TRON network operations.");
+        }
+        
         OkHttpClient okClient = new OkHttpClient.Builder()
                 .connectTimeout(C.CONNECT_TIMEOUT * 3, TimeUnit.SECONDS) //events can take longer to render
                 .connectTimeout(C.READ_TIMEOUT * 3, TimeUnit.SECONDS)
@@ -1320,6 +1347,15 @@ public class TokenRepository implements TokenRepositoryType {
 
     public static Web3j getWeb3jService(long chainId)
     {
+        // TRON 네트워크는 EVM 호환이 아니므로 Web3j를 사용할 수 없음
+        if (com.setlone.app.util.TronUtils.isTronChain(chainId))
+        {
+            throw new UnsupportedOperationException(
+                    "TRON network does not support Web3j. " +
+                    "TRON uses HTTP API instead of JSON-RPC. " +
+                    "Use TronService for TRON network operations.");
+        }
+        
         OkHttpClient okClient = new OkHttpClient.Builder()
                 .connectTimeout(C.CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(C.READ_TIMEOUT * 3, TimeUnit.SECONDS)

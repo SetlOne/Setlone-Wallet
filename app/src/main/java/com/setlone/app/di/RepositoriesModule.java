@@ -116,13 +116,15 @@ public class RepositoriesModule
         EthereumNetworkRepositoryType networkRepository,
         AccountKeystoreService accountKeystoreService,
         TransactionLocalSource inDiskCache,
-        TransactionsService transactionsService)
+        TransactionsService transactionsService,
+        com.setlone.app.service.TronService tronService)
     {
         return new TransactionRepository(
             networkRepository,
             accountKeystoreService,
             inDiskCache,
-            transactionsService);
+            transactionsService,
+            tronService);
     }
 
     @Singleton
@@ -191,6 +193,24 @@ public class RepositoriesModule
     {
         return new WalletDataRealmSource(realmManager);
     }
+    
+    @Singleton
+    @Provides
+    com.setlone.app.service.WalletAddressService provideWalletAddressService(RealmManager realmManager)
+    {
+        return new com.setlone.app.service.WalletAddressService(realmManager);
+    }
+    
+    @Singleton
+    @Provides
+    com.setlone.app.repository.TronTransactionRepository provideTronTransactionRepository(
+        com.setlone.app.service.TronService tronService,
+        com.setlone.app.service.WalletAddressService walletAddressService,
+        KeyService keyService)
+    {
+        return new com.setlone.app.repository.TronTransactionRepository(
+            tronService, walletAddressService, keyService);
+    }
 
     @Singleton
     @Provides
@@ -227,6 +247,13 @@ public class RepositoriesModule
     GasService provideGasService(EthereumNetworkRepositoryType ethereumNetworkRepository, OkHttpClient client, RealmManager realmManager)
     {
         return new GasService(ethereumNetworkRepository, client, realmManager);
+    }
+    
+    @Singleton
+    @Provides
+    com.setlone.app.service.TronService provideTronService(OkHttpClient client, Gson gson)
+    {
+        return new com.setlone.app.service.TronService(client, gson);
     }
 
     @Singleton

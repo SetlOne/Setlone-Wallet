@@ -257,8 +257,29 @@ public class TokenInfoFragment extends BaseFragment {
 
         return Single.fromCallable(() -> {
 
-            String coinGeckotokenId = token.isEthereum() ? chainPairs.get(token.tokenInfo.chainId)
-                    : coinGeckoChainIdToAPIName.get(token.tokenInfo.chainId) + "/contract/" + token.getAddress().toLowerCase();
+            String coinGeckotokenId;
+            if (token.isEthereum())
+            {
+                // 네이티브 토큰 (ETH, TRX 등)
+                coinGeckotokenId = chainPairs.get(token.tokenInfo.chainId);
+            }
+            else
+            {
+                // ERC-20, TRC-20 등 컨트랙트 토큰
+                String chainApiName = coinGeckoChainIdToAPIName.get(token.tokenInfo.chainId);
+                if (chainApiName == null)
+                {
+                    // TRON 등 지원되지 않는 체인
+                    return values;
+                }
+                coinGeckotokenId = chainApiName + "/contract/" + token.getAddress().toLowerCase();
+            }
+            
+            if (coinGeckotokenId == null)
+            {
+                // CoinGecko에서 지원하지 않는 토큰
+                return values;
+            }
 
             Request request = new Request.Builder()
                     .url("https://api.coingecko.com/api/v3/coins/" + coinGeckotokenId + "/market_chart?vs_currency=" + TickerService.getCurrencySymbolTxt() + "&days=365")
@@ -268,11 +289,39 @@ public class TokenInfoFragment extends BaseFragment {
             try (okhttp3.Response response = httpClient.newCall(request)
                     .execute())
             {
+                // Check if response is successful
+                if (!response.isSuccessful() || response.body() == null)
+                {
+                    Timber.w("CoinGecko API request failed: %s", response.code());
+                    return values;
+                }
+
                 String result = response.body().string();
+                if (result == null || result.isEmpty())
+                {
+                    Timber.w("CoinGecko API returned empty response");
+                    return values;
+                }
+
+                JSONObject jsonResponse = new JSONObject(result);
+                
+                // Check if "prices" key exists
+                if (!jsonResponse.has("prices"))
+                {
+                    Timber.w("CoinGecko API response missing 'prices' key. Response: %s", result.length() > 200 ? result.substring(0, 200) : result);
+                    return values;
+                }
+
                 //build mapping
-                JSONArray prices = new JSONObject(result).getJSONArray("prices");
-                JSONArray marketCaps = new JSONObject(result).getJSONArray("market_caps");
-                JSONArray totalVolumes = new JSONObject(result).getJSONArray("total_volumes");
+                JSONArray prices = jsonResponse.getJSONArray("prices");
+                if (prices == null || prices.length() == 0)
+                {
+                    Timber.w("CoinGecko API returned empty prices array");
+                    return values;
+                }
+
+                JSONArray marketCaps = jsonResponse.has("market_caps") ? jsonResponse.getJSONArray("market_caps") : new JSONArray();
+                JSONArray totalVolumes = jsonResponse.has("total_volumes") ? jsonResponse.getJSONArray("total_volumes") : new JSONArray();
 
                 long yesterdayTime = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS;
                 long oneWeekTime = System.currentTimeMillis() - 7 * DateUtils.DAY_IN_MILLIS;
@@ -294,13 +343,13 @@ public class TokenInfoFragment extends BaseFragment {
                 values.add(oneYearDiff.doubleValue());
 
                 //add market cap
-                values.add(getDoubleValue(marketCaps,marketCaps.length() - 1));
+                values.add(marketCaps.length() > 0 ? getDoubleValue(marketCaps, marketCaps.length() - 1) : 0.0);
 
                 //add total volume
-                values.add(getDoubleValue(totalVolumes,marketCaps.length() - 1));
+                values.add(totalVolumes.length() > 0 ? getDoubleValue(totalVolumes, totalVolumes.length() - 1) : 0.0);
 
                 //get trading volume high
-                Pair<Double, Double> minMax = getMinMax(totalVolumes);
+                Pair<Double, Double> minMax = totalVolumes.length() > 0 ? getMinMax(totalVolumes) : new Pair<>(0.0, 0.0);
                 values.add(minMax.second);
 
                 //get highs and lows
@@ -308,9 +357,13 @@ public class TokenInfoFragment extends BaseFragment {
                 values.add(minMax.first);
                 values.add(minMax.second);
             }
+            catch (org.json.JSONException e)
+            {
+                Timber.e(e, "Failed to parse CoinGecko API response");
+            }
             catch (Exception e)
             {
-                Timber.e(e);
+                Timber.e(e, "Error fetching price data from CoinGecko");
             }
 
             return values;

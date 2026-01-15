@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -56,8 +58,7 @@ public class QRScannerActivity extends BaseActivity
 
         hideSystemUI();
 
-        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
         {
             initView();
         }
@@ -86,6 +87,27 @@ public class QRScannerActivity extends BaseActivity
                     handleQRCode(result.getContents());
                 }
             });
+    
+    // Modern permission request using ActivityResultLauncher
+    private final ActivityResultLauncher<String[]> requestCameraPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            boolean cameraGranted = false;
+            for (String permission : result.keySet()) {
+                if (permission.equals(Manifest.permission.CAMERA) && result.get(permission)) {
+                    cameraGranted = true;
+                    break;
+                }
+            }
+            
+            if (cameraGranted) {
+                initView();
+            } else {
+                // Permission denied
+                Intent intent = new Intent();
+                setResult(DENY_PERMISSION, intent);
+                finish();
+            }
+        });
 
     private void initView()
     {
@@ -123,51 +145,13 @@ public class QRScannerActivity extends BaseActivity
         displayErrorDialog(getString(R.string.title_dialog_error), getString(R.string.error_browse_selection));
     }
 
-    // Handles the requesting of the camera permission.
+    // Handles the requesting of the camera permission using modern ActivityResultLauncher
     private void requestCameraPermission()
     {
-        Timber.tag("QR SCanner").w("Camera permission is not granted. Requesting permission");
+        Timber.tag("QR Scanner").w("Camera permission is not granted. Requesting permission");
 
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
-        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM); //always ask for permission to scan
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        boolean handled = false;
-
-        if (requestCode == RC_HANDLE_CAMERA_PERM)
-        {
-            for (int i = 0; i < permissions.length; i++)
-            {
-                String permission = permissions[i];
-                int grantResult = grantResults[i];
-
-                if (permission.equals(Manifest.permission.CAMERA))
-                {
-                    if (grantResult == PackageManager.PERMISSION_GRANTED)
-                    {
-                        initView();
-                        handled = true;
-                    }
-                }
-            }
-        }
-        else if (requestCode == RC_HANDLE_IMAGE_PICKUP)
-        {
-            handled = true;
-        }
-
-        // Handle deny permission
-        if (!handled)
-        {
-            Intent intent = new Intent();
-            setResult(DENY_PERMISSION, intent);
-            finish();
-        }
+        requestCameraPermissionLauncher.launch(permissions);
     }
 
     private void displayErrorDialog(String title, String errorMessage)

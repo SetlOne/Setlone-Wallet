@@ -292,8 +292,23 @@ public class HistoryChart extends View
             return;
         } //wouldn't have tickers
 
-        String coingeckoTokenId = token.isEthereum() ? chainPairs.get(token.tokenInfo.chainId)
-                : coinGeckoChainIdToAPIName.get(token.tokenInfo.chainId) + "/contract/" + token.getAddress().toLowerCase();
+        String coingeckoTokenId;
+        if (token.isEthereum())
+        {
+            // 네이티브 토큰 (ETH, TRX 등)
+            coingeckoTokenId = chainPairs.get(token.tokenInfo.chainId);
+        }
+        else
+        {
+            // ERC-20, TRC-20 등 컨트랙트 토큰
+            String chainApiName = coinGeckoChainIdToAPIName.get(token.tokenInfo.chainId);
+            if (chainApiName == null)
+            {
+                // TRON 등 지원되지 않는 체인
+                return;
+            }
+            coingeckoTokenId = chainApiName + "/contract/" + token.getAddress().toLowerCase();
+        }
 
         if (coingeckoTokenId != null)
         {
