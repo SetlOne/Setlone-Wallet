@@ -25,4 +25,16 @@ public class MyAddressRouter {
         intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         context.startActivity(intent);
     }
+
+    /**
+     * 현재 선택된 네트워크의 chainId를 전달하여 주소 화면 열기
+     * TRON 네트워크일 경우 TRON 주소를 표시하기 위해 사용
+     */
+    public void open(Context context, Wallet wallet, long chainId) {
+        Intent intent = new Intent(context, MyAddressActivity.class);
+        intent.putExtra(C.Key.WALLET, wallet);
+        intent.putExtra(C.EXTRA_CHAIN_ID, chainId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        context.startActivity(intent);
+    }
 }

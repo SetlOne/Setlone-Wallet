@@ -531,7 +531,11 @@ public class HomeViewModel extends BaseViewModel
 
     public void showMyAddress(Activity activity)
     {
-        myAddressRouter.open(activity, defaultWallet.getValue());
+        // 현재 선택된 네트워크의 chainId를 가져와서 전달
+        // TRON 네트워크일 경우 TRON 주소를 표시하기 위해 필요
+        NetworkInfo activeNetwork = ethereumNetworkRepository.getActiveBrowserNetwork();
+        long chainId = activeNetwork != null ? activeNetwork.chainId : MAINNET_ID;
+        myAddressRouter.open(activity, defaultWallet.getValue(), chainId);
     }
 
     /**

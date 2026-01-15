@@ -28,9 +28,13 @@ import com.setlone.app.service.KeyService;
 import com.setlone.app.service.TokensService;
 import com.setlone.app.service.TransactionSendHandlerInterface;
 import com.setlone.app.service.WalletAddressService;
+import com.setlone.app.repository.TronTransactionRepository;
 import com.setlone.app.ui.ImportTokenActivity;
 import com.setlone.app.web3.entity.Web3Transaction;
 import com.setlone.hardware.SignatureFromKey;
+import com.setlone.app.util.TronUtils;
+
+import timber.log.Timber;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -57,6 +61,7 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
     private final KeyService keyService;
     private final CreateTransactionInteract createTransactionInteract;
     private final WalletAddressService walletAddressService;
+    private final TronTransactionRepository tronTransactionRepository;
 
     @Inject
     public SendViewModel(MyAddressRouter myAddressRouter,
@@ -67,6 +72,7 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
                          AssetDefinitionService assetDefinitionService,
                          KeyService keyService,
                          WalletAddressService walletAddressService,
+                         TronTransactionRepository tronTransactionRepository,
                          AnalyticsServiceType analyticsService)
     {
         this.myAddressRouter = myAddressRouter;
@@ -77,6 +83,7 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
         this.keyService = keyService;
         this.createTransactionInteract = createTransactionInteract;
         this.walletAddressService = walletAddressService;
+        this.tronTransactionRepository = tronTransactionRepository;
         setAnalyticsService(analyticsService);
     }
 
@@ -184,6 +191,14 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
     {
         keyService.getAuthenticationForSignature(wallet, activity, callback);
     }
+    
+    /**
+     * TRON 전송을 위한 니모닉 가져오기
+     */
+    public void getMnemonic(Activity activity, Wallet wallet, com.setlone.app.entity.CreateWalletCallbackInterface callback)
+    {
+        keyService.getMnemonic(wallet, activity, callback);
+    }
 
     public void requestSignature(Web3Transaction finalTx, Wallet wallet, long chainId)
     {
@@ -192,7 +207,42 @@ public class SendViewModel extends BaseViewModel implements TransactionSendHandl
 
     public void sendTransaction(Wallet wallet, long chainId, Web3Transaction tx, SignatureFromKey signatureFromKey)
     {
+        // TRON 네트워크는 별도 처리
+        if (EthereumNetworkBase.isTronNetwork(chainId))
+        {
+            // TRON은 Web3Transaction 대신 직접 처리
+            // 이 메서드는 TRON 전용 sendTronTransaction으로 리다이렉트
+            Timber.w("sendTransaction called for TRON network, use sendTronTransaction instead");
+            return;
+        }
+        
         createTransactionInteract.sendTransaction(wallet, chainId, tx, signatureFromKey);
+    }
+    
+    /**
+     * TRON 전용 트랜잭션 전송
+     * @param wallet 지갑 정보
+     * @param toAddress 수신 주소 (TRON Base58)
+     * @param amount 전송 금액 (TRX 단위)
+     * @param mnemonic 니모닉 문구
+     * @return 트랜잭션 해시
+     */
+    public Single<String> sendTronTransaction(Wallet wallet, String toAddress, BigDecimal amount, String mnemonic)
+    {
+        // TRX를 SUN으로 변환 (1 TRX = 1,000,000 SUN)
+        BigInteger amountSun = amount.multiply(new BigDecimal(1_000_000L)).toBigInteger();
+        
+        return tronTransactionRepository.sendTransaction(wallet, toAddress, amountSun, mnemonic)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    
+    /**
+     * TRON 네트워크인지 확인
+     */
+    public boolean isTronNetwork(long chainId)
+    {
+        return EthereumNetworkBase.isTronNetwork(chainId);
     }
 
     @Override

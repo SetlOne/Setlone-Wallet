@@ -12,6 +12,7 @@ import static com.setlone.app.C.RESET_WALLET;
 import static com.setlone.app.C.SETTINGS_INSTANTIATED;
 import static com.setlone.app.entity.BackupOperationType.BACKUP_HD_KEY;
 import static com.setlone.app.entity.BackupOperationType.BACKUP_KEYSTORE_KEY;
+import static com.setlone.app.entity.BackupOperationType.UPGRADE_KEY;
 import static com.setlone.app.ui.HomeActivity.RESET_TOKEN_SERVICE;
 import static com.setlone.token.tools.TokenDefinition.TOKENSCRIPT_CURRENT_SCHEMA;
 
@@ -316,13 +317,13 @@ public class NewSettingsFragment extends BaseFragment
                 .withListener(this::onChangeCurrencyClicked)
                 .build();
 
-//        biometricsSetting =
-//                new SettingsItemView.Builder(getContext())
-//                        .withType(SettingsItemView.Type.TOGGLE)
-//                        .withIcon(R.drawable.ic_settings_biometrics)
-//                        .withTitle(R.string.title_biometrics)
-//                        .withListener(this::onBiometricsSettingClicked)
-//                        .build();
+        biometricsSetting =
+                new SettingsItemView.Builder(getContext())
+                        .withType(SettingsItemView.Type.TOGGLE)
+                        .withIcon(R.drawable.biometrics)
+                        .withTitle(R.string.title_biometrics)
+                        .withListener(this::onBiometricsSettingClicked)
+                        .build();
 
         selectNetworksSetting =
                 new SettingsItemView.Builder(getContext())
@@ -618,7 +619,16 @@ public class NewSettingsFragment extends BaseFragment
 
     private void onBiometricsSettingClicked()
     {
-        // TODO: Implementation
+        Wallet wallet = viewModel.defaultWallet().getValue();
+        if (wallet != null)
+        {
+            // 키 보안 업그레이드를 통해 바이오매트릭/PIN 설정
+            Intent intent = new Intent(getContext(), BackupFlowActivity.class);
+            intent.putExtra(WALLET, wallet);
+            intent.putExtra("TYPE", BackupOperationType.UPGRADE_KEY);
+            intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            startActivity(intent);
+        }
     }
 
     private void onSelectNetworksSettingClicked()

@@ -33,6 +33,10 @@ import com.setlone.app.service.AWHttpServiceWaterfall;
 import com.setlone.app.service.AssetDefinitionService;
 import com.setlone.app.service.OkLinkService;
 import com.setlone.app.service.TickerService;
+import com.setlone.app.service.TronService;
+import com.setlone.app.service.WalletAddressService;
+import com.setlone.app.service.RealmManager;
+import com.google.gson.Gson;
 import com.setlone.app.util.Utils;
 import com.setlone.app.util.ens.AWEnsResolver;
 import com.setlone.token.entity.ContractAddress;
@@ -108,17 +112,21 @@ public class TokenRepository implements TokenRepositoryType {
     private final Map<Long, Web3j> web3jNodeServers;
     private AWEnsResolver ensResolver;
     private String currentAddress;
+    private TronService tronService;
+    private final RealmManager realmManager;
 
     public TokenRepository(
             EthereumNetworkRepositoryType ethereumNetworkRepository,
             TokenLocalSource localSource,
             Context context,
-            TickerService tickerService) {
+            TickerService tickerService,
+            RealmManager realmManager) {
         this.ethereumNetworkRepository = ethereumNetworkRepository;
         this.localSource = localSource;
         this.ethereumNetworkRepository.addOnChangeDefaultNetwork(this::buildWeb3jClient);
         this.context = context;
         this.tickerService = tickerService;
+        this.realmManager = realmManager;
 
         web3jNodeServers = new ConcurrentHashMap<>();
         currentAddress = ethereumNetworkRepository.getCurrentWalletAddress();
@@ -129,6 +137,10 @@ public class TokenRepository implements TokenRepositoryType {
                 .writeTimeout(C.LONG_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .build();
+        
+        // TRON 서비스 초기화 (TRON 잔액 조회용)
+        Gson gson = new Gson();
+        tronService = new TronService(okClient, gson);
     }
 
     private void buildWeb3jClient(NetworkInfo networkInfo)
@@ -697,6 +709,41 @@ public class TokenRepository implements TokenRepositoryType {
 
     private BigDecimal getEthBalance(Wallet wallet, long chainId)
     {
+        // TRON 네트워크는 별도 처리
+        if (TronUtils.isTronChain(chainId))
+        {
+            try
+            {
+                // WalletAddressService는 생성자에서 주입받아야 함
+                // 현재는 주입받지 않으므로 직접 생성
+                WalletAddressService walletAddressService = new WalletAddressService(realmManager);
+                
+                // TRON 주소 가져오기
+                String tronAddress = walletAddressService.getTronAddress(wallet.address);
+                if (tronAddress == null || tronAddress.equals(wallet.address))
+                {
+                    // TRON 주소가 없으면 0 반환
+                    Timber.w("TRON address not found for wallet: %s", wallet.address);
+                    return BigDecimal.ZERO;
+                }
+                
+                // TRON 잔액 조회 (SUN 단위)
+                BigInteger balanceSun = tronService.getBalance(tronAddress).blockingGet();
+                
+                // SUN을 TRX로 변환 (1 TRX = 1,000,000 SUN)
+                BigDecimal balanceTrx = new BigDecimal(balanceSun).divide(new BigDecimal(1_000_000L), 18, BigDecimal.ROUND_DOWN);
+                
+                Timber.d("TRON balance for %s: %s TRX (%s SUN)", tronAddress, balanceTrx, balanceSun);
+                return balanceTrx;
+            }
+            catch (Exception e)
+            {
+                Timber.e(e, "Error getting TRON balance for wallet: %s", wallet.address);
+                return BigDecimal.valueOf(-1);
+            }
+        }
+        
+        // 일반 EVM 네트워크 처리
         try {
             return new BigDecimal(getService(chainId).ethGetBalance(wallet.address, DefaultBlockParameterName.LATEST)
                     .send()

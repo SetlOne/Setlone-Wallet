@@ -37,7 +37,7 @@ public class CovalentProcessingTest
     {
         CovalentTransaction[] covalentTransactions = getCovalentTransactions(APIReturn);
 
-        NetworkInfo info = new NetworkInfo("Klaytn", "Klaytn", "", "", KLAYTN_ID, "", "");
+        NetworkInfo info = new NetworkInfo("Klaytn", "Klaytn", new String[]{""}, "", KLAYTN_ID, "");
         EtherscanEvent[] events = CovalentTransaction.toEtherscanEvents(covalentTransactions);
         EtherscanTransaction[] txs = CovalentTransaction.toRawEtherscanTransactions(covalentTransactions, info);
 

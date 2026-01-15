@@ -45,6 +45,7 @@ import com.setlone.app.ui.widget.entity.AddressReadyCallback;
 import com.setlone.app.ui.widget.entity.AmountReadyCallback;
 import com.setlone.app.util.KeyboardUtils;
 import com.setlone.app.util.QRParser;
+import com.setlone.app.util.TronUtils;
 import com.setlone.app.util.Utils;
 import com.setlone.app.viewmodel.SendViewModel;
 import com.setlone.app.web3.entity.Address;
@@ -553,6 +554,22 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         {
             final String txSendAddress = sendAddress;
             sendAddress = null;
+            
+            // TRON 네트워크는 별도 처리 (Gas 추정 불필요)
+            if (viewModel.isTronNetwork(token.tokenInfo.chainId))
+            {
+                // TRON 주소 검증
+                if (!com.setlone.app.util.TronUtils.isValidTronAddress(txSendAddress))
+                {
+                    addressInput.setError(getString(R.string.error_invalid_address));
+                    return;
+                }
+                
+                // TRON은 Gas 개념이 없으므로 바로 확인 다이얼로그 표시
+                showTronConfirmDialog(txSendAddress);
+                return;
+            }
+            
             //either sending base chain or ERC20 tokens.
             final byte[] transactionBytes = viewModel.getTransactionBytes(token, txSendAddress, sendAmount);
 
@@ -566,6 +583,74 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                     .subscribe(estimate -> checkConfirm(estimate, transactionBytes, txDestAddress, txSendAddress),
                             error -> handleError(error, transactionBytes, token.getAddress(), txSendAddress));
         }
+    }
+    
+    /**
+     * TRON 전송 확인 다이얼로그 표시
+     */
+    private void showTronConfirmDialog(String toAddress)
+    {
+        // 간단한 확인 다이얼로그 표시
+        AWalletAlertDialog dialog = new AWalletAlertDialog(this);
+        dialog.setTitle(getString(R.string.confirm_transaction));
+        String message = String.format("Send %s %s to %s?", sendAmount.toString(), token.getShortName(), toAddress);
+        dialog.setMessage(message);
+        dialog.setIcon(AWalletAlertDialog.NONE);
+        dialog.setButtonText(R.string.dialog_ok);
+        dialog.setButtonListener(v -> {
+            dialog.dismiss();
+            sendTronTransaction(toAddress);
+        });
+        dialog.setSecondaryButtonText(R.string.action_cancel);
+        dialog.setSecondaryButtonListener(v -> dialog.dismiss());
+        dialog.show();
+    }
+    
+    /**
+     * TRON 트랜잭션 전송
+     */
+    private void sendTronTransaction(String toAddress)
+    {
+        // 인증 후 전송
+        viewModel.getMnemonic(this, wallet, new com.setlone.app.entity.CreateWalletCallbackInterface() {
+            @Override
+            public void HDKeyCreated(String address, android.content.Context ctx, com.setlone.app.service.KeyService.AuthenticationLevel level) {
+                // 인증 성공
+            }
+
+            @Override
+            public void keyFailure(String message) {
+                displayErrorMessage(message);
+            }
+
+            @Override
+            public void cancelAuthentication() {
+                // 인증 취소
+            }
+
+            @Override
+            public void fetchMnemonic(String mnemonic) {
+                // 니모닉을 받아서 TRON 트랜잭션 전송
+                if (calcGasCost != null && !calcGasCost.isDisposed()) {
+                    calcGasCost.dispose();
+                }
+                calcGasCost = viewModel.sendTronTransaction(wallet, toAddress, sendAmount, mnemonic)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                txHash -> {
+                                    Intent intent = new Intent();
+                                    intent.putExtra(C.EXTRA_TXHASH, txHash);
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                },
+                                error -> {
+                                    Timber.e(error, "Failed to send TRON transaction");
+                                    displayErrorMessage(error.getMessage());
+                                }
+                        );
+            }
+        });
     }
 
     private void handleError(Throwable throwable, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress)

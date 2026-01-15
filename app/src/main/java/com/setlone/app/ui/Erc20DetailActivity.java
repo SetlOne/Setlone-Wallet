@@ -39,6 +39,7 @@ import com.setlone.app.entity.tokendata.TokenGroup;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.entity.tokens.TokenCardMeta;
 import com.setlone.app.repository.EthereumNetworkBase;
+import static com.setlone.ethereum.EthereumNetworkBase.TRON_ID;
 import com.setlone.app.repository.entity.RealmToken;
 import com.setlone.app.router.SwapRouter;
 import com.setlone.app.ui.widget.adapter.ActivityAdapter;
@@ -450,6 +451,13 @@ public class Erc20DetailActivity extends BaseActivity implements StandardFunctio
     public void showReceive()
     {
         viewModel.showMyAddress(this, wallet, token);
+    }
+
+    @Override
+    public void showReceiveTron()
+    {
+        // TRON 네트워크의 chainId를 전달하여 TRON 주소 표시
+        viewModel.getMyAddressRouter().open(this, wallet, TRON_ID);
     }
 
     @Override

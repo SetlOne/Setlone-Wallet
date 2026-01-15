@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/loading_frame_100" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_101" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_102" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_103" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_104" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_105" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_106" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_107" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_108" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_109" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_110" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_111" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_112" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_113" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_114" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_115" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_116" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_117" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_118" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_119" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_120" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_121" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_122" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_123" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_124" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_125" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_126" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_127" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_128" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_129" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_130" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_131" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_132" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_133" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_134" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_135" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_136" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_137" android:duration="50" />
+    <item android:drawable="@drawable/loading_frame_138" android:duration="50" />
+</animation-list>

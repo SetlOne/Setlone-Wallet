@@ -1,9 +1,11 @@
 package com.setlone.app.widget;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,14 +15,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.setlone.app.R;
 
 public class SystemView extends FrameLayout implements View.OnClickListener {
-	private ProgressBar progress;
+	private ImageView progress;
+	private AnimationDrawable loadingAnimation;
 	private View errorBox;
 	private TextView messageTxt;
 	private View tryAgain;
@@ -51,12 +55,36 @@ public class SystemView extends FrameLayout implements View.OnClickListener {
 		addView(view);
 		progress = view.findViewById(R.id.progress);
 
+		// loading_animation 설정
+		loadingAnimation = (AnimationDrawable) ContextCompat.getDrawable(getContext(), R.drawable.loading_animation);
+		if (loadingAnimation != null) {
+			progress.setImageDrawable(loadingAnimation);
+		}
+
 		errorBox = view.findViewById(R.id.error_box);
 		messageTxt = view.findViewById(R.id.message);
 		tryAgain = view.findViewById(R.id.try_again);
 		tryAgain.setOnClickListener(this);
 
 		emptyBox = view.findViewById(R.id.empty_box);
+	}
+
+	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		// 뷰가 윈도우에 연결되었을 때 애니메이션 시작 (표시 중인 경우)
+		if (progress.getVisibility() == VISIBLE && loadingAnimation != null && !loadingAnimation.isRunning()) {
+			loadingAnimation.start();
+		}
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		// 뷰가 윈도우에서 분리될 때 애니메이션 중지
+		if (loadingAnimation != null && loadingAnimation.isRunning()) {
+			loadingAnimation.stop();
+		}
 	}
 
 	public void attachSwipeRefreshLayout(@Nullable SwipeRefreshLayout swipeRefreshLayout) {
@@ -76,6 +104,10 @@ public class SystemView extends FrameLayout implements View.OnClickListener {
 		if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
 			swipeRefreshLayout.setRefreshing(false);
 		}
+		// 애니메이션 중지
+		if (loadingAnimation != null && loadingAnimation.isRunning()) {
+			loadingAnimation.stop();
+		}
 		emptyBox.setVisibility(GONE);
 		errorBox.setVisibility(GONE);
 		progress.setVisibility(GONE);
@@ -87,6 +119,10 @@ public class SystemView extends FrameLayout implements View.OnClickListener {
 	{
 		hideAllComponents();
 		progress.setVisibility(VISIBLE);
+		// 애니메이션 시작
+		if (loadingAnimation != null && !loadingAnimation.isRunning()) {
+			loadingAnimation.start();
+		}
 	}
 
 	public void showProgress(boolean shouldShow) {
@@ -103,6 +139,10 @@ public class SystemView extends FrameLayout implements View.OnClickListener {
 			} else {
 				hideAllComponents();
 				progress.setVisibility(VISIBLE);
+				// 애니메이션 시작
+				if (loadingAnimation != null && !loadingAnimation.isRunning()) {
+					loadingAnimation.start();
+				}
 			}
 		} else {
 			hide();
@@ -117,6 +157,10 @@ public class SystemView extends FrameLayout implements View.OnClickListener {
 	public void showProgress()
 	{
 		progress.setVisibility(VISIBLE);
+		// 애니메이션 시작
+		if (loadingAnimation != null && !loadingAnimation.isRunning()) {
+			loadingAnimation.start();
+		}
 	}
 
 	public void showError(@Nullable String message, @Nullable OnClickListener onTryAgainClickListener) {

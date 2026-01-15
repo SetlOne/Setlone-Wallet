@@ -3,14 +3,15 @@ package com.setlone.app.ui;
 import static java.util.stream.Collectors.toList;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +62,8 @@ public class WalletConnectV2Activity extends BaseActivity implements StandardFun
     private ImageView icon;
     private TextView peerName;
     private TextView peerUrl;
-    private ProgressBar progressBar;
+    private ImageView progressBar;
+    private AnimationDrawable loadingAnimation;
     private LinearLayout infoLayout;
     private TextView networksLabel;
     private ListView walletList;
@@ -86,6 +88,10 @@ public class WalletConnectV2Activity extends BaseActivity implements StandardFun
         if (!TextUtils.isEmpty(url))
         {
             progressBar.setVisibility(View.VISIBLE);
+            // 애니메이션 시작
+            if (loadingAnimation != null && !loadingAnimation.isRunning()) {
+                loadingAnimation.start();
+            }
             awWalletConnectClient.pair(url, (msg) -> {
                 if (TextUtils.isEmpty(msg))
                 {
@@ -117,7 +123,17 @@ public class WalletConnectV2Activity extends BaseActivity implements StandardFun
         eventsList = findViewById(R.id.event_list);
         functionBar = findViewById(R.id.layoutButtons);
 
+        // loading_animation 설정
+        loadingAnimation = (AnimationDrawable) ContextCompat.getDrawable(this, R.drawable.loading_animation);
+        if (loadingAnimation != null) {
+            progressBar.setImageDrawable(loadingAnimation);
+        }
+
         progressBar.setVisibility(View.VISIBLE);
+        // 애니메이션 시작
+        if (loadingAnimation != null && !loadingAnimation.isRunning()) {
+            loadingAnimation.start();
+        }
         infoLayout.setVisibility(View.GONE);
         functionBar.setupFunctions(this, Arrays.asList(R.string.dialog_approve, R.string.dialog_reject));
         functionBar.setVisibility(View.GONE);
@@ -172,6 +188,10 @@ public class WalletConnectV2Activity extends BaseActivity implements StandardFun
         else
         {
             displaySessionStatus(session, wallet);
+            // 애니메이션 중지
+            if (loadingAnimation != null && loadingAnimation.isRunning()) {
+                loadingAnimation.stop();
+            }
             progressBar.setVisibility(View.GONE);
             functionBar.setVisibility(View.VISIBLE);
             infoLayout.setVisibility(View.VISIBLE);
@@ -422,5 +442,27 @@ public class WalletConnectV2Activity extends BaseActivity implements StandardFun
     {
         runOnUiThread(() -> awWalletConnectClient.updateNotification(null));
         finish();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+        // AnimationDrawable은 onWindowFocusChanged에서 시작하는 것이 더 안전함
+        if (hasFocus && loadingAnimation != null && progressBar.getVisibility() == View.VISIBLE && !loadingAnimation.isRunning())
+        {
+            loadingAnimation.start();
+        }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        // 애니메이션 중지
+        if (loadingAnimation != null && loadingAnimation.isRunning())
+        {
+            loadingAnimation.stop();
+        }
     }
 }

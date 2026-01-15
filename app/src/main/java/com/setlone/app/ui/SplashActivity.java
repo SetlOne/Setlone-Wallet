@@ -27,6 +27,9 @@ import com.setlone.app.util.RootUtil;
 import com.setlone.app.viewmodel.SplashViewModel;
 import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.SignTransactionDialog;
+import com.bumptech.glide.Glide;
+import androidx.core.content.ContextCompat;
+import android.graphics.drawable.AnimationDrawable;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -35,6 +38,7 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
 {
     private SplashViewModel viewModel;
     private String errorMessage;
+    private AnimationDrawable splashAnimation;
     private final Runnable displayError = new Runnable()
     {
         @Override
@@ -62,6 +66,25 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        // Load animation for splash screen
+        android.widget.ImageView splashImage = findViewById(R.id.splash_image);
+        if (splashImage != null)
+        {
+            // 방법 1: 개별 프레임 사용 (AnimationDrawable - 권장)
+            splashAnimation = 
+                (AnimationDrawable) ContextCompat.getDrawable(this, R.drawable.loading_animation);
+            if (splashAnimation != null)
+            {
+                splashImage.setImageDrawable(splashAnimation);
+            }
+            
+            // 방법 2: GIF 직접 사용 (Glide - 대안)
+            // Glide.with(this)
+            //     .asGif()
+            //     .load(R.raw.splash_loading)
+            //     .into(splashImage);
+        }
 
         //detect previous launch
         viewModel = new ViewModelProvider(this)
@@ -151,9 +174,25 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+        // AnimationDrawable은 onWindowFocusChanged에서 시작하는 것이 더 안전함
+        if (hasFocus && splashAnimation != null && !splashAnimation.isRunning())
+        {
+            splashAnimation.start();
+        }
+    }
+
+    @Override
     public void onDestroy()
     {
         super.onDestroy();
+        if (splashAnimation != null && splashAnimation.isRunning())
+        {
+            splashAnimation.stop();
+        }
+        splashAnimation = null;
         handler = null;
     }
 

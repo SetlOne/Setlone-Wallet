@@ -7,6 +7,7 @@ import static com.setlone.ethereum.EthereumNetworkBase.GNOSIS_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.OPTIMISTIC_MAIN_ID;
 import static com.setlone.ethereum.EthereumNetworkBase.POLYGON_ID;
+import com.setlone.app.repository.EthereumNetworkBase;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -233,7 +234,15 @@ public class FunctionButtonBar extends LinearLayout implements AdapterView.OnIte
         if (token == null) return;
         for (Integer i : token.getStandardFunctions())
         {
-            addFunction(i);
+            // TRON 네트워크일 경우 Receive 대신 Receive TRON 버튼 표시
+            if (i == R.string.action_receive && EthereumNetworkBase.isTronNetwork(token.tokenInfo.chainId))
+            {
+                addFunction(R.string.action_receive_tron);
+            }
+            else
+            {
+                addFunction(i);
+            }
         }
     }
 
@@ -301,6 +310,10 @@ public class FunctionButtonBar extends LinearLayout implements AdapterView.OnIte
         else if (action.buttonId == R.string.action_receive)
         {
             callStandardFunctions.showReceive();
+        }
+        else if (action.buttonId == R.string.action_receive_tron)
+        {
+            callStandardFunctions.showReceiveTron();
         }
         else if (action.buttonId == R.string.action_transfer)
         {

@@ -53,8 +53,9 @@ public class WalletAddressService
                     {
                         PrivateKey tronPk = wallet.getKeyForCoin(CoinType.TRON);
                         String tronAddress = CoinType.TRON.deriveAddress(tronPk);
+                        Timber.d("Generated TRON address: %s for wallet: %s (chainId: %d)", tronAddress, walletAddress, TRON_ID);
                         storeNetworkAddress(r, walletAddress, TRON_ID, tronAddress);
-                        Timber.d("TRON address generated and stored: %s for wallet: %s", tronAddress, walletAddress);
+                        Timber.d("TRON address stored successfully: %s for wallet: %s", tronAddress, walletAddress);
                     }
                     catch (Exception e)
                     {
@@ -84,12 +85,22 @@ public class WalletAddressService
         
         if (mapping == null)
         {
-            mapping = realm.createObject(RealmWalletAddressMapping.class);
-            mapping.setWalletAddressChainId(walletAddress, chainId);
+            // Primary key가 있는 Realm 객체는 createObject(Class, primaryKey) 형식으로 생성해야 함
+            // createObject로 생성할 때 primary key가 이미 설정되므로, setWalletAddressChainId를 호출하면 안됨
+            mapping = realm.createObject(RealmWalletAddressMapping.class, key);
+            // Primary key는 이미 설정되었으므로, 다른 필드만 설정
+            mapping.setWalletAddress(walletAddress);
+            mapping.setChainId(chainId);
+            Timber.d("Created new RealmWalletAddressMapping with key: %s", key);
+        }
+        else
+        {
+            Timber.d("Updating existing RealmWalletAddressMapping with key: %s", key);
         }
         
         mapping.setNetworkAddress(networkAddress);
-        realm.insertOrUpdate(mapping);
+        Timber.d("Stored network address: %s for wallet: %s, chainId: %d", networkAddress, walletAddress, chainId);
+        // insertOrUpdate는 필요 없음 (이미 managed 객체이므로 변경사항이 자동 저장됨)
     }
     
     /**
@@ -109,7 +120,12 @@ public class WalletAddressService
             
             if (mapping != null && mapping.getNetworkAddress() != null)
             {
+                Timber.d("Found network address: %s for wallet: %s, chainId: %d", mapping.getNetworkAddress(), walletAddress, chainId);
                 return mapping.getNetworkAddress();
+            }
+            else
+            {
+                Timber.d("No network address mapping found for wallet: %s, chainId: %d, key: %s", walletAddress, chainId, key);
             }
         }
         catch (Exception e)
@@ -118,6 +134,7 @@ public class WalletAddressService
         }
         
         // 매핑이 없으면 기본 주소 반환 (하위 호환성)
+        Timber.d("Returning default address (wallet address) for wallet: %s, chainId: %d", walletAddress, chainId);
         return walletAddress;
     }
     

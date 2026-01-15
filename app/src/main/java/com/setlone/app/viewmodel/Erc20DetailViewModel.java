@@ -81,6 +81,11 @@ public class Erc20DetailViewModel extends BaseViewModel {
         myAddressRouter.open(context, wallet, token);
     }
 
+    public MyAddressRouter getMyAddressRouter()
+    {
+        return myAddressRouter;
+    }
+
     public void showContractInfo(Context ctx, Wallet wallet, Token token)
     {
         myAddressRouter.open(ctx, wallet, token);

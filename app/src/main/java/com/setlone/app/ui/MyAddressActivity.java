@@ -258,9 +258,30 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         Timber.d("Network Address (returned): %s", networkAddress);
         Timber.d("========================");
         
-        // TRON 주소는 Base58 형식이므로 toChecksumAddress 사용하지 않음
+        // TRON 네트워크이고 주소가 없으면 생성 시도
         if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId)) {
-            displayAddress = networkAddress;
+            // TRON 주소가 생성되었는지 확인
+            if (!viewModel.hasTronAddress(wallet.address)) {
+                // TRON 주소가 없으면 생성 시도
+                viewModel.generateTronAddressIfNeeded(wallet, this, () -> {
+                    // 생성 완료 후 주소 다시 가져오기
+                    String newTronAddress = viewModel.getAddressForNetwork(wallet.address, chainId);
+                    if (viewModel.hasTronAddress(wallet.address)) {
+                        displayAddress = newTronAddress;
+                        copyAddress.setFixedText(displayAddress);
+                        qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
+                    } else {
+                        // 생성 실패 시 기본 주소 사용
+                        displayAddress = wallet.address;
+                        copyAddress.setFixedText(displayAddress);
+                        qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
+                    }
+                });
+                // 생성 중이므로 임시로 기본 주소 표시
+                displayAddress = wallet.address;
+            } else {
+                displayAddress = networkAddress;
+            }
         } else {
             displayAddress = Keys.toChecksumAddress(networkAddress);
         }
@@ -382,7 +403,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         wallet = getIntent().getParcelableExtra(C.Key.WALLET);
         long chainId = getIntent().getLongExtra(C.EXTRA_CHAIN_ID, MAINNET_ID);
         token = viewModel.getTokenService().getToken(chainId, getIntent().getStringExtra(C.EXTRA_ADDRESS));
-        long fallBackChainId = token != null ? token.tokenInfo.chainId : MAINNET_ID;
+        long fallBackChainId = token != null ? token.tokenInfo.chainId : chainId; // Intent로 전달된 chainId를 우선 사용
         overrideNetwork = getIntent().getLongExtra(OVERRIDE_DEFAULT, fallBackChainId);
 
         if (wallet == null)

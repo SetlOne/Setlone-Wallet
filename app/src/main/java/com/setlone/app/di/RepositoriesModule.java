@@ -171,13 +171,15 @@ public class RepositoriesModule
         EthereumNetworkRepositoryType ethereumNetworkRepository,
         TokenLocalSource tokenLocalSource,
         @ApplicationContext Context context,
-        TickerService tickerService)
+        TickerService tickerService,
+        RealmManager realmManager)
     {
         return new TokenRepository(
             ethereumNetworkRepository,
             tokenLocalSource,
             context,
-            tickerService);
+            tickerService,
+            realmManager);
     }
 
     @Singleton

@@ -35,6 +35,7 @@ import com.setlone.app.interact.ChangeTokenEnableInteract;
 import com.setlone.app.interact.FetchTokensInteract;
 import com.setlone.app.interact.GenericWalletInteract;
 import com.setlone.app.repository.CoinbasePayRepository;
+import com.setlone.app.repository.EthereumNetworkRepositoryType;
 import com.setlone.app.repository.OnRampRepositoryType;
 import com.setlone.app.repository.PreferenceRepositoryType;
 import com.setlone.app.repository.TokensRealmSource;
@@ -99,6 +100,7 @@ public class WalletViewModel extends BaseViewModel
     private final ManageWalletsRouter manageWalletsRouter;
     private final RealmManager realmManager;
     private final OnRampRepositoryType onRampRepository;
+    private final EthereumNetworkRepositoryType ethereumNetworkRepository;
     private long lastBackupCheck = 0;
     private long lastTokenFetchTime = 0;
     private BottomSheetDialog dialog;
@@ -120,6 +122,7 @@ public class WalletViewModel extends BaseViewModel
             PreferenceRepositoryType preferenceRepository,
             RealmManager realmManager,
             OnRampRepositoryType onRampRepository,
+            EthereumNetworkRepositoryType ethereumNetworkRepository,
             AnalyticsServiceType analyticsService,
             AWWalletConnectClient awWalletConnectClient)
     {
@@ -135,6 +138,7 @@ public class WalletViewModel extends BaseViewModel
         this.preferenceRepository = preferenceRepository;
         this.realmManager = realmManager;
         this.onRampRepository = onRampRepository;
+        this.ethereumNetworkRepository = ethereumNetworkRepository;
         this.awWalletConnectClient = awWalletConnectClient;
         setAnalyticsService(analyticsService);
     }
@@ -330,7 +334,11 @@ public class WalletViewModel extends BaseViewModel
         });
         actionsView.setOnShowMyWalletAddressClickListener(v -> {
             dialog.dismiss();
-            myAddressRouter.open(context, defaultWallet.getValue());
+            // 현재 선택된 네트워크의 chainId를 가져와서 전달
+            // TRON 네트워크일 경우 TRON 주소를 표시하기 위해 필요
+            com.setlone.app.entity.NetworkInfo activeNetwork = ethereumNetworkRepository.getActiveBrowserNetwork();
+            long chainId = activeNetwork != null ? activeNetwork.chainId : com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID;
+            myAddressRouter.open(context, defaultWallet.getValue(), chainId);
         });
         actionsView.setOnAddHideTokensClickListener(v -> {
             dialog.dismiss();
