@@ -16,7 +16,9 @@ public class NetworkInfo extends com.setlone.ethereum.NetworkInfo
 {
     private final String ETHERSCAN_API = ".etherscan.";
     private final String BLOCKSCOUT_API = "blockscout";
-    private final String MATIC_API = "polygonscan";
+    // Note: Polygon now uses Etherscan V2 API (api.etherscan.io/v2/api?chainid=137)
+    // The old api.polygonscan.com is deprecated
+    // private final String MATIC_API = "polygonscan"; // Deprecated - no longer used
     private final String OKX_API = "oklink";
     private final String ARBISCAN_API = "https://api.arbiscan";
     private final String PALM_API = "explorer.palm";
@@ -59,7 +61,7 @@ public class NetworkInfo extends com.setlone.ethereum.NetworkInfo
 
     public TransferFetchType[] getTransferQueriesUsed()
     {
-        if (etherscanAPI.contains(COVALENT) || TextUtils.isEmpty(etherscanAPI))
+        if (etherscanAPI == null || TextUtils.isEmpty(etherscanAPI) || etherscanAPI.contains(COVALENT))
         {
             return new TransferFetchType[0];
         }
@@ -67,7 +69,9 @@ public class NetworkInfo extends com.setlone.ethereum.NetworkInfo
         {
             return new TransferFetchType[]{TransferFetchType.ERC_20, TransferFetchType.ERC_721};
         }
-        else if (etherscanAPI.contains(MATIC_API) || etherscanAPI.contains(ETHERSCAN_API) || etherscanAPI.contains(OKX_API) || etherscanAPI.contains("basescan.org"))
+        // Etherscan V2 API (api.etherscan.io/v2/api) is used for Ethereum, Polygon, Base, Arbitrum, etc.
+        // All these chains use the same endpoint with chainid parameter
+        else if (etherscanAPI.contains(ETHERSCAN_API) || etherscanAPI.contains(OKX_API) || etherscanAPI.contains("basescan.org"))
         {
             return new TransferFetchType[]{TransferFetchType.ERC_20, TransferFetchType.ERC_721, TransferFetchType.ERC_1155};
         }

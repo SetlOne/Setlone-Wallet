@@ -2,8 +2,6 @@ package com.setlone.app.util;
 
 import com.setlone.app.repository.EthereumNetworkBase;
 
-import static com.setlone.ethereum.EthereumNetworkBase.TRON_ID;
-
 /**
  * TRON 네트워크 관련 유틸리티 클래스
  */
@@ -14,7 +12,7 @@ public class TronUtils
      */
     public static boolean isTronChain(long chainId)
     {
-        return chainId == TRON_ID;
+        return chainId == TronConstants.TRON_ID;
     }
 
     /**

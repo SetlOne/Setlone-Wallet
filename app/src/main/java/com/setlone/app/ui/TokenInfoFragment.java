@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.setlone.app.C;
 import com.setlone.app.R;
+import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.entity.tokens.TokenPortfolio;
 import com.setlone.app.service.TickerService;
@@ -135,8 +136,54 @@ public class TokenInfoFragment extends BaseFragment {
             statsMaxVolume = new TokenInfoView(getContext(), "Max Volume");
             stats1YearLow = new TokenInfoView(getContext(), "1 Year Low");
             stats1YearHigh = new TokenInfoView(getContext(), "1 Year High");
-            contractAddress = new TokenInfoView(getContext(), getString(R.string.contract_address));// findViewById(R.id.contract_address);
-            contractAddress.setCopyableValue(token.tokenInfo.address);
+            // TRON 네이티브 토큰인 경우 지갑의 TRON 주소를 표시
+            String addressToDisplay = token.tokenInfo.address;
+            String labelText = getString(R.string.contract_address);
+            
+            if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(token.tokenInfo.chainId) && token.isEthereum()) {
+                // TRON 네이티브 토큰 (TRX)인 경우 지갑 주소를 TRON 주소로 변환
+                Wallet wallet = getArguments().getParcelable(C.Key.WALLET);
+                String walletAddress = wallet != null ? wallet.address : viewModel.getTokensService().getCurrentAddress();
+                
+                if (walletAddress != null) {
+                    String tronAddress = viewModel.getAddressForNetwork(walletAddress, token.tokenInfo.chainId);
+                    if (tronAddress != null && !tronAddress.equals(walletAddress) && tronAddress.startsWith("T")) {
+                        // TRON 주소가 이미 있음
+                        addressToDisplay = tronAddress;
+                        labelText = getString(R.string.my_wallet_address); // TRON 주소는 "지갑 주소"로 표시
+                    } else {
+                        // TRON 주소가 없으면 임시로 "로딩 중..." 표시하고 생성 시도
+                        addressToDisplay = getString(R.string.loading);
+                        labelText = getString(R.string.my_wallet_address);
+                        
+                        // TRON 주소 생성 시도 (비동기)
+                        if (wallet != null && getActivity() != null) {
+                            viewModel.generateTronAddressIfNeeded(wallet, getActivity(), () -> {
+                                // 생성 완료 후 주소 다시 가져오기
+                                if (getActivity() != null && contractAddress != null) {
+                                    String newTronAddress = viewModel.getAddressForNetwork(walletAddress, token.tokenInfo.chainId);
+                                    if (newTronAddress != null && !newTronAddress.equals(walletAddress) && newTronAddress.startsWith("T")) {
+                                        // UI 업데이트
+                                        contractAddress.setCopyableValue(newTronAddress);
+                                    } else {
+                                        // 생성 실패 시 ETH 주소 표시
+                                        contractAddress.setCopyableValue(walletAddress);
+                                    }
+                                }
+                            });
+                        } else {
+                            // 지갑 정보가 없으면 ETH 주소 표시
+                            addressToDisplay = walletAddress;
+                        }
+                    }
+                }
+            } else {
+                // 일반 토큰의 경우 컨트랙트 주소 표시
+                addressToDisplay = token.tokenInfo.address;
+            }
+            
+            contractAddress = new TokenInfoView(getContext(), labelText);
+            contractAddress.setCopyableValue(addressToDisplay);
 
             tokenInfoHeaderView = new TokenInfoHeaderView(getContext(), token, viewModel.getTokensService());
             tokenInfoHeaderLayout.addView(tokenInfoHeaderView);

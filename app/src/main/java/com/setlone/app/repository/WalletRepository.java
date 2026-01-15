@@ -3,10 +3,17 @@ package com.setlone.app.repository;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.service.AccountKeystoreService;
 import com.setlone.app.service.KeyService;
+import com.setlone.app.service.WalletAddressService;
+import com.setlone.app.util.TronConstants;
+import com.setlone.app.util.TronUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.realm.Realm;
+import timber.log.Timber;
 
 public class WalletRepository implements WalletRepositoryType
 {
@@ -15,14 +22,16 @@ public class WalletRepository implements WalletRepositoryType
 	private final EthereumNetworkRepositoryType networkRepository;
 	private final WalletDataRealmSource walletDataRealmSource;
 	private final KeyService keyService;
+	private final WalletAddressService walletAddressService;
 
-	public WalletRepository(PreferenceRepositoryType preferenceRepositoryType, AccountKeystoreService accountKeystoreService, EthereumNetworkRepositoryType networkRepository, WalletDataRealmSource walletDataRealmSource, KeyService keyService)
+	public WalletRepository(PreferenceRepositoryType preferenceRepositoryType, AccountKeystoreService accountKeystoreService, EthereumNetworkRepositoryType networkRepository, WalletDataRealmSource walletDataRealmSource, KeyService keyService, WalletAddressService walletAddressService)
 	{
 		this.preferenceRepositoryType = preferenceRepositoryType;
 		this.accountKeystoreService = accountKeystoreService;
 		this.networkRepository = networkRepository;
 		this.walletDataRealmSource = walletDataRealmSource;
 		this.keyService = keyService;
+		this.walletAddressService = walletAddressService;
 	}
 
 	@Override
@@ -31,11 +40,42 @@ public class WalletRepository implements WalletRepositoryType
 		return accountKeystoreService.fetchAccounts()
 				.flatMap(wallets -> walletDataRealmSource.populateWalletData(wallets, keyService))
 				.map(wallets -> {
-					if (preferenceRepositoryType.getCurrentWalletAddress() == null && wallets.length > 0)
+					// ETH 지갑 목록에 TRON 지갑 추가
+					List<Wallet> allWallets = new ArrayList<>();
+					
+					for (Wallet ethWallet : wallets)
 					{
-						preferenceRepositoryType.setCurrentWalletAddress(wallets[0].address);
+						// ETH 지갑 추가
+						allWallets.add(ethWallet);
+						
+						// 해당 ETH 지갑의 TRON 주소 조회
+						String tronAddress = walletAddressService.getTronAddress(ethWallet.address);
+						
+						// TRON 주소가 있고, ETH 주소와 다르고, T로 시작하면 TRON 지갑 추가
+						if (tronAddress != null && !tronAddress.equals(ethWallet.address) && TronUtils.isValidTronAddress(tronAddress))
+						{
+							// TRON 지갑 생성 (원본 ETH 주소 저장)
+							Wallet tronWallet = new Wallet(tronAddress);
+							tronWallet.originalEthAddress = ethWallet.address;
+							tronWallet.type = ethWallet.type; // 같은 타입 유지
+							tronWallet.name = ethWallet.name + " (TRON)"; // 이름에 TRON 표시
+							tronWallet.walletCreationTime = ethWallet.walletCreationTime;
+							tronWallet.lastBackupTime = ethWallet.lastBackupTime;
+							tronWallet.authLevel = ethWallet.authLevel;
+							tronWallet.balanceSymbol = "TRX";
+							
+							allWallets.add(tronWallet);
+							Timber.d("Added TRON wallet: %s for ETH wallet: %s", tronAddress, ethWallet.address);
+						}
 					}
-					return wallets;
+					
+					Wallet[] result = allWallets.toArray(new Wallet[0]);
+					
+					if (preferenceRepositoryType.getCurrentWalletAddress() == null && result.length > 0)
+					{
+						preferenceRepositoryType.setCurrentWalletAddress(result[0].address);
+					}
+					return result;
 				});
 	}
 

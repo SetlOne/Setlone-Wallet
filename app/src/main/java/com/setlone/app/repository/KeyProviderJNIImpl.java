@@ -60,4 +60,6 @@ public class KeyProviderJNIImpl implements KeyProvider
     public native String getCoinGeckoKey();
 
     public native String getBackupKey();
+
+    public native String getTronQuickNodeKey();
 }

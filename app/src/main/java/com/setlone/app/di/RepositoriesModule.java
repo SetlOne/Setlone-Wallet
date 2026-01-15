@@ -104,10 +104,11 @@ public class RepositoriesModule
         AccountKeystoreService accountKeystoreService,
         EthereumNetworkRepositoryType networkRepository,
         WalletDataRealmSource walletDataRealmSource,
-        KeyService keyService)
+        KeyService keyService,
+        com.setlone.app.service.WalletAddressService walletAddressService)
     {
         return new WalletRepository(
-            preferenceRepositoryType, accountKeystoreService, networkRepository, walletDataRealmSource, keyService);
+            preferenceRepositoryType, accountKeystoreService, networkRepository, walletDataRealmSource, keyService, walletAddressService);
     }
 
     @Singleton
@@ -172,6 +173,9 @@ public class RepositoriesModule
         TokenLocalSource tokenLocalSource,
         @ApplicationContext Context context,
         TickerService tickerService,
+        com.setlone.app.service.WalletAddressService walletAddressService,
+        com.setlone.app.service.TronService tronService,
+        Gson gson,
         RealmManager realmManager)
     {
         return new TokenRepository(
@@ -179,6 +183,9 @@ public class RepositoriesModule
             tokenLocalSource,
             context,
             tickerService,
+            walletAddressService,
+            tronService,
+            gson,
             realmManager);
     }
 
@@ -253,9 +260,12 @@ public class RepositoriesModule
     
     @Singleton
     @Provides
-    com.setlone.app.service.TronService provideTronService(OkHttpClient client, Gson gson)
+    com.setlone.app.service.TronService provideTronService(
+        OkHttpClient client,
+        Gson gson,
+        EthereumNetworkRepositoryType networkRepository)
     {
-        return new com.setlone.app.service.TronService(client, gson);
+        return new com.setlone.app.service.TronService(client, gson, networkRepository);
     }
 
     @Singleton

@@ -23,7 +23,7 @@ import com.setlone.app.widget.AWalletAlertDialog;
 import com.setlone.app.widget.ActionSheet;
 import com.setlone.app.widget.ActionSheetSignDialog;
 import com.setlone.token.entity.Signable;
-import com.walletconnect.web3.wallet.client.Wallet;
+import com.reown.walletkit.client.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;

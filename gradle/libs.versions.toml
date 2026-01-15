@@ -1,7 +1,7 @@
 [versions]
-agp = "8.13.2"
+agp = "8.13.2"  # Gradle 9와 호환되는 AGP 버전 (8.7+ 필요, 8.13.2는 Gradle 9 지원)
 android_lint_reporter = "2.1.0"
-walletConnectBom = "1.35.2"
+reownBom = "1.5.2"  # Reown SDK (WalletConnect의 새로운 이름)
 appUpdate = "2.1.0"
 bcprovJdk15onVersion = "1.70"
 bcprovJdk18onVersion = "1.77"
@@ -17,7 +17,8 @@ firebaseMessaging = "25.0.1"
 flexboxLayout = "2.0.1"
 glide = "5.0.5"
 googleServices = "4.4.2"
-gradle = "8.13.2"
+# Gradle wrapper 버전은 gradle-wrapper.properties에서 관리
+# gradleWrapper = "9.2.1"  # 주석 처리 (wrapper.properties에서 직접 관리)
 gridlayout = "1.1.0"
 gson = "2.13.2"
 guava = "33.5.0-android"
@@ -42,7 +43,7 @@ navigationFragment = "2.8.4"
 navigationUi = "2.8.4"
 okhttp = "5.3.2"
 preferenceKtx = "1.2.1"
-realmGradlePlugin = "10.19.0"
+realmGradlePlugin = "10.19.0"  # 현재 최신 안정 버전 (10.20.0은 아직 릴리즈되지 않음)
 recyclerview = "1.4.0"
 review = "2.0.2"
 rxjava = "2.2.21"
@@ -64,7 +65,7 @@ zxingAndroidEmbedded = "4.3.0"
 annotations = "26.0.2-1"
 
 [libraries]
-walletConnect-bom = { module = "com.walletconnect:android-bom", version.ref = "walletConnectBom" }
+reown-bom = { module = "com.reown:android-bom", version.ref = "reownBom" }
 android_lint_reporter = { module = "gradle.plugin.com.worker8.android_lint_reporter:android_lint_reporter", version.ref = "android_lint_reporter" }
 app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
@@ -81,7 +82,7 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging", versio
 flexbox-layout = { module = "com.github.google:flexbox-layout", version.ref = "flexboxLayout" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }  # AGP 버전은 agp 참조 사용
 gridlayout = { module = "androidx.gridlayout:gridlayout", version.ref = "gridlayout" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }

@@ -219,7 +219,26 @@ public class TokensService
     {
         if (newWalletAddr != null && (currentAddress == null || !currentAddress.equalsIgnoreCase(newWalletAddr)))
         {
-            currentAddress = newWalletAddr.toLowerCase();
+            // TRON 주소는 소문자로 변환하지 않음 (T로 시작하는 Base58 주소)
+            boolean wasTronWallet = currentAddress != null && currentAddress.startsWith("T");
+            boolean isTronWallet = newWalletAddr.startsWith("T");
+            
+            if (isTronWallet)
+            {
+                currentAddress = newWalletAddr; // TRON 주소는 그대로 유지
+            }
+            else
+            {
+                currentAddress = newWalletAddr.toLowerCase(); // EVM 주소는 소문자로 변환
+            }
+            
+            // 지갑 타입이 변경되었으면 필터를 다시 설정
+            if (wasTronWallet != isTronWallet)
+            {
+                Timber.d("setCurrentAddress: Wallet type changed (wasTron=%s, isTron=%s), resetting filter", wasTronWallet, isTronWallet);
+                setupFilter(ethereumNetworkRepository.hasSetNetworkFilters());
+            }
+            
             stopUpdateCycle();
             addLockedTokens();
             if (openseaService != null) openseaService.resetOffsetRead(networkFilter);
@@ -436,16 +455,63 @@ public class TokensService
     public void setupFilter(boolean userUpdated)
     {
         networkFilter.clear();
+        
+        // 현재 지갑이 TRON 지갑인지 확인
+        boolean isTronWallet = currentAddress != null && currentAddress.startsWith("T");
+        
         if (!CustomViewSettings.getLockedChains().isEmpty())
         {
-            networkFilter.addAll(CustomViewSettings.getLockedChains());
+            // Locked chains에서도 지갑 타입에 따라 필터링
+            for (Long chainId : CustomViewSettings.getLockedChains())
+            {
+                if (isTronWallet) {
+                    // TRON 지갑인 경우 TRON 네트워크만 포함
+                    if (com.setlone.app.util.TronUtils.isTronChain(chainId)) {
+                        networkFilter.add(chainId);
+                    }
+                } else {
+                    // ETH 지갑인 경우 ETH 네트워크만 포함
+                    if (!com.setlone.app.util.TronUtils.isTronChain(chainId)) {
+                        networkFilter.add(chainId);
+                    }
+                }
+            }
         }
         else
         {
-            networkFilter.addAll(ethereumNetworkRepository.getFilterNetworkList());
+            // 저장된 필터 리스트에서 지갑 타입에 따라 필터링
+            List<Long> allFilters = ethereumNetworkRepository.getFilterNetworkList();
+            for (Long chainId : allFilters)
+            {
+                if (isTronWallet) {
+                    // TRON 지갑인 경우 TRON 네트워크만 포함
+                    if (com.setlone.app.util.TronUtils.isTronChain(chainId)) {
+                        networkFilter.add(chainId);
+                    }
+                } else {
+                    // ETH 지갑인 경우 ETH 네트워크만 포함 (TRON 제외)
+                    if (!com.setlone.app.util.TronUtils.isTronChain(chainId)) {
+                        networkFilter.add(chainId);
+                    }
+                }
+            }
+        }
+        
+        // 필터가 비어있으면 기본값 설정
+        if (networkFilter.isEmpty())
+        {
+            if (isTronWallet) {
+                // TRON 지갑인 경우 TRON 네트워크만 추가
+                networkFilter.add(com.setlone.app.util.TronConstants.TRON_ID);
+            } else {
+                // ETH 지갑인 경우 기본 ETH 네트워크 추가
+                networkFilter.add(ethereumNetworkRepository.getDefaultNetwork());
+            }
         }
 
         if (userUpdated) ethereumNetworkRepository.setHasSetNetworkFilters();
+        
+        Timber.d("setupFilter: isTronWallet=%s, networkFilter=%s", isTronWallet, networkFilter);
     }
 
     public void setFocusToken(@NotNull Token token)
@@ -712,6 +778,16 @@ public class TokensService
         //update all chain balances
         return Single.fromCallable(() -> {
             List<Token> baseTokens = new ArrayList<>();
+            
+            // TRON 지갑인 경우 (T로 시작) ETH 주소를 가져와야 함
+            boolean isTronWallet = walletAddress != null && walletAddress.startsWith("T");
+            
+            if (isTronWallet)
+            {
+                Timber.d("syncChainBalances: TRON wallet detected (%s), using networkFilter (already filtered)", walletAddress);
+            }
+            
+            // networkFilter는 이미 setupFilter()에서 지갑 타입에 따라 필터링됨
             for (long chainId : networkFilter)
             {
                 Token baseToken = tokenRepository.fetchToken(chainId, walletAddress, walletAddress);
@@ -719,13 +795,16 @@ public class TokensService
                 {
                     baseToken = ethereumNetworkRepository.getBlankOverrideToken(ethereumNetworkRepository.getNetworkByChain(chainId));
                 }
-                baseToken.setTokenWallet(walletAddress);
-                BigDecimal balance = baseToken.balance;
-                if (updateType == TokenUpdateType.ACTIVE_SYNC) balance = tokenRepository.updateTokenBalance(walletAddress, baseToken).blockingGet();
-                if (balance.compareTo(BigDecimal.ZERO) > 0)
+                if (baseToken != null)
                 {
-                    baseToken.balance = balance;
-                    baseTokens.add(baseToken);
+                    baseToken.setTokenWallet(walletAddress);
+                    BigDecimal balance = baseToken.balance;
+                    if (updateType == TokenUpdateType.ACTIVE_SYNC) balance = tokenRepository.updateTokenBalance(walletAddress, baseToken).blockingGet();
+                    if (balance.compareTo(BigDecimal.ZERO) > 0)
+                    {
+                        baseToken.balance = balance;
+                        baseTokens.add(baseToken);
+                    }
                 }
             }
 
@@ -1143,11 +1222,22 @@ public class TokensService
     {
         networkFilter.clear();
         NetworkInfo[] networks = ethereumNetworkRepository.getAvailableNetworkList();
+        
+        // 현재 지갑이 TRON 지갑인지 확인
+        boolean isTronWallet = currentAddress != null && currentAddress.startsWith("T");
 
         if (!ethereumNetworkRepository.hasSetNetworkFilters())
         {
             for (NetworkInfo network : networks)
             {
+                // 지갑 타입에 따라 네트워크 필터링
+                if (isTronWallet && !com.setlone.app.util.TronUtils.isTronChain(network.chainId)) {
+                    continue; // TRON 지갑인 경우 ETH 네트워크 건너뛰기
+                }
+                if (!isTronWallet && com.setlone.app.util.TronUtils.isTronChain(network.chainId)) {
+                    continue; // ETH 지갑인 경우 TRON 네트워크 건너뛰기
+                }
+                
                 Token t = getToken(network.chainId, currentAddress);
                 if (t != null && t.balance.compareTo(BigDecimal.ZERO) > 0)
                 {
@@ -1158,10 +1248,24 @@ public class TokensService
 
         for (Long lockedChain : CustomViewSettings.getLockedChains())
         {
+            // Locked chains도 지갑 타입에 따라 필터링
+            if (isTronWallet && !com.setlone.app.util.TronUtils.isTronChain(lockedChain)) {
+                continue; // TRON 지갑인 경우 ETH 네트워크 건너뛰기
+            }
+            if (!isTronWallet && com.setlone.app.util.TronUtils.isTronChain(lockedChain)) {
+                continue; // ETH 지갑인 경우 TRON 네트워크 건너뛰기
+            }
+            
             if (!networkFilter.contains(lockedChain)) networkFilter.add(lockedChain);
         }
 
-        if (networkFilter.size() == 0) networkFilter.add(ethereumNetworkRepository.getDefaultNetwork());
+        if (networkFilter.size() == 0) {
+            if (isTronWallet) {
+                networkFilter.add(com.setlone.app.util.TronConstants.TRON_ID);
+            } else {
+                networkFilter.add(ethereumNetworkRepository.getDefaultNetwork());
+            }
+        }
 
         //set network filter prefs
         ethereumNetworkRepository.setFilterNetworkList(networkFilter.toArray(new Long[0]));

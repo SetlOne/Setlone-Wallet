@@ -102,7 +102,11 @@ public class EnsResolver implements Resolvable
         Single.fromCallable(() -> {
                     NetVersion v = web3j.netVersion().send();
                     String ver = v.getNetVersion();
-                    return Long.parseLong(ver);
+                    // Hex 형식("0x1")을 처리
+                    if (ver != null && ver.startsWith("0x")) {
+                        ver = ver.substring(2); // "0x" 제거
+                    }
+                    return Long.parseLong(ver, 16); // 16진수로 파싱
                 }).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(id -> this.chainId = id, Timber::w)

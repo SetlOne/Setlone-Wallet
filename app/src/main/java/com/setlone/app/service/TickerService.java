@@ -528,25 +528,49 @@ public class TickerService
             BigDecimal changeValue = BigDecimal.ZERO;
             double fiatPrice = 0.0;
             String fiatChangeStr = "0.0";
-            if (eth.has(currentCurrencySymbolTxt.toLowerCase()))
+            String currencyKey = currentCurrencySymbolTxt.toLowerCase();
+            
+            if (eth.has(currencyKey))
             {
-                fiatPrice = eth.getDouble(currentCurrencySymbolTxt.toLowerCase());
-                fiatChangeStr = eth.getString(currentCurrencySymbolTxt.toLowerCase() + "_24h_change");
+                fiatPrice = eth.getDouble(currencyKey);
+                String changeKey = currencyKey + "_24h_change";
+                if (eth.has(changeKey)) {
+                    fiatChangeStr = eth.getString(changeKey);
+                }
+            }
+            else if (eth.has("usd"))
+            {
+                // USD가 있는 경우 USD를 기본으로 사용
+                fiatPrice = eth.getDouble("usd") * currentConversionRate;
+                if (eth.has("usd_24h_change")) {
+                    fiatChangeStr = eth.getString("usd_24h_change");
+                }
             }
             else
             {
-                fiatPrice = eth.getDouble("usd") * currentConversionRate;
-                fiatChangeStr = eth.getString("usd_24h_change");
+                // usd도 없는 경우 (API 응답 구조 변경 가능성)
+                Timber.w("CoinGecko API response missing both %s and usd keys. Available keys: %s", 
+                        currencyKey, eth.keys().hasNext() ? eth.keys().next() : "none");
+                // 기본값 사용
+                fiatPrice = 0.0;
+                fiatChangeStr = "0.0";
             }
-            if (!TextUtils.isEmpty(fiatChangeStr) && Character.isDigit(fiatChangeStr.charAt(0)))
-                changeValue = BigDecimal.valueOf(eth.getDouble(currentCurrencySymbolTxt.toLowerCase() + "_24h_change"));
+            
+            if (!TextUtils.isEmpty(fiatChangeStr) && fiatChangeStr.length() > 0 && Character.isDigit(fiatChangeStr.charAt(0)))
+            {
+                try {
+                    changeValue = BigDecimal.valueOf(Double.parseDouble(fiatChangeStr));
+                } catch (NumberFormatException e) {
+                    Timber.w(e, "Failed to parse change value: %s", fiatChangeStr);
+                }
+            }
 
             tTicker = new TokenTicker(String.valueOf(fiatPrice),
                     changeValue.setScale(3, RoundingMode.DOWN).toString(), currentCurrencySymbolTxt, "", System.currentTimeMillis());
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Timber.e(e, "Error decoding CoinGecko ticker");
             tTicker = new TokenTicker();
         }
 

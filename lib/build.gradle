@@ -18,5 +18,8 @@ dependencies {
     implementation libs.gson
 }
 
-sourceCompatibility = "17"
-targetCompatibility = "17"
+// Gradle 9 호환: java 블록 내에서 설정
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}

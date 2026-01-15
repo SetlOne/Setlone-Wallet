@@ -32,8 +32,10 @@ import com.setlone.app.entity.SyncCallback;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.repository.EthereumNetworkRepository;
+import com.setlone.app.repository.EthereumNetworkRepositoryType;
 import com.setlone.app.repository.PreferenceRepositoryType;
 import com.setlone.app.service.KeyService;
+import com.setlone.app.util.TronConstants;
 import com.setlone.app.ui.widget.adapter.WalletsSummaryAdapter;
 import com.setlone.app.viewmodel.WalletsViewModel;
 import com.setlone.app.widget.AWalletAlertDialog;
@@ -55,6 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 @AndroidEntryPoint
 public class WalletsActivity extends BaseActivity implements
@@ -71,6 +74,8 @@ public class WalletsActivity extends BaseActivity implements
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final long balanceChain = EthereumNetworkRepository.getOverrideToken().chainId;
     private WalletsViewModel viewModel;
+    @Inject
+    EthereumNetworkRepositoryType ethereumNetworkRepository;
     private RecyclerView list;
     private SystemView systemView;
     private Dialog dialog;
@@ -420,6 +425,33 @@ public class WalletsActivity extends BaseActivity implements
     private void updateCurrentWallet(Wallet wallet)
     {
         viewModel.logIn(wallet.address);
+
+        // TRON 지갑인 경우 TRON 네트워크로 전환
+        if (wallet.isTronWallet())
+        {
+            com.setlone.app.entity.NetworkInfo tronNetwork = 
+                com.setlone.app.repository.EthereumNetworkBase.getNetworkInfo(TronConstants.TRON_ID);
+            
+            if (tronNetwork != null && ethereumNetworkRepository != null)
+            {
+                ethereumNetworkRepository.setActiveBrowserNetwork(tronNetwork);
+                Timber.d("Switched to TRON network for TRON wallet: %s", wallet.address);
+            }
+        }
+        // ETH 지갑인 경우 ETH 네트워크로 전환 (원본 ETH 주소 사용)
+        else if (wallet.originalEthAddress == null)
+        {
+            // 일반 ETH 지갑인 경우 기본 네트워크 유지 또는 ETH 네트워크로 전환
+            com.setlone.app.entity.NetworkInfo ethNetwork = 
+                com.setlone.app.repository.EthereumNetworkBase.getNetworkInfo(
+                    com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID);
+            
+            if (ethNetwork != null && ethereumNetworkRepository != null)
+            {
+                ethereumNetworkRepository.setActiveBrowserNetwork(ethNetwork);
+                Timber.d("Switched to ETH network for ETH wallet: %s", wallet.address);
+            }
+        }
 
         if (adapter == null)
         {

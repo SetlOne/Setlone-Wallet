@@ -1,6 +1,6 @@
 package com.setlone.app.ui;
 
-import static com.setlone.ethereum.EthereumNetworkBase.MAINNET_ID;
+import static com.setlone.ethereum.EthereumNetworkBase.TRON_ID;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,27 +25,25 @@ import com.setlone.app.entity.NetworkInfo;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.tokens.Token;
 import com.setlone.app.repository.EthereumNetworkBase;
-import com.setlone.app.repository.TokenRepository;
 import com.setlone.app.ui.QRScanning.DisplayUtils;
 import com.setlone.app.ui.widget.entity.AmountReadyCallback;
 import com.setlone.app.util.KeyboardUtils;
 import com.setlone.app.util.QRUtils;
-import com.setlone.app.util.ens.AWEnsResolver;
 import com.setlone.app.viewmodel.MyAddressViewModel;
 import com.setlone.app.widget.CopyTextView;
 import com.setlone.app.widget.InputAmount;
 
-import org.web3j.crypto.Keys;
-
 import java.math.BigDecimal;
 
 import dagger.hilt.android.AndroidEntryPoint;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
+/**
+ * TRON 네트워크 전용 주소 표시 화면
+ * MyAddressActivity와 유사하지만 TRON 네트워크에 특화된 기능 제공
+ */
 @AndroidEntryPoint
-public class MyAddressActivity extends BaseActivity implements AmountReadyCallback
+public class TronAddressActivity extends BaseActivity implements AmountReadyCallback
 {
     public static final String KEY_ADDRESS = "key_address";
     public static final String KEY_MODE = "mode";
@@ -73,7 +69,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        screenWidth = Math.min((int) ((float)DisplayUtils.getScreenResolution(this).x * 0.8f), 1900); //restrict max width
+        screenWidth = Math.min((int) ((float)DisplayUtils.getScreenResolution(this).x * 0.8f), 1900);
         super.onCreate(savedInstanceState);
         initViewModel();
         overrideNetwork = 0;
@@ -166,7 +162,6 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
                 break;
         }
 
-        //Only show contract if we've come from a token and the token is not base chain
         if (token == null || token.isEthereum())
         {
             menu.findItem(R.id.action_show_contract)
@@ -188,7 +183,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
             showAddress();
         }
         else if (item.getItemId() == R.id.action_networks) {
-            selectNetwork();
+            // TRON 전용 화면에서는 네트워크 선택 불필요
         }
 
         return super.onOptionsItemSelected(item);
@@ -200,18 +195,25 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         initViews();
         findViewById(R.id.toolbar_title).setVisibility(View.GONE);
         setTitle("");
-        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
-        long chainId = overrideNetwork != 0 ? overrideNetwork : MAINNET_ID;
-        String networkAddress = viewModel.getAddressForNetwork(wallet.address, chainId);
-        networkInfo = viewModel.getNetworkByChain(chainId);
         
-        // TRON 주소는 Base58 형식이므로 toChecksumAddress 사용하지 않음
-        if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId)) {
-            displayAddress = networkAddress;
+        // TRON 주소 가져오기
+        String tronAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
+        if (tronAddress == null || tronAddress.equals(wallet.address) || !tronAddress.startsWith("T")) {
+            // TRON 주소가 없으면 생성 시도
+            viewModel.generateTronAddressIfNeeded(wallet, this, () -> {
+                String newTronAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
+                if (newTronAddress != null && !newTronAddress.equals(wallet.address) && newTronAddress.startsWith("T")) {
+                    displayAddress = newTronAddress;
+                } else {
+                    displayAddress = wallet.address;
+                }
+            });
+            displayAddress = wallet.address; // 임시
         } else {
-            displayAddress = Keys.toChecksumAddress(networkAddress);
+            displayAddress = tronAddress;
         }
         
+        networkInfo = viewModel.getNetworkByChain(TRON_ID);
         currentMode = AddressMode.MODE_POS;
         layoutInputAmount.setVisibility(View.VISIBLE);
 
@@ -221,9 +223,8 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
 
     private void setupPOSMode(NetworkInfo info)
     {
-        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
-        String networkAddress = viewModel.getAddressForNetwork(wallet.address, info.chainId);
-        if (token == null) token = viewModel.getTokenService().getToken(info.chainId, networkAddress);
+        String networkAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
+        if (token == null) token = viewModel.getTokenService().getToken(TRON_ID, networkAddress);
         amountInput.setupToken(token, viewModel.getTokenService(), this);
         amountInput.setAmount("");
         updateCryptoAmount(BigDecimal.ZERO);
@@ -245,45 +246,31 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
             amountInput = null;
         }
 
-        // 네트워크에 맞는 주소 가져오기 (TRON 네트워크일 경우 TRON 주소)
-        long chainId = overrideNetwork != 0 ? overrideNetwork : 
-                       (token != null ? token.tokenInfo.chainId : MAINNET_ID);
-        String networkAddress = viewModel.getAddressForNetwork(wallet.address, chainId);
+        // TRON 주소 가져오기
+        String tronAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
         
-        // 디버깅용 로그 (실제 동작 확인용)
         Timber.d("=== TRON Address Debug ===");
-        Timber.d("ChainId: %d", chainId);
-        Timber.d("Is TRON Network: %b", com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId));
         Timber.d("Original Wallet Address: %s", wallet.address);
-        Timber.d("Network Address (returned): %s", networkAddress);
+        Timber.d("TRON Address (returned): %s", tronAddress);
         Timber.d("========================");
         
-        // TRON 네트워크이고 주소가 없으면 생성 시도
-        if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(chainId)) {
-            // TRON 주소가 생성되었는지 확인
-            if (!viewModel.hasTronAddress(wallet.address)) {
-                // TRON 주소가 없으면 생성 시도
-                viewModel.generateTronAddressIfNeeded(wallet, this, () -> {
-                    // 생성 완료 후 주소 다시 가져오기
-                    String newTronAddress = viewModel.getAddressForNetwork(wallet.address, chainId);
-                    if (viewModel.hasTronAddress(wallet.address)) {
-                        displayAddress = newTronAddress;
-                        copyAddress.setFixedText(displayAddress);
-                        qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
-                    } else {
-                        // 생성 실패 시 기본 주소 사용
-                        displayAddress = wallet.address;
-                        copyAddress.setFixedText(displayAddress);
-                        qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
-                    }
-                });
-                // 생성 중이므로 임시로 기본 주소 표시
-                displayAddress = wallet.address;
-            } else {
-                displayAddress = networkAddress;
-            }
+        // TRON 주소가 없으면 생성 시도
+        if (tronAddress == null || tronAddress.equals(wallet.address) || !tronAddress.startsWith("T")) {
+            viewModel.generateTronAddressIfNeeded(wallet, this, () -> {
+                String newTronAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
+                if (newTronAddress != null && !newTronAddress.equals(wallet.address) && newTronAddress.startsWith("T")) {
+                    displayAddress = newTronAddress;
+                    copyAddress.setFixedText(displayAddress);
+                    qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
+                } else {
+                    displayAddress = wallet.address;
+                    copyAddress.setFixedText(displayAddress);
+                    qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
+                }
+            });
+            displayAddress = wallet.address; // 임시로 기본 주소 표시
         } else {
-            displayAddress = Keys.toChecksumAddress(networkAddress);
+            displayAddress = tronAddress;
         }
         
         setTitle(getString(R.string.my_wallet_address));
@@ -294,31 +281,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         }
         copyAddress.setVisibility(View.VISIBLE);
         onWindowFocusChanged(true);
-        updateAddressWithENS(wallet.ENSname); //JB: see if there's any cached value to display while we wait for ENS
-
-        //When view changes, this function loads again. It will again try to fetch ENS
-        if(TextUtils.isEmpty(displayName))
-        {
-            new AWEnsResolver(TokenRepository.getWeb3jService(MAINNET_ID), getApplicationContext())
-                    .reverseResolveEns(displayAddress)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(this::updateAddressWithENS, this::printTrace).isDisposed();
-            if (ensFetchProgressBar != null) {
-                ensFetchProgressBar.setVisibility(View.VISIBLE);
-            }
-        }
-        else
-        {
-            updateAddressWithENS(displayName);
-        }
-    }
-
-    private void printTrace(Throwable throwable) {
-        if (ensFetchProgressBar != null) {
-            ensFetchProgressBar.setVisibility(View.GONE);
-        }
-        updateAddressWithENS(wallet.ENSname); // JB: if there's any issue then fall back to cached name
+        updateAddressWithENS(null); // TRON은 ENS 없음
     }
 
     private void showContract()
@@ -333,16 +296,14 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         currentMode = AddressMode.MODE_CONTRACT;
         
         // TRON 네이티브 토큰인 경우 지갑의 TRON 주소를 표시
-        if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(token.tokenInfo.chainId) && token.isEthereum()) {
-            // TRON 네이티브 토큰 (TRX)인 경우 지갑 주소 표시
-            String tronAddress = viewModel.getAddressForNetwork(wallet.address, token.tokenInfo.chainId);
+        if (token != null && token.isEthereum()) {
+            String tronAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
             if (tronAddress != null && !tronAddress.equals(wallet.address) && tronAddress.startsWith("T")) {
                 displayAddress = tronAddress;
-                setTitle(getString(R.string.my_wallet_address)); // TRON 주소는 "지갑 주소"로 표시
+                setTitle(getString(R.string.my_wallet_address));
             } else {
-                // TRON 주소가 없으면 생성 시도
                 viewModel.generateTronAddressIfNeeded(wallet, this, () -> {
-                    String newTronAddress = viewModel.getAddressForNetwork(wallet.address, token.tokenInfo.chainId);
+                    String newTronAddress = viewModel.getAddressForNetwork(wallet.address, TRON_ID);
                     if (newTronAddress != null && !newTronAddress.equals(wallet.address) && newTronAddress.startsWith("T")) {
                         displayAddress = newTronAddress;
                         copyAddress.setText(displayAddress);
@@ -351,11 +312,11 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
                         copyAddress.setText(displayAddress);
                     }
                 });
-                displayAddress = wallet.address; // 임시로 기본 주소 표시
+                displayAddress = wallet.address;
             }
         } else {
             // 일반 토큰의 경우 컨트랙트 주소 표시
-            displayAddress = Keys.toChecksumAddress(token.getAddress());
+            displayAddress = token != null ? token.getAddress() : wallet.address;
             setTitle(getString(R.string.contract_address));
         }
         
@@ -369,39 +330,10 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
             ensFetchProgressBar.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(ensName))
-        {
-            displayName = ensName;
-            copyWalletName.setVisibility(View.VISIBLE);
-            copyWalletName.setText(ensName);
-        }
-        else
-        {
+        // TRON은 ENS 없음
+        if (copyWalletName != null) {
             copyWalletName.setVisibility(View.GONE);
         }
-    }
-
-    ActivityResultLauncher<Intent> getNetwork = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK)
-                {
-                    long networkId = result.getData().getLongExtra(C.EXTRA_CHAIN_ID, -1);
-                    NetworkInfo info = viewModel.getNetworkByChain(networkId);
-                    if (info != null)
-                    {
-                        networkInfo = info;
-                        getInfo();
-                        token = null;
-                        overrideNetwork = networkId;
-                        setupPOSMode(info);
-                    }
-                }
-    });
-
-    private void selectNetwork() {
-        Intent intent = new Intent(MyAddressActivity.this, NetworkChooserActivity.class);
-        intent.putExtra(C.EXTRA_CHAIN_ID, networkInfo.chainId);
-        getNetwork.launch(intent);
     }
 
     @Override
@@ -414,7 +346,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
             {
                 getInfo();
                 qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
-                qrImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in)); //<-- check if this is causing the load delay (it was)
+                qrImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
             }
             else
             {
@@ -427,14 +359,12 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     {
         if (viewModel == null) initViewModel();
         wallet = getIntent().getParcelableExtra(C.Key.WALLET);
-        long chainId = getIntent().getLongExtra(C.EXTRA_CHAIN_ID, MAINNET_ID);
+        long chainId = getIntent().getLongExtra(C.EXTRA_CHAIN_ID, TRON_ID);
         token = viewModel.getTokenService().getToken(chainId, getIntent().getStringExtra(C.EXTRA_ADDRESS));
-        long fallBackChainId = token != null ? token.tokenInfo.chainId : chainId; // Intent로 전달된 chainId를 우선 사용
-        overrideNetwork = getIntent().getLongExtra(OVERRIDE_DEFAULT, fallBackChainId);
+        overrideNetwork = TRON_ID; // 항상 TRON 네트워크
 
         if (wallet == null)
         {
-            //have no address. Can only quit the activity
             finish();
         }
     }
@@ -450,26 +380,8 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     {
         if (token != null)
         {
-            //generate payment request link
-            //EIP681 format
-            Timber.d("AMT: %s", weiAmount.toString());
-            EIP681Request request;
-            String eip681String;
-            if (token.isEthereum())
-            {
-                request = new EIP681Request(displayAddress, networkInfo.chainId, weiAmount);
-                eip681String = request.generateRequest();
-            }
-            else if (token.isERC20())
-            {
-                request = new EIP681Request(displayAddress, token.getAddress(), networkInfo.chainId, weiAmount);
-                eip681String = request.generateERC20Request();
-            }
-            else
-            {
-                return;
-            }
-            qrImageView.setImageBitmap(QRUtils.createQRImage(this, eip681String, screenWidth));
+            // TRON은 EIP681 형식이 아닐 수 있으므로 간단한 주소만 QR 코드로 표시
+            qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
         }
     }
 }

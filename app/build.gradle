@@ -62,6 +62,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
+        
         def XInfuraAPI = "XInfuraAPI"
         //Put your Infura key here, NB with over 30 - 40 users this API key will rate limit, it's only here for bootstrapping a free build
         def DEFAULT_INFURA_API_KEY = "\"e42660159e2147c0b928b0a34b0c980a\""
@@ -79,7 +80,11 @@ android {
         buildConfigField "String", "NOTIFICATION_API_BASE_URL", notificationApiBaseUrl
 
         ndk {
-            abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"
+            // 16KB 페이지 크기 호환성: 32비트 ABI 제외 (선택사항)
+            // 32비트 라이브러리는 4KB 정렬로 빌드될 가능성이 높음
+            // 필요시 아래 주석 해제하여 64비트만 빌드
+            // abiFilters "arm64-v8a", "x86_64"  // 64비트만 (16KB 호환성 향상)
+            abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"  // 모든 ABI (현재 설정)
         }
         packagingOptions {
             pickFirst 'META-INF/LICENSE.md'
@@ -97,6 +102,8 @@ android {
                 cFlags "-DPSKEY=" + DEFAULT_POLYGONSCAN_API_KEY + ""
                 cFlags "-DASKEY=" + DEFAULT_AURORA_API_KEY + ""
                 cFlags "-DWCKEY=" + DEFAULT_WALLETCONNECT_PROJECT_ID + ""
+                // 16KB 페이지 크기 지원을 위한 CMake 인자 추가
+                arguments "-DANDROID_SUPPORT_16KB_PAGE_SIZE=ON"
             }
             cmake {
                 cFlags "-Wno-dev"
@@ -155,6 +162,8 @@ android {
         jniLibs {
             excludes += ['solidity/*']
             useLegacyPackaging = false  // 16KB 페이지 크기 지원을 위해 false로 변경
+            // 16KB 페이지 크기 호환성: 네이티브 라이브러리 정렬 강제
+            pickFirsts += ['lib/*/libsqlcipher.so', 'lib/*/librealm-jni.so']
         }
         resources {
             excludes += ['META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
@@ -191,7 +200,10 @@ android {
         baseline = file('./check/lint-baseline.xml')
         lintConfig = file('./check/lint-rules.xml')
     }
-    ndkVersion = '25.1.8937393'
+    // NDK r28 이상 필요: 16KB 페이지 크기 호환성을 위해 필수
+    // r28부터 자동으로 16KB ELF 정렬 지원
+    // 최신 NDK r29 사용 (16KB 페이지 크기 완전 지원)
+    ndkVersion = '29.0.14206865'  // NDK r29 (최신 버전)
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_21
         freeCompilerArgs += ["-Xskip-metadata-version-check"]
@@ -243,6 +255,11 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
+    
+    // SQLCipher: Reown SDK는 최신 버전을 사용하므로 16KB 페이지 크기 호환
+    // 신버전 (16KB 페이지 크기 지원): net.zetetic.database 패키지 사용
+    implementation(group: 'net.zetetic', name: 'sqlcipher-android', version: '4.12.0')
+    implementation(group: 'androidx.sqlite', name: 'sqlite', version: '2.6.2')
 
     //noinspection BomWithoutPlatform,GradleDependency
     implementation platform('com.fasterxml.jackson:jackson-bom:2.20.1') //Do not upgrade! 2.13.5 is latest library with Android API24 compatibility,
@@ -330,16 +347,19 @@ dependencies {
     //Timber
     implementation libs.timber
 
-    implementation platform(libs.walletConnect.bom)
-    implementation('com.walletconnect:android-core:1.35.2', {
+    // Reown SDK (WalletConnect의 새로운 이름) - 16KB 페이지 크기 호환
+    // web3wallet은 deprecated되었고 walletkit으로 교체됨
+    implementation platform(libs.reown.bom)
+    // BOM 버전에 따라 자동으로 최신 버전 사용
+    implementation('com.reown:android-core:1.5.2', {
         exclude group: 'org.web3j', module: '*'
         exclude group: 'org.bouncycastle', module: '*'
-        exclude group: 'io.github.pandulapeter.beagle', module: '*'  // Beagle 제외 - WalletConnect와 충돌 방지
+        exclude group: 'io.github.pandulapeter.beagle', module: '*'  // Beagle 제외
     })
-    implementation('com.walletconnect:web3wallet:1.35.2', {
+    implementation('com.reown:walletkit:1.5.2', {
         exclude group: 'org.web3j', module: '*'
         exclude group: 'org.bouncycastle', module: '*'
-        exclude group: 'io.github.pandulapeter.beagle', module: '*'  // Beagle 제외 - WalletConnect와 충돌 방지
+        exclude group: 'io.github.pandulapeter.beagle', module: '*'  // Beagle 제외
     })
 
     implementation libs.review

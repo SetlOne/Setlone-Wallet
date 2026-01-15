@@ -25,6 +25,8 @@ public class Wallet implements Parcelable
     public String ENSAvatar;
     public boolean isSynced;
     public Token[] tokens;
+    // 원본 ETH 주소 (TRON 지갑인 경우 원본 ETH 주소 저장)
+    public String originalEthAddress;
 
     public Wallet(String address)
     {
@@ -38,6 +40,7 @@ public class Wallet implements Parcelable
         this.walletCreationTime = 0;
         this.balanceSymbol = "";
         this.ENSAvatar = "";
+        this.originalEthAddress = null; // ETH 지갑인 경우 null, TRON 지갑인 경우 원본 ETH 주소
     }
 
     private Wallet(Parcel in)
@@ -54,6 +57,7 @@ public class Wallet implements Parcelable
         walletCreationTime = in.readLong();
         balanceSymbol = in.readString();
         ENSAvatar = in.readString();
+        originalEthAddress = in.readString();
     }
 
     public void setWalletType(WalletType wType)
@@ -100,6 +104,23 @@ public class Wallet implements Parcelable
         parcel.writeLong(walletCreationTime);
         parcel.writeString(balanceSymbol);
         parcel.writeString(ENSAvatar);
+        parcel.writeString(originalEthAddress);
+    }
+    
+    /**
+     * TRON 지갑인지 확인 (T로 시작하는 주소)
+     */
+    public boolean isTronWallet()
+    {
+        return address != null && address.startsWith("T");
+    }
+    
+    /**
+     * 실제 ETH 주소 가져오기 (TRON 지갑인 경우 originalEthAddress 반환)
+     */
+    public String getEthAddress()
+    {
+        return originalEthAddress != null ? originalEthAddress : address;
     }
 
     public boolean setWalletBalance(Token token)

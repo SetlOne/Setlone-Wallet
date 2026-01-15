@@ -353,3 +353,14 @@ Java_com_setlone_app_repository_KeyProviderJNIImpl_getSmartPassDevKey( JNIEnv* e
     return (*env)->NewStringUTF(env, key);
 #endif
 }
+
+JNIEXPORT jstring JNICALL
+Java_com_setlone_app_repository_KeyProviderJNIImpl_getTronQuickNodeKey( JNIEnv* env, jclass thiz )
+{
+#if (HAS_KEYS == 1)
+    return getDecryptedKey(env, tronQuickNodeKey);
+#else
+    const jstring key = "20a708dc9ad491b49151cb56595c9aa0fcb087f3";
+    return (*env)->NewStringUTF(env, key);
+#endif
+}

@@ -9,16 +9,23 @@ import com.setlone.app.C;
 import com.setlone.app.entity.Wallet;
 import com.setlone.app.entity.nftassets.NFTAsset;
 import com.setlone.app.entity.tokens.Token;
+import com.setlone.app.repository.EthereumNetworkBase;
 import com.setlone.app.ui.AssetDisplayActivity;
 import com.setlone.app.ui.Erc20DetailActivity;
 import com.setlone.app.ui.NFTActivity;
 import com.setlone.app.ui.NFTAssetDetailActivity;
+import com.setlone.app.ui.TronDetailActivity;
 
 public class TokenDetailRouter
 {
     public Intent makeERC20DetailsIntent(Context context, String address, String symbol, int decimals, boolean isToken, Wallet wallet, Token token, boolean hasDefinition)
     {
-        Intent intent = new Intent(context, Erc20DetailActivity.class);
+        // TRON 네트워크인 경우 TronDetailActivity 사용
+        Class<?> activityClass = EthereumNetworkBase.isTronNetwork(token.tokenInfo.chainId) 
+                ? TronDetailActivity.class 
+                : Erc20DetailActivity.class;
+        
+        Intent intent = new Intent(context, activityClass);
         intent.putExtra(C.EXTRA_SENDING_TOKENS, isToken);
         intent.putExtra(C.EXTRA_CONTRACT_ADDRESS, address);
         intent.putExtra(C.EXTRA_SYMBOL, symbol);

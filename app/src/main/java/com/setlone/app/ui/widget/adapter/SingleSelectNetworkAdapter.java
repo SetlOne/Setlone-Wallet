@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.setlone.app.repository.EthereumNetworkBase;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,7 +72,13 @@ public class SingleSelectNetworkAdapter extends RecyclerView.Adapter<SingleSelec
         if (item != null)
         {
             holder.name.setText(item.getName());
-            holder.chainId.setText(holder.itemLayout.getContext().getString(R.string.chain_id, item.getChainId()));
+            // TRON 네트워크는 체인 ID 표시하지 않음
+            if (com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(item.getChainId())) {
+                holder.chainId.setVisibility(View.GONE);
+            } else {
+                holder.chainId.setVisibility(View.VISIBLE);
+                holder.chainId.setText(holder.itemLayout.getContext().getString(R.string.chain_id, item.getChainId()));
+            }
             holder.itemLayout.setOnClickListener(v -> clickListener(holder, position));
             holder.radio.setChecked(item.isSelected());
             holder.tokenIcon.bindData(item.getChainId());

@@ -34,6 +34,8 @@ import com.setlone.app.widget.SystemView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.realm.Realm;
@@ -46,6 +48,7 @@ import io.realm.RealmResults;
 public class ActivityFragment extends BaseFragment implements View.OnClickListener, ActivityDataInteract
 {
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor(); // 성능 최적화: 백그라운드 스레드 풀
     private ActivityViewModel viewModel;
     private SystemView systemView;
     private ActivityAdapter adapter;
@@ -82,17 +85,26 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     private void onItemsLoaded(ActivityMeta[] activityItems)
     {
-        try (Realm realm = viewModel.getRealmInstance())
-        {
-            adapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
-            showEmptyTx();
-
-            for (ActivityMeta am : activityItems)
+        // 성능 최적화: Realm 쿼리를 백그라운드 스레드에서 실행
+        backgroundExecutor.execute(() -> {
+            try (Realm realm = viewModel.getRealmInstance())
             {
-                if (am instanceof TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime)
-                    lastUpdateTime = am.getTimeStampSeconds() - 60;
+                List<ActivityMeta> filteredList = buildTransactionList(realm, activityItems);
+                
+                // 메인 스레드에서 UI 업데이트
+                handler.post(() -> {
+                    adapter.updateActivityItems(filteredList.toArray(new ActivityMeta[0]));
+                    showEmptyTx();
+                });
+
+                // lastUpdateTime 업데이트는 백그라운드에서 수행
+                for (ActivityMeta am : activityItems)
+                {
+                    if (am instanceof TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime)
+                        lastUpdateTime = am.getTimeStampSeconds() - 60;
+                }
             }
-        }
+        });
 
         if (isVisible) startTxListener();
     }
@@ -123,8 +135,18 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             if (metas.size() > 0)
             {
                 TransactionMeta[] metaArray = metas.toArray(new TransactionMeta[0]);
-                adapter.updateActivityItems(buildTransactionList(realm, metaArray).toArray(new ActivityMeta[0]));
-                systemView.hide();
+                // 성능 최적화: Realm 쿼리를 백그라운드 스레드에서 실행
+                backgroundExecutor.execute(() -> {
+                    try (Realm backgroundRealm = viewModel.getRealmInstance())
+                    {
+                        List<ActivityMeta> filteredList = buildTransactionList(backgroundRealm, metaArray);
+                        // 메인 스레드에서 UI 업데이트
+                        handler.post(() -> {
+                            adapter.updateActivityItems(filteredList.toArray(new ActivityMeta[0]));
+                            systemView.hide();
+                        });
+                    }
+                });
             }
         });
     }
@@ -250,6 +272,10 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         if (realm != null && !realm.isClosed()) realm.close();
         if (viewModel != null) viewModel.onDestroy();
         if (adapter != null && listView != null) adapter.onDestroy(listView);
+        // 성능 최적화: 백그라운드 스레드 풀 종료
+        if (backgroundExecutor != null && !backgroundExecutor.isShutdown()) {
+            backgroundExecutor.shutdown();
+        }
     }
 
     @Override

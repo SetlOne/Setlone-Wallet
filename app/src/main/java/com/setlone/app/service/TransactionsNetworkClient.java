@@ -386,6 +386,14 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
     private EtherscanTransaction[] readTransactions(NetworkInfo networkInfo, TokensService svs, String tokenAddress, String lowBlock, String highBlock, boolean ascending, int page) throws JSONException
     {
         if (networkInfo == null) return new EtherscanTransaction[0];
+        
+        // TRON 주소인 경우 ETH 네트워크에서 사용할 수 없음
+        if (tokenAddress != null && tokenAddress.startsWith("T") && !com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(networkInfo.chainId))
+        {
+            Timber.w("readTransactions: TRON address %s cannot be used for ETH network %d", tokenAddress, networkInfo.chainId);
+            return new EtherscanTransaction[0];
+        }
+        
         if (networkInfo.etherscanAPI.contains(COVALENT))
         {
             return readCovalentTransactions(svs, tokenAddress, networkInfo, ascending, page, PAGESIZE);
@@ -737,6 +745,14 @@ public class TransactionsNetworkClient implements TransactionsNetworkClientType
     private String readNextTxBatch(String walletAddress, NetworkInfo networkInfo, long upperBlock, long lowerBlock, String queryType)
     {
         if (TextUtils.isEmpty(networkInfo.etherscanAPI) || networkInfo.etherscanAPI.contains(COVALENT)) return JSON_EMPTY_RESULT; //Covalent transfers are handled elsewhere
+        
+        // TRON 주소인 경우 ETH 네트워크에서 사용할 수 없음
+        if (walletAddress != null && walletAddress.startsWith("T") && !com.setlone.app.repository.EthereumNetworkBase.isTronNetwork(networkInfo.chainId))
+        {
+            Timber.w("readNextTxBatch: TRON address %s cannot be used for ETH network %d", walletAddress, networkInfo.chainId);
+            return JSON_EMPTY_RESULT;
+        }
+        
         String result = JSON_EMPTY_RESULT;
         if (lowerBlock == 0) lowerBlock = 1;
 

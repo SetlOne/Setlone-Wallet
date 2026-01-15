@@ -112,7 +112,9 @@ public class TokenRepository implements TokenRepositoryType {
     private final Map<Long, Web3j> web3jNodeServers;
     private AWEnsResolver ensResolver;
     private String currentAddress;
-    private TronService tronService;
+    private final TronService tronService;
+    private final WalletAddressService walletAddressService;
+    private final Gson gson;
     private final RealmManager realmManager;
 
     public TokenRepository(
@@ -120,12 +122,18 @@ public class TokenRepository implements TokenRepositoryType {
             TokenLocalSource localSource,
             Context context,
             TickerService tickerService,
+            WalletAddressService walletAddressService,
+            TronService tronService,
+            Gson gson,
             RealmManager realmManager) {
         this.ethereumNetworkRepository = ethereumNetworkRepository;
         this.localSource = localSource;
         this.ethereumNetworkRepository.addOnChangeDefaultNetwork(this::buildWeb3jClient);
         this.context = context;
         this.tickerService = tickerService;
+        this.walletAddressService = walletAddressService;
+        this.tronService = tronService;
+        this.gson = gson;
         this.realmManager = realmManager;
 
         web3jNodeServers = new ConcurrentHashMap<>();
@@ -137,10 +145,6 @@ public class TokenRepository implements TokenRepositoryType {
                 .writeTimeout(C.LONG_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .build();
-        
-        // TRON 서비스 초기화 (TRON 잔액 조회용)
-        Gson gson = new Gson();
-        tronService = new TronService(okClient, gson);
     }
 
     private void buildWeb3jClient(NetworkInfo networkInfo)
@@ -317,7 +321,40 @@ public class TokenRepository implements TokenRepositoryType {
     @Override
     public Token fetchToken(long chainId, String walletAddress, String address)
     {
-        Wallet wallet = new Wallet(walletAddress);
+        // TRON 네트워크인 경우 올바른 TRON 주소 사용
+        // ETH 네트워크인 경우 TRON 지갑이면 ETH 주소를 사용해야 함
+        String actualWalletAddress = walletAddress;
+        
+        if (com.setlone.app.util.TronUtils.isTronChain(chainId))
+        {
+            // TRON 네트워크: TRON 주소 사용
+            if (!walletAddress.startsWith("T"))
+            {
+                // ETH 주소인 경우 TRON 주소로 변환
+                String tronAddress = walletAddressService.getTronAddress(walletAddress);
+                if (tronAddress != null && !tronAddress.equals(walletAddress) && tronAddress.startsWith("T"))
+                {
+                    actualWalletAddress = tronAddress;
+                    Timber.d("Using TRON address for fetchToken: %s (original: %s)", tronAddress, walletAddress);
+                }
+            }
+        }
+        else
+        {
+            // ETH 네트워크: TRON 지갑인 경우 ETH 주소를 사용해야 함
+            if (walletAddress != null && walletAddress.startsWith("T"))
+            {
+                // TRON 지갑 주소인 경우, 원본 ETH 주소를 찾아야 함
+                // walletAddress가 TRON 주소이므로, 이를 역으로 ETH 주소로 변환해야 함
+                // 하지만 이는 불가능하므로, Wallet 객체를 통해 originalEthAddress를 확인해야 함
+                // 여기서는 walletAddress가 이미 TRON 주소인 경우를 처리
+                Timber.w("fetchToken called with TRON address %s for ETH network %d. This should not happen.", walletAddress, chainId);
+                // TRON 주소를 ETH 네트워크에 사용할 수 없으므로 null 반환
+                return null;
+            }
+        }
+        
+        Wallet wallet = new Wallet(actualWalletAddress);
         return localSource.fetchToken(chainId, wallet, address);
     }
 
@@ -487,6 +524,19 @@ public class TokenRepository implements TokenRepositoryType {
                 BigDecimal balance = BigDecimal.valueOf(-1);
                 try
                 {
+                    // TRON 지갑이 ETH 네트워크 토큰을 업데이트하려고 하면 건너뛰기
+                    if (wallet.isTronWallet() && !com.setlone.app.util.TronUtils.isTronChain(token.tokenInfo.chainId)) {
+                        Timber.d("updateBalance: Skipping ETH network token %s (chainId: %d) for TRON wallet %s", 
+                                token.getAddress(), token.tokenInfo.chainId, wallet.address);
+                        return BigDecimal.ZERO;
+                    }
+                    // ETH 지갑이 TRON 네트워크 토큰을 업데이트하려고 하면 건너뛰기
+                    if (!wallet.isTronWallet() && com.setlone.app.util.TronUtils.isTronChain(token.tokenInfo.chainId)) {
+                        Timber.d("updateBalance: Skipping TRON network token %s (chainId: %d) for ETH wallet %s", 
+                                token.getAddress(), token.tokenInfo.chainId, wallet.address);
+                        return BigDecimal.ZERO;
+                    }
+                    
                     List<BigInteger> balanceArray = null;
                     Token thisToken = token;
 
@@ -627,7 +677,17 @@ public class TokenRepository implements TokenRepositoryType {
 
         try
         {
-            Function function = balanceOf(wallet.address);
+            // ETH 네트워크인 경우, TRON 지갑이면 ETH 주소를 사용해야 함
+            String addressToUse = wallet.address;
+            if (!com.setlone.app.util.TronUtils.isTronChain(chainId) && wallet.isTronWallet()) {
+                addressToUse = wallet.getEthAddress();
+                if (addressToUse == null || !addressToUse.startsWith("0x")) {
+                    Timber.w("checkUint256Balance: TRON wallet %s has no valid ETH address for chainId: %d", wallet.address, chainId);
+                    return BigDecimal.valueOf(-1);
+                }
+            }
+            
+            Function function = balanceOf(addressToUse);
             NetworkInfo network = ethereumNetworkRepository.getNetworkByChain(chainId);
             String responseValue = callSmartContractFunction(function, tokenAddress, network, wallet);
 
@@ -663,7 +723,17 @@ public class TokenRepository implements TokenRepositoryType {
         if (token == null) return null;
         try
         {
-            Function function = balanceOf(wallet.address);
+            // ETH 네트워크인 경우, TRON 지갑이면 ETH 주소를 사용해야 함
+            String addressToUse = wallet.address;
+            if (!com.setlone.app.util.TronUtils.isTronChain(tokenInfo.chainId) && wallet.isTronWallet()) {
+                addressToUse = wallet.getEthAddress();
+                if (addressToUse == null || !addressToUse.startsWith("0x")) {
+                    Timber.w("wrappedCheckUint256Balance: TRON wallet %s has no valid ETH address for chainId: %d", wallet.address, tokenInfo.chainId);
+                    return token; // 기존 토큰 반환
+                }
+            }
+            
+            Function function = balanceOf(addressToUse);
             NetworkInfo network = ethereumNetworkRepository.getNetworkByChain(tokenInfo.chainId);
             String responseValue = callSmartContractFunction(function, tokenInfo.address, network, wallet);
 
@@ -709,53 +779,87 @@ public class TokenRepository implements TokenRepositoryType {
 
     private BigDecimal getEthBalance(Wallet wallet, long chainId)
     {
-        // TRON 네트워크는 별도 처리
-        if (TronUtils.isTronChain(chainId))
-        {
-            try
-            {
-                // WalletAddressService는 생성자에서 주입받아야 함
-                // 현재는 주입받지 않으므로 직접 생성
-                WalletAddressService walletAddressService = new WalletAddressService(realmManager);
+        try {
+            if (com.setlone.app.util.TronUtils.isTronChain(chainId)) {
+                Timber.d("=== TRON Balance Check ===");
+                Timber.d("Wallet address: %s", wallet.address);
+                Timber.d("Chain ID: %d (TRON: %d)", chainId, com.setlone.app.util.TronConstants.TRON_ID);
                 
-                // TRON 주소 가져오기
-                String tronAddress = walletAddressService.getTronAddress(wallet.address);
-                if (tronAddress == null || tronAddress.equals(wallet.address))
+                String tronAddress;
+                
+                // 이미 TRON 주소인 경우 (T로 시작)
+                if (wallet.address != null && wallet.address.startsWith("T"))
                 {
-                    // TRON 주소가 없으면 0 반환
-                    Timber.w("TRON address not found for wallet: %s", wallet.address);
-                    return BigDecimal.ZERO;
+                    tronAddress = wallet.address;
+                    Timber.d("Wallet address is already TRON address: %s", tronAddress);
+                }
+                // ETH 주소인 경우 TRON 주소로 변환
+                else
+                {
+                    // 원본 ETH 주소 가져오기 (TRON 지갑인 경우)
+                    String ethAddress = wallet.originalEthAddress != null ? wallet.originalEthAddress : wallet.address;
+                    tronAddress = walletAddressService.getTronAddress(ethAddress);
+                    Timber.d("TRON address retrieved from ETH address %s: %s", ethAddress, tronAddress);
                 }
                 
-                // TRON 잔액 조회 (SUN 단위)
-                BigInteger balanceSun = tronService.getBalance(tronAddress).blockingGet();
-                
-                // SUN을 TRX로 변환 (1 TRX = 1,000,000 SUN)
-                BigDecimal balanceTrx = new BigDecimal(balanceSun).divide(new BigDecimal(1_000_000L), 18, BigDecimal.ROUND_DOWN);
-                
-                Timber.d("TRON balance for %s: %s TRX (%s SUN)", tronAddress, balanceTrx, balanceSun);
+                if (tronAddress == null || (!tronAddress.startsWith("T") && !wallet.address.startsWith("T")))
+                {
+                    Timber.w("TRON address not found or invalid. Wallet: %s, TRON address: %s", wallet.address, tronAddress);
+                    Timber.w("This may mean TRON address needs to be generated. Check WalletAddressService.");
+                    return BigDecimal.ZERO;
+                }
+
+                Timber.d("Fetching TRON balance for address: %s", tronAddress);
+                BigInteger sunBalance = tronService.getBalance(tronAddress).blockingGet();
+                // 1 TRX = 1,000,000 SUN
+                BigDecimal balanceTrx = new BigDecimal(sunBalance).divide(new BigDecimal(1_000_000L), 6, BigDecimal.ROUND_DOWN);
+                Timber.d("TRON balance for %s: %s TRX (%s SUN)", tronAddress, balanceTrx, sunBalance);
+                Timber.d("=== TRON Balance Check Complete ===");
                 return balanceTrx;
+            } else {
+                // ETH 네트워크인 경우, TRON 지갑이면 건너뛰기 (이미 updateBalance에서 필터링되어야 함)
+                if (wallet.isTronWallet()) {
+                    Timber.w("getEthBalance: TRON wallet %s should not be used for ETH network %d. This should have been filtered in updateBalance.", wallet.address, chainId);
+                    return BigDecimal.valueOf(-1);
+                }
+                
+                // ETH 지갑인 경우에만 ETH 네트워크 잔액 조회
+                String addressToUse = wallet.getEthAddress();
+                if (addressToUse == null || !addressToUse.startsWith("0x")) {
+                    Timber.w("Invalid ETH address for wallet %s on chainId: %d", wallet.address, chainId);
+                    return BigDecimal.valueOf(-1);
+                }
+                
+                try {
+                    org.web3j.protocol.core.methods.response.EthGetBalance ethBalance = getService(chainId)
+                            .ethGetBalance(addressToUse, DefaultBlockParameterName.LATEST)
+                            .send();
+                    
+                    if (ethBalance.hasError()) {
+                        Timber.e("RPC error getting balance for wallet: %s, chainId: %d, error: %s", 
+                                addressToUse, chainId, ethBalance.getError().getMessage());
+                        return BigDecimal.valueOf(-1);
+                    }
+                    
+                    return new BigDecimal(ethBalance.getBalance());
+                } catch (org.web3j.exceptions.MessageDecodingException e) {
+                    // RPC 응답 형식 오류 - Polygon 등 일부 네트워크에서 발생할 수 있음
+                    Timber.e(e, "MessageDecodingException for wallet: %s, chainId: %d. RPC response format error.", 
+                            wallet.address, chainId);
+                    // 백업 RPC 노드로 재시도하거나 이전 잔액 유지
+                    return BigDecimal.valueOf(-1);
+                }
             }
-            catch (Exception e)
-            {
-                Timber.e(e, "Error getting TRON balance for wallet: %s", wallet.address);
-                return BigDecimal.valueOf(-1);
-            }
-        }
-        
-        // 일반 EVM 네트워크 처리
-        try {
-            return new BigDecimal(getService(chainId).ethGetBalance(wallet.address, DefaultBlockParameterName.LATEST)
-                    .send()
-                    .getBalance());
         }
         catch (IOException e)
         {
+            Timber.e(e, "IOException getting balance for wallet: %s, chainId: %d", wallet.address, chainId);
             return BigDecimal.valueOf(-1);
         }
         catch (Exception e)
         {
             if (LOG_CONTRACT_EXCEPTION_EVENTS) e.printStackTrace();
+            Timber.e(e, "Error getting balance for wallet: %s, chainId: %d", wallet.address, chainId);
             return BigDecimal.valueOf(-1);
         }
     }

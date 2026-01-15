@@ -74,12 +74,23 @@ public class TokensRealmSource implements TokenLocalSource
 
     public static String databaseKey(long chainId, String address)
     {
+        // TRON 주소는 소문자로 변환하지 않음 (T로 시작하는 Base58 주소)
+        if (address != null && address.startsWith("T"))
+        {
+            return address + "-" + chainId;
+        }
         return address.toLowerCase() + "-" + chainId;
     }
 
     public static String databaseKey(Token token)
     {
-        return databaseKey(token.tokenInfo.chainId, token.tokenInfo.address.toLowerCase());
+        // TRON 주소는 소문자로 변환하지 않음
+        String address = token.tokenInfo.address;
+        if (address != null && address.startsWith("T"))
+        {
+            return address + "-" + token.tokenInfo.chainId;
+        }
+        return databaseKey(token.tokenInfo.chainId, address.toLowerCase());
     }
 
     public static String eventActivityKey(String txHash, String activityName)
@@ -292,7 +303,22 @@ public class TokensRealmSource implements TokenLocalSource
             RealmToken realmItem = realm.where(RealmToken.class).equalTo("address", databaseKey(chainId, address)).findFirst();
 
             Token t = convertSingle(realmItem, realm, null, wallet);
-            if (t == null && address.equalsIgnoreCase(wallet.address))
+            
+            // 네이티브 토큰 생성 (ETH 또는 TRON)
+            // TRON 네트워크인 경우 TRON 주소와 비교, ETH 네트워크인 경우 ETH 주소와 비교
+            boolean isNativeToken = false;
+            if (com.setlone.app.util.TronUtils.isTronChain(chainId))
+            {
+                // TRON 네트워크: TRON 주소와 비교 (대소문자 구분)
+                isNativeToken = address.equals(wallet.address);
+            }
+            else
+            {
+                // ETH 네트워크: ETH 주소와 비교 (대소문자 무시)
+                isNativeToken = address.equalsIgnoreCase(wallet.address);
+            }
+            
+            if (t == null && isNativeToken)
             {
                 NetworkInfo info = ethereumNetworkRepository.getNetworkByChain(chainId);
                 if (info != null)

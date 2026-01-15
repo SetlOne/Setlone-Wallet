@@ -17,6 +17,10 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = 'https://jitpack.io' }
+        // Realm 저장소 추가 (필요한 경우)
+        maven {
+            url = "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+        }
         maven {
             url = uri("https://maven.pkg.github.com/trustwallet/wallet-core")
             credentials {

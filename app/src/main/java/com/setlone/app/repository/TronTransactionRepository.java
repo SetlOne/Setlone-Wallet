@@ -67,7 +67,11 @@ public class TronTransactionRepository
         .flatMap(privateKeyHex -> {
             // TRON 트랜잭션 전송
             String fromTronAddress = walletAddressService.getTronAddress(wallet.address);
-            return tronService.sendTransaction(wallet, toAddress, amount, privateKeyHex);
+            if (!TronUtils.isValidTronAddress(fromTronAddress))
+            {
+                return Single.error(new IllegalArgumentException("TRON address not found for wallet: " + wallet.address));
+            }
+            return tronService.sendTransaction(fromTronAddress, toAddress, amount, privateKeyHex);
         })
         .subscribeOn(Schedulers.io());
     }

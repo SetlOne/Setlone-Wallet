@@ -1,14 +1,14 @@
 package com.setlone.app.walletconnect.entity;
 
 
-import static com.walletconnect.web3.wallet.client.Wallet.*;
+import com.reown.walletkit.client.Wallet;
 
 /**
  * Created by JB on 21/11/2022.
  */
 public abstract class EthSignRequest
 {
-    public static BaseRequest getSignRequest(Model.SessionRequest sessionRequest)
+    public static BaseRequest getSignRequest(Wallet.Model.SessionRequest sessionRequest)
     {
         BaseRequest signRequest = null;
 

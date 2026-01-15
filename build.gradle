@@ -7,6 +7,10 @@ buildscript {
         google()
         mavenCentral()
         maven { url = 'https://jitpack.io' }
+        // Realm 저장소 추가 (플러그인 다운로드용)
+        maven {
+            url = "https://plugins.gradle.org/m2/"
+        }
         // WARNING WARNING WARNING
         // you are about to add here a repository which provides some library for the Android app
         // don't do that. add that repository to app/build.gradle

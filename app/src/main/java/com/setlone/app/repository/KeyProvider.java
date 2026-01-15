@@ -55,4 +55,6 @@ public interface KeyProvider
     String getCoinGeckoKey();
 
     String getBackupKey();
+
+    String getTronQuickNodeKey();
 }
